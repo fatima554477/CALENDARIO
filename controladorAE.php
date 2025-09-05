@@ -1064,34 +1064,57 @@ echo $conexion2->email($EMAILnombre, $html, $adjuntos, $embebida, $Subject,$smtp
  //include_once (__ROOT1__."/includes/crea_funciones.php"); 
 
 ///////////////////////////////PERSONAL///////////////////////////////////////
-if($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal=='ENVIARpersonal'){
+if ($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal == 'ENVIARpersonal') {
 
+    $NOMBRE_PERSONAL = isset($_POST["NOMBRE_PERSONAL"]) ? $_POST["NOMBRE_PERSONAL"] : "";
+    $PUESTO_PERSONAL = isset($_POST["PUESTO_PERSONAL"]) ? $_POST["PUESTO_PERSONAL"] : "";
+    $WHAT_PERSONAL = isset($_POST["WHAT_PERSONAL"]) ? $_POST["WHAT_PERSONAL"] : "";
+    $EMAIL_PERSONAL = isset($_POST["EMAIL_PERSONAL"]) ? $_POST["EMAIL_PERSONAL"] : "";
+    $FECHA_INICIO = isset($_POST["FECHA_INICIO"]) ? trim($_POST["FECHA_INICIO"]) : "";
+    $FECHA_FINAL = isset($_POST["FECHA_FINAL"]) ? trim($_POST["FECHA_FINAL"]) : "";
+    $NUMERO_DIAS = isset($_POST["NUMERO_DIAS"]) ? $_POST["NUMERO_DIAS"] : "";
+    $MONTO_BONO = isset($_POST["MONTO_BONO"]) ? $_POST["MONTO_BONO"] : "";
+    $MONTO_BONO_TOTAL = isset($_POST["MONTO_BONO_TOTAL"]) ? $_POST["MONTO_BONO_TOTAL"] : "";
+    $TOTAL = isset($_POST["TOTAL"]) ? $_POST["TOTAL"] : "";
+    $ULTIMO_DIA = isset($_POST["ULTIMO_DIA"]) ? $_POST["ULTIMO_DIA"] : "";
+    $VIATICOS_PERSONAL = isset($_POST["VIATICOS_PERSONAL"]) ? $_POST["VIATICOS_PERSONAL"] : "";
+    $OBSERVACIONES_PERSONAL = isset($_POST["OBSERVACIONES_PERSONAL"]) ? $_POST["OBSERVACIONES_PERSONAL"] : "";
+    $PERSONAL_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL_FECHA_ULTIMA_CARGA"]) ? $_POST["PERSONAL_FECHA_ULTIMA_CARGA"] : "";
+    $hDatosPERSONAL = isset($_POST["hDatosPERSONAL"]) ? $_POST["hDatosPERSONAL"] : "";
+    $IPpersonal = isset($_POST["IPpersonal"]) ? $_POST["IPpersonal"] : "";
 
-$NOMBRE_PERSONAL = isset($_POST["NOMBRE_PERSONAL"])?$_POST["NOMBRE_PERSONAL"]:"";
-$PUESTO_PERSONAL = isset($_POST["PUESTO_PERSONAL"])?$_POST["PUESTO_PERSONAL"]:"";
-$WHAT_PERSONAL = isset($_POST["WHAT_PERSONAL"])?$_POST["WHAT_PERSONAL"]:"";
-$EMAIL_PERSONAL = isset($_POST["EMAIL_PERSONAL"])?$_POST["EMAIL_PERSONAL"]:"";
-$FECHA_INICIO = isset($_POST["FECHA_INICIO"])?$_POST["FECHA_INICIO"]:"";
-$FECHA_FINAL = isset($_POST["FECHA_FINAL"])?$_POST["FECHA_FINAL"]:"";
-$NUMERO_DIAS = isset($_POST["NUMERO_DIAS"])?$_POST["NUMERO_DIAS"]:"";
-$MONTO_BONO = isset($_POST["MONTO_BONO"])?$_POST["MONTO_BONO"]:"";
-$MONTO_BONO_TOTAL = isset($_POST["MONTO_BONO_TOTAL"])?$_POST["MONTO_BONO_TOTAL"]:"";
-$TOTAL = isset($_POST["TOTAL"])?$_POST["TOTAL"]:"";
-$ULTIMO_DIA = isset($_POST["ULTIMO_DIA"])?$_POST["ULTIMO_DIA"]:"";
-$VIATICOS_PERSONAL = isset($_POST["VIATICOS_PERSONAL"])?$_POST["VIATICOS_PERSONAL"]:"";
-$OBSERVACIONES_PERSONAL = isset($_POST["OBSERVACIONES_PERSONAL"])?$_POST["OBSERVACIONES_PERSONAL"]:"";
-$PERSONAL_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL_FECHA_ULTIMA_CARGA"])?$_POST["PERSONAL_FECHA_ULTIMA_CARGA"]:"";
-$hDatosPERSONAL = isset($_POST["hDatosPERSONAL"])?$_POST["hDatosPERSONAL"]:"";
-$IPpersonal = isset($_POST["IPpersonal"])?$_POST["IPpersonal"]:"";
+    // 🚨 Validar FECHA_INICIO y FECHA_FINAL
+    if (empty($FECHA_INICIO) || empty($FECHA_FINAL)) {
+        echo "ERROR: DEBES INGRESAR FECHA INICIO DEL EVENTO y FECHA FINAL DEL EVENTO.";
+    } else {
+        // Si todo bien, ejecuta el alta
+        echo $altaeventos->PERSONAL(
+            $NOMBRE_PERSONAL,
+            $PUESTO_PERSONAL,
+            $WHAT_PERSONAL,
+            $EMAIL_PERSONAL,
+            $FECHA_INICIO,
+            $FECHA_FINAL,
+            $NUMERO_DIAS,
+            $MONTO_BONO,
+            $MONTO_BONO_TOTAL,
+            $VIATICOS_PERSONAL,
+            $TOTAL,
+            $ULTIMO_DIA,
+            $OBSERVACIONES_PERSONAL,
+            $PERSONAL_FECHA_ULTIMA_CARGA,
+            $hDatosPERSONAL,
+            $ENVIARpersonal,
+            $IPpersonal
+        );
 
-	
-     echo $altaeventos->PERSONAL($NOMBRE_PERSONAL ,$PUESTO_PERSONAL ,$WHAT_PERSONAL , $EMAIL_PERSONAL ,$FECHA_INICIO,$FECHA_FINAL,$NUMERO_DIAS, $MONTO_BONO,$MONTO_BONO_TOTAL,$VIATICOS_PERSONAL ,$TOTAL,$ULTIMO_DIA, $OBSERVACIONES_PERSONAL , $PERSONAL_FECHA_ULTIMA_CARGA , $hDatosPERSONAL,$ENVIARpersonal,$IPpersonal);  
-	$_SESSION['NOMBRE_PERSONAL1']="";
-   		/*$RUTAFILTRO = 'calendariodeeventos2'; 
-		$claseactual = 'class.epcinnAE.php';
-		$tablesdb = '04personal';
-		include_once (__ROOT1__."/includes/crea_funciones_filtro_completo.php"); */	 
+        $_SESSION['NOMBRE_PERSONAL1'] = "";
+    }
 }
+
+
+
+
 
      if($borra_PERSONAL == 'borra_PERSONAL' ){
 

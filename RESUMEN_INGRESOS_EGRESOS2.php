@@ -1,18 +1,17 @@
 
 <?php
+
 if (!isset($_SESSION)) {
     session_start();
 }
 $PorfaltaDeFacturaSession = isset($_SESSION['PorfaltaDeFactura12']) ? $_SESSION['PorfaltaDeFactura12'] : 0;
 ?>
-
 <script>
-
 
 function refreshSection() {
     const target = document.querySelector('#target31');
     target.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
-    
+
     fetch(window.location.href)
         .then(response => response.text())
         .then(html => {
@@ -22,6 +21,21 @@ function refreshSection() {
             target.innerHTML = newContent;
         });
 }
+
+// Verifica periódicamente si hay cambios en la tabla 02SUBETUFACTURA
+function checkStatusUpdates() {
+    fetch('check_status_checkbox.php')
+        .then(response => response.json())
+        .then(data => {
+            if (window.lastStatusChecksum !== data.checksum) {
+                window.lastStatusChecksum = data.checksum;
+                refreshSection();
+            }
+        })
+        .catch(console.error);
+}
+
+setInterval(checkStatusUpdates, 5000);
 
 </script>
 
@@ -39,6 +53,7 @@ function refreshSection() {
 
 	<table id="reset_totales"   class="table table-striped table-bordered" style="width:100%" >
 	<tr ><td colspan="2" style="text-align: center;"><strong>RESUMEN DE INGRESOS SIN IMPUESTOS</strong></td></tr>
+
 
 <?php 
 
