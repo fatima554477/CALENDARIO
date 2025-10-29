@@ -2257,7 +2257,23 @@ $("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");
 });
 });
 /**//**//**//**//**//**//**//**/
-/*CIERRE*/
+//NOMBRE DEL BOTÓN
+$(document).on('click', '.view_dataSUBIRCOMP', function(){
+var personal_id = $(this).attr('id');
+$.ajax({
+url:'pagoproveedores/VistaPreviapagoproveedorU2.php',
+method:'POST',
+data:{personal_id:personal_id},
+beforeSend:function(){
+$('#mensajeventasoperaciones').html('cargando');
+},
+success:function(data){
+$('#personal_detalles5').html(data);
+$('#dataModal5').modal('toggle');
+$("#reset_totales").load(location.href + " #reset_totales");
+}
+});
+});
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 
 
@@ -5566,7 +5582,8 @@ $('#dataModal3').modal('hide');
 $('#mensajepagoproveedores').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 //$('#resetSB').load(location.href + ' #resetSB');
 		$("#reset_totales").load(location.href + " #reset_totales");
-			$.getScript(load2(1));
+			$.getScript(load7(1));
+			$.getScript(loadCOM(1));
 }
 });
 });

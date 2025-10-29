@@ -590,7 +590,7 @@ $variablequery = mysqli_query($conn,$variable);
 	WHERE idRelacion = '".$explotado[0]."' ";
 	$variablequery = mysqli_query($conn,$variable);
 	$row = mysqli_fetch_array($variablequery);
-	return  $row['NOMBRE_1'].' '. $row['NOMBRE_2'].' '. $row['APELLIDO_PATERNO'];
+	return  $row['NOMBRE_1'].' '. $row['NOMBRE_2'].' '. $row['APELLIDO_PATERNO'].' '. $row['APELLIDO_MATERNO'];
 	}
 	
 	public function mensajeria_direccion($id,$tabla,$campo){
@@ -1180,7 +1180,7 @@ public function CRONOVUELOS($DOCUMENTO_CRONOVUELOS ,$OBSERVACIONES_CRONOVUELOS,$
 
   ///////////////////////////// PAGOS INGRESOS/////////////////////////
 
-        public function pagoingreso( $DOCUMENTO_INGRESOS ,$ADJUNTO_INGRESOS, $OBSERVACIONES_INGRESOS, $MONTOCON_IVA,$FE_PAGOI,$FE_TIMBRADO,$FECHA_INGRESOS , $hPAGOSINGRESOS1,$IpINGRESOS,$enviarpagosingre ){
+        public function pagoingreso($DOCUMENTO_INGRESOS ,$ADJUNTO_INGRESOS, $OBSERVACIONES_INGRESOS, $MONTOCON_IVA,$FE_PAGOI,$FE_TIMBRADO,$FECHA_INGRESOS ,$TIPO_DE_DOCUMENTO,$FOLIO,$RAZON_SOCIAL,$CONCEPTO,$STATUSF, $hPAGOSINGRESOS1,$IpINGRESOS,$enviarpagosingre){
 			
 		$OBSERVACIONES_INGRESOS = str_replace(',','',$OBSERVACIONES_INGRESOS);
 		$MONTOCON_IVA = str_replace(',','',$MONTOCON_IVA);
@@ -1196,11 +1196,19 @@ public function CRONOVUELOS($DOCUMENTO_CRONOVUELOS ,$OBSERVACIONES_CRONOVUELOS,$
 		 FE_TIMBRADO = '".$FE_TIMBRADO."' , 
 		 OBSERVACIONES_INGRESOS = '".$OBSERVACIONES_INGRESOS."' ,  
 		 MONTOCON_IVA = '".$MONTOCON_IVA."' ,  
-		 FECHA_INGRESOS = '".$FECHA_INGRESOS."' ,  
+		 FECHA_INGRESOS = '".$FECHA_INGRESOS."' , 
+		
+		 
+		 TIPO_DE_DOCUMENTO = '".$TIPO_DE_DOCUMENTO."' ,  
+		 FOLIO = '".$FOLIO."' ,  
+		 RAZON_SOCIAL = '".$RAZON_SOCIAL."' ,  
+		 CONCEPTO = '".$CONCEPTO."' ,  
+		 STATUSF = '".$STATUSF."' ,  
+		 
 		 hPAGOSINGRESOS1 = '".$hPAGOSINGRESOS1."'
 		 where id = '".$IpINGRESOS."' ;  ";
 	
-		 $var2 = "insert into 04pagosingresos  ( DOCUMENTO_INGRESOS,ADJUNTO_INGRESOS, FE_PAGOI,FE_TIMBRADO,OBSERVACIONES_INGRESOS,MONTOCON_IVA, FECHA_INGRESOS, hPAGOSINGRESOS1, idRelacion) values ( '".$DOCUMENTO_INGRESOS."' , '".$ADJUNTO_INGRESOS."' , '".$FE_PAGOI."' , '".$FE_TIMBRADO."' , '".$OBSERVACIONES_INGRESOS."' , '".$MONTOCON_IVA."' , '".$FECHA_INGRESOS."' , '".$hPAGOSINGRESOS1."' , '".$session."' ); ";		
+		 $var2 = "insert into 04pagosingresos  ( DOCUMENTO_INGRESOS,ADJUNTO_INGRESOS, FE_PAGOI,FE_TIMBRADO,OBSERVACIONES_INGRESOS,MONTOCON_IVA, FECHA_INGRESOS,TIPO_DE_DOCUMENTO,FOLIO,RAZON_SOCIAL,CONCEPTO,STATUSF, hPAGOSINGRESOS1, idRelacion) values ( '".$DOCUMENTO_INGRESOS."' , '".$ADJUNTO_INGRESOS."' , '".$FE_PAGOI."' , '".$FE_TIMBRADO."' , '".$OBSERVACIONES_INGRESOS."' , '".$MONTOCON_IVA."' , '".$FECHA_INGRESOS."' , '".$TIPO_DE_DOCUMENTO."' , '".$FOLIO."' , '".$RAZON_SOCIAL."' , '".$CONCEPTO."' , '".$STATUSF."' , '".$hPAGOSINGRESOS1."' , '".$session."' ); ";		
 			
 			
 	    if($enviarpagosingre=='enviarpagosingre'){
@@ -1279,7 +1287,7 @@ public function CRONOVUELOS($DOCUMENTO_CRONOVUELOS ,$OBSERVACIONES_CRONOVUELOS,$
 
   
 
-        public function pagoegreso($DOCUMENTO_EGRESO, $ADJUNTO_EGRESO,$MONTO_OTRO, $MONTO_EGRESO,$FE_PAGOE,$FE_TIMBRADOE, $FECHA_EGRESO ,$hpagosegresos1, $IpEGRESOS,$enviarpagosEgreso ){
+        public function pagoegreso($DOCUMENTO_EGRESO, $ADJUNTO_EGRESO,$MONTO_OTRO, $MONTO_EGRESO,$FE_PAGOE,$FE_TIMBRADOE, $FECHA_EGRESO ,$TIPO_DE_DOCUMENTO1,$FOLIO1,$RAZON_SOCIAL1,$CONCEPTO1,$STATUSF1,$hpagosegresos1, $IpEGRESOS,$enviarpagosEgreso ){
 		$MONTO_EGRESO = str_replace(',','',$MONTO_EGRESO);
 		$MONTO_OTRO = str_replace(',','',$MONTO_OTRO);
 		//enviarpagosEgreso
@@ -1295,10 +1303,17 @@ public function CRONOVUELOS($DOCUMENTO_CRONOVUELOS ,$OBSERVACIONES_CRONOVUELOS,$
 		 FE_PAGOE = '".$FE_PAGOE."' ,
 		 FE_TIMBRADOE = '".$FE_TIMBRADOE."' ,
 		 FECHA_EGRESO = '".$FECHA_EGRESO."' ,
+		 
+		 TIPO_DE_DOCUMENTO1 = '".$TIPO_DE_DOCUMENTO1."' ,  
+		 FOLIO1 = '".$FOLIO1."' ,  
+		 RAZON_SOCIAL1 = '".$RAZON_SOCIAL1."' ,  
+		 CONCEPTO1 = '".$CONCEPTO1."' , 
+		 STATUSF1 = '".$STATUSF1."' ,
+		 
 		 hpagosegresos1 = '".$hpagosegresos1."'
 		 where id = '".$IpEGRESOS."' ;  ";
 	
-		 $var2 = "insert into 04pagoegresos  (DOCUMENTO_EGRESO,ADJUNTO_EGRESO, MONTO_OTRO,MONTO_EGRESO,FE_PAGOE, FE_TIMBRADOE,FECHA_EGRESO, hpagosegresos1, idRelacion) values ( '".$DOCUMENTO_EGRESO."' , '".$ADJUNTO_EGRESO."' , '".$MONTO_OTRO."' , '".$MONTO_EGRESO."' , '".$FE_PAGOE."' , '".$FE_TIMBRADOE."' , '".$FECHA_EGRESO."' , '".$hpagosegresos1."' , '".$session."' ); ";		
+		 $var2 = "insert into 04pagoegresos  (DOCUMENTO_EGRESO,ADJUNTO_EGRESO, MONTO_OTRO,MONTO_EGRESO,FE_PAGOE, FE_TIMBRADOE,FECHA_EGRESO,TIPO_DE_DOCUMENTO1,FOLIO1,RAZON_SOCIAL1,CONCEPTO1,STATUSF1, hpagosegresos1, idRelacion) values ( '".$DOCUMENTO_EGRESO."' , '".$ADJUNTO_EGRESO."' , '".$MONTO_OTRO."' , '".$MONTO_EGRESO."' , '".$FE_PAGOE."' , '".$FE_TIMBRADOE."' , '".$FECHA_EGRESO."' , '".$TIPO_DE_DOCUMENTO1."' , '".$FOLIO1."' , '".$RAZON_SOCIAL1."' , '".$CONCEPTO1."' , '".$STATUSF1."' , '".$hpagosegresos1."' , '".$session."' ); ";		
 			
 			
 	    if($enviarpagosEgreso=='enviarpagosEgreso'){
@@ -1463,8 +1478,7 @@ public function CRONOVUELOS($DOCUMENTO_CRONOVUELOS ,$OBSERVACIONES_CRONOVUELOS,$
 		
 	}
 	
-	
-/*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*//*resumen ingreso egreso*/
+
 
 	public function resumeningresos(){
 		$conn = $this->db();
@@ -1825,7 +1839,7 @@ public function borra_CONTRATO($id){
 	
   ///////////////////////////// PERSONAL  /////////////////////////
 
-        public function PERSONAL($NOMBRE_PERSONAL ,$PUESTO_PERSONAL ,$WHAT_PERSONAL , $EMAIL_PERSONAL ,$FECHA_INICIO,$FECHA_FINAL,$NUMERO_DIAS, $MONTO_BONO,$MONTO_BONO_TOTAL,$VIATICOS_PERSONAL ,$TOTAL, $ULTIMO_DIA, $OBSERVACIONES_PERSONAL , $PERSONAL_FECHA_ULTIMA_CARGA , $hDatosPERSONAL,$ENVIARpersonal,$IPpersonal){
+        public function PERSONAL($NOMBRE_PERSONAL ,$PUESTO_PERSONAL ,$WHAT_PERSONAL , $EMAIL_PERSONAL ,$FECHA_INICIO,$FECHA_FINAL,$NUMERO_DIAS, $MONTO_BONO,$MONTO_BONO_TOTAL,$VIATICOS_PERSONAL ,$TOTAL, $ULTIMO_DIA, $NUMERO_EVENTO,$OBSERVACIONES_PERSONAL , $PERSONAL_FECHA_ULTIMA_CARGA , $hDatosPERSONAL,$ENVIARpersonal,$IPpersonal){
 		
     $conn = $this->db();
 	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';  
@@ -1855,12 +1869,13 @@ public function borra_CONTRATO($id){
          VIATICOS_PERSONAL = '".$VIATICOS_PERSONAL."' ,		 
          TOTAL = '".$TOTAL."' , 
          ULTIMO_DIA = '".$ULTIMO_DIA."' , 		 
+         NUMERO_EVENTO = '".$NUMERO_EVENTO."' , 		 
 		 OBSERVACIONES_PERSONAL = '".$OBSERVACIONES_PERSONAL."' ,
 		 PERSONAL_FECHA_ULTIMA_CARGA = '".$PERSONAL_FECHA_ULTIMA_CARGA."' ,
 		 hDatosPERSONAL = '".$hDatosPERSONAL."'
 		 where id = '".$IPpersonal."' ;  ";
 	
-		 $var2 = "insert into 04personal (NOMBRE_PERSONAL, PUESTO_PERSONAL, WHAT_PERSONAL, EMAIL_PERSONAL,FECHA_INICIO,FECHA_FINAL,NUMERO_DIAS,MONTO_BONO,MONTO_BONO_TOTAL,VIATICOS_PERSONAL,TOTAL,ULTIMO_DIA,  OBSERVACIONES_PERSONAL, PERSONAL_FECHA_ULTIMA_CARGA, hDatosPERSONAL, idRelacion, idPersonal) values ( '".$NOMBRE_PERSONAL."' , '".$PUESTO_PERSONAL."' , '".$WHAT_PERSONAL."' , '".$EMAIL_PERSONAL."' , '".$FECHA_INICIO."' , '".$FECHA_FINAL."' , '".$NUMERO_DIAS."' , '".$MONTO_BONO."' , '".$MONTO_BONO_TOTAL."' , '".$VIATICOS_PERSONAL."' , '".$TOTAL."' , '".$ULTIMO_DIA."' , '".$OBSERVACIONES_PERSONAL."' , '".$PERSONAL_FECHA_ULTIMA_CARGA."' , '".$hDatosPERSONAL."' , '".$session."' , '".$idPersonal[0]."'); ";		
+		 $var2 = "insert into 04personal (NOMBRE_PERSONAL, PUESTO_PERSONAL, WHAT_PERSONAL, EMAIL_PERSONAL,FECHA_INICIO,FECHA_FINAL,NUMERO_DIAS,MONTO_BONO,MONTO_BONO_TOTAL,VIATICOS_PERSONAL,TOTAL,ULTIMO_DIA,NUMERO_EVENTO,  OBSERVACIONES_PERSONAL, PERSONAL_FECHA_ULTIMA_CARGA, hDatosPERSONAL, idRelacion, idPersonal) values ( '".$NOMBRE_PERSONAL."' , '".$PUESTO_PERSONAL."' , '".$WHAT_PERSONAL."' , '".$EMAIL_PERSONAL."' , '".$FECHA_INICIO."' , '".$FECHA_FINAL."' , '".$NUMERO_DIAS."' , '".$MONTO_BONO."' , '".$MONTO_BONO_TOTAL."' , '".$VIATICOS_PERSONAL."' , '".$TOTAL."' , '".$ULTIMO_DIA."' , '".$NUMERO_EVENTO."' , '".$OBSERVACIONES_PERSONAL."' , '".$PERSONAL_FECHA_ULTIMA_CARGA."' , '".$hDatosPERSONAL."' , '".$session."' , '".$idPersonal[0]."'); ";		
 			
 	    if($ENVIARpersonal=='ENVIARpersonal'){
 		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
@@ -1972,22 +1987,64 @@ public function borra_CONTRATO($id){
 	
 	
 /////////////////////////////////////////PARA AUTORIZAR/////////////////////////////////////	
-	
-	public function actualizapersonalAUT($pasara1_personalAUT_id , $pasapersonalAUT_text ){
+public function actualizapersonalAUT($pasara1_personalAUT_id, $pasapersonalAUT_text){
+    $conn    = $this->db();
+    $session = isset($_SESSION['idevento']) ? $_SESSION['idevento'] : '';
+    $usuario = isset($_SESSION['idem'])     ? $_SESSION['idem']     : '';
 
-		$conn = $this->db();
-		$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';   
-		if($session != ''){
-			
-		 $var1 = "update 04personal set autorizaAUT  = '".$pasapersonalAUT_text."' where id = '".$pasara1_personalAUT_id."' ;  ";
-		 
-		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
-		return "Actualizado";
+    // Saneado mínimo
+    $idPersonal = (int)$pasara1_personalAUT_id;
+    $valor      = ($pasapersonalAUT_text === 'si') ? 'si' : 'no';
 
-	}else{
-		echo "TU SESIÓN HA TERMINADO";	
-	}
-	}
+    if ($session == '' || $usuario == '') {
+        echo "TU SESIÓN HA TERMINADO";
+        return;
+    }
+
+    // 1) ¿Quién es el vendedor del evento?
+    $queryV   = "SELECT NOMBRE_VENDEDOR_id FROM 04altaeventos WHERE id = '".$conn->real_escape_string($session)."' LIMIT 1";
+    $resV     = mysqli_query($conn, $queryV);
+    $rowV     = mysqli_fetch_array($resV, MYSQLI_ASSOC);
+    $vendedor = isset($rowV['NOMBRE_VENDEDOR_id']) ? $rowV['NOMBRE_VENDEDOR_id'] : '';
+
+    // 2) ¿El usuario tiene permiso PERSONALAUTORIZA (ver=si)?
+    $tienePermisoPersonal = false;
+    if (method_exists($this, 'variablespermisos')) {
+        $tienePermisoPersonal = ($this->variablespermisos('', 'PERSONALAUTORIZA', 'ver') === 'si');
+    } else {
+        // Fallback directo a BD (ajusta nombres de campos si difieren)
+        $qPerm = "
+            SELECT ver
+            FROM 05permisos
+            WHERE idRelacion = '".$conn->real_escape_string($usuario)."'
+              AND modulo = 'PERSONALAUTORIZA'
+            LIMIT 1
+        ";
+        if ($rPerm = mysqli_query($conn, $qPerm)) {
+            $p = mysqli_fetch_assoc($rPerm);
+            $tienePermisoPersonal = (isset($p['ver']) && $p['ver'] === 'si');
+        }
+    }
+
+    // 3) Regla de autorización combinada
+    $puedeAutorizar = ($usuario == $vendedor) || $tienePermisoPersonal;
+
+    if (!$puedeAutorizar) {
+        return "Sin permiso";
+    }
+
+    // 4) Actualización
+    $var1 = "
+        UPDATE 04personal
+        SET autorizaAUT = '".$conn->real_escape_string($valor)."'
+        WHERE id = ".$idPersonal."
+        LIMIT 1
+    ";
+    mysqli_query($conn, $var1) or die('P156'.mysqli_error($conn));
+
+    return "Actualizado";
+}
+
     
 //////////////////  vehiculos eventos ///////////////////////////////////////////////
 

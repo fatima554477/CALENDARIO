@@ -1074,6 +1074,7 @@ if ($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal == 'ENVIARpersonal') 
     $FECHA_FINAL = isset($_POST["FECHA_FINAL"]) ? trim($_POST["FECHA_FINAL"]) : "";
     $NUMERO_DIAS = isset($_POST["NUMERO_DIAS"]) ? $_POST["NUMERO_DIAS"] : "";
     $MONTO_BONO = isset($_POST["MONTO_BONO"]) ? $_POST["MONTO_BONO"] : "";
+    $NUMERO_EVENTO = isset($_POST["NUMERO_EVENTO"]) ? $_POST["NUMERO_EVENTO"] : "";
     $MONTO_BONO_TOTAL = isset($_POST["MONTO_BONO_TOTAL"]) ? $_POST["MONTO_BONO_TOTAL"] : "";
     $TOTAL = isset($_POST["TOTAL"]) ? $_POST["TOTAL"] : "";
     $ULTIMO_DIA = isset($_POST["ULTIMO_DIA"]) ? $_POST["ULTIMO_DIA"] : "";
@@ -1083,10 +1084,7 @@ if ($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal == 'ENVIARpersonal') 
     $hDatosPERSONAL = isset($_POST["hDatosPERSONAL"]) ? $_POST["hDatosPERSONAL"] : "";
     $IPpersonal = isset($_POST["IPpersonal"]) ? $_POST["IPpersonal"] : "";
 
-    // 🚨 Validar FECHA_INICIO y FECHA_FINAL
-    if (empty($FECHA_INICIO) || empty($FECHA_FINAL)) {
-        echo "ERROR: DEBES INGRESAR FECHA INICIO DEL EVENTO y FECHA FINAL DEL EVENTO.";
-    } else {
+
         // Si todo bien, ejecuta el alta
         echo $altaeventos->PERSONAL(
             $NOMBRE_PERSONAL,
@@ -1101,6 +1099,7 @@ if ($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal == 'ENVIARpersonal') 
             $VIATICOS_PERSONAL,
             $TOTAL,
             $ULTIMO_DIA,
+            $NUMERO_EVENTO,
             $OBSERVACIONES_PERSONAL,
             $PERSONAL_FECHA_ULTIMA_CARGA,
             $hDatosPERSONAL,
@@ -1109,7 +1108,7 @@ if ($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal == 'ENVIARpersonal') 
         );
 
         $_SESSION['NOMBRE_PERSONAL1'] = "";
-    }
+    
 }
 
 
@@ -1325,11 +1324,18 @@ $FE_PAGOE = isset($_POST["FE_PAGOE"])?$_POST["FE_PAGOE"]:"";
 $FE_TIMBRADOE = isset($_POST["FE_TIMBRADOE"])?$_POST["FE_TIMBRADOE"]:"";
 $MONTO_OTRO = isset($_POST["MONTO_OTRO"])?$_POST["MONTO_OTRO"]:"";
 $FECHA_EGRESO = isset($_POST["FECHA_EGRESO"])?$_POST["FECHA_EGRESO"]:"";
+
+$TIPO_DE_DOCUMENTO1 = isset($_POST["TIPO_DE_DOCUMENTO1"])?$_POST["TIPO_DE_DOCUMENTO1"]:"";
+$FOLIO1 = isset($_POST["FOLIO1"])?$_POST["FOLIO1"]:"";
+$RAZON_SOCIAL1 = isset($_POST["RAZON_SOCIAL1"])?$_POST["RAZON_SOCIAL1"]:"";
+$CONCEPTO1 = isset($_POST["CONCEPTO1"])?$_POST["CONCEPTO1"]:"";
+$STATUSF1 = isset($_POST["STATUSF1"])?$_POST["STATUSF1"]:"";
+
 $hpagosegresos1 = isset($_POST["hpagosegresos1"])?$_POST["hpagosegresos1"]:""; 
 $IpEGRESOS = isset($_POST["IpEGRESOS"])?$_POST["IpEGRESOS"]:""; 
 
 
- echo $altaeventos->pagoegreso( $DOCUMENTO_EGRESO, $ADJUNTO_EGRESO,$MONTO_OTRO, $MONTO_EGRESO,$FE_PAGOE,$FE_TIMBRADOE, $FECHA_EGRESO ,$hpagosegresos1, $IpEGRESOS,$enviarpagosEgreso );   
+ echo $altaeventos->pagoegreso( $DOCUMENTO_EGRESO, $ADJUNTO_EGRESO,$MONTO_OTRO, $MONTO_EGRESO,$FE_PAGOE,$FE_TIMBRADOE, $FECHA_EGRESO ,$TIPO_DE_DOCUMENTO1,$FOLIO1,$RAZON_SOCIAL1,$CONCEPTO1,$STATUSF1,$hpagosegresos1, $IpEGRESOS,$enviarpagosEgreso );   
 }	 
  //include_once (__ROOT1__."/includes/crea_funciones.php"); 
  
@@ -1418,10 +1424,17 @@ $MONTOCON_IVA = isset($_POST["MONTOCON_IVA"])?$_POST["MONTOCON_IVA"]:"";
 $FE_PAGOI = isset($_POST["FE_PAGOI"])?$_POST["FE_PAGOI"]:"";
 $FE_TIMBRADO = isset($_POST["FE_TIMBRADO"])?$_POST["FE_TIMBRADO"]:"";
 $FECHA_INGRESOS = isset($_POST["FECHA_INGRESOS"])?$_POST["FECHA_INGRESOS"]:"";
+
+$TIPO_DE_DOCUMENTO = isset($_POST["TIPO_DE_DOCUMENTO"])?$_POST["TIPO_DE_DOCUMENTO"]:"";
+$FOLIO = isset($_POST["FOLIO"])?$_POST["FOLIO"]:"";
+$RAZON_SOCIAL = isset($_POST["RAZON_SOCIAL"])?$_POST["RAZON_SOCIAL"]:"";
+$CONCEPTO = isset($_POST["CONCEPTO"])?$_POST["CONCEPTO"]:""; 
+$STATUSF = isset($_POST["STATUSF"])?$_POST["STATUSF"]:""; 
+
 $hPAGOSINGRESOS1 = isset($_POST["hPAGOSINGRESOS1"])?$_POST["hPAGOSINGRESOS1"]:"";
 $IpINGRESOS = isset($_POST["IpINGRESOS"])?$_POST["IpINGRESOS"]:""; 	
    
-		echo $altaeventos->pagoingreso(  $DOCUMENTO_INGRESOS ,$ADJUNTO_INGRESOS, $OBSERVACIONES_INGRESOS, $MONTOCON_IVA,$FE_PAGOI,$FE_TIMBRADO,$FECHA_INGRESOS , $hPAGOSINGRESOS1,$IpINGRESOS,$enviarpagosingre );   
+		echo $altaeventos->pagoingreso(  $DOCUMENTO_INGRESOS ,$ADJUNTO_INGRESOS1, $OBSERVACIONES_INGRESOS, $MONTOCON_IVA,$FE_PAGOI,$FE_TIMBRADO,$FECHA_INGRESOS ,$TIPO_DE_DOCUMENTO,$FOLIO,$RAZON_SOCIAL,$CONCEPTO,$STATUSF, $hPAGOSINGRESOS1,$IpINGRESOS,$enviarpagosingre );   
 }	 
  
  if($borra_PAGOSINGRESOS == 'borra_PAGOSINGRESOS' ){
