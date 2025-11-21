@@ -1,349 +1,179 @@
-         <nav class="navbar navbar-expand gap-3 w-100" style="width: 100%;">
+<nav class="navbar navbar-expand gap-3 w-100">
 
-              <div class="mobile-menu-button"><ion-icon name="menu-sharp"></ion-icon></div>
-             <!-- <form class="searchbar">
-                <div class="position-absolute top-50 translate-middle-y search-icon ms-3"><ion-icon name="search-sharp"></ion-icon></div>
-                <input class="form-control" type="text" placeholder="Search for anything">
-                <div class="position-absolute top-50 translate-middle-y search-close-icon"><ion-icon name="close-sharp"></ion-icon></div>
-             </form>-->
-			 
-			 
-			 
-			 
-			 
-			 
-<div id="content" >     
-<?php
+  <div class="mobile-menu-button">
+    <ion-icon name="menu-sharp"></ion-icon>
+  </div>
 
-$prefijo = substr($NUMERO_EVENTO,0,2);
-if($prefijo=='EV'){
-	$COLOR="#1371f0;";
-}ELSEIF($prefijo=='EP'){
-	$COLOR="#b52347;";
-}ELSEIF($prefijo=='IN'){
-	$COLOR="#23b528;";
-}ELSEIF($prefijo=='FI'){
-	$COLOR="#c028be;";
+  <div id="content" class="flex-grow-1">
+    <?php
+    $prefijo = substr($NUMERO_EVENTO,0,2);
+    if($prefijo=='EV'){
+        $COLOR="#1371f0;";
+    } elseif($prefijo=='EP'){
+        $COLOR="#b52347;";
+    } elseif($prefijo=='IN'){
+        $COLOR="#23b528;";
+    } elseif($prefijo=='FI'){
+        $COLOR="#c028be;";
+    }
+    ?>
+<style>.responsive-text-lg {
+    font-size: clamp(10px, 1.6vw, 18px);
 }
- ?>
-			  <strong><p class="mb-0 text-uppercase">&nbsp;&nbsp;&nbsp;MOSTRAR TODO
-<img src="includes/contraertodos11.png" id="mostrartodos" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;CONTRAER TODO
-<img src="includes/contraertodos2.png" id="ocultartodos" style="cursor:pointer;"/>&nbsp;
+</style>
+    <!-- Fila 1: mostrar/contraer + nombre / número + badge STATUS a la derecha -->
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2">
+      <div>
+        <strong>
+          <span class="text-uppercase responsive-text-lg" style="color:<?php echo $COLOR; ?>">
+          
+            NOMBRE:&nbsp;
+            <?php echo isset($NOMBRE_CORTO_EVENTO) ? $NOMBRE_CORTO_EVENTO : ''; ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            NÚMERO:&nbsp;
+            <?php echo isset($NUMERO_EVENTO) ? $NUMERO_EVENTO : ''; ?>
+          </span>
+        </strong>
+      </div>
 
-<SPAN style="color:<?php echo $COLOR;?>font-size:22px;">NOMBRE DEL EVENTO&nbsp;:&nbsp;<?php echo  isset($NOMBRE_CORTO_EVENTO)?$NOMBRE_CORTO_EVENTO:'';?>&nbsp;--&nbsp;	 NÚMERO DE EVENTO&nbsp;:&nbsp;<?php echo  isset($NUMERO_EVENTO)?$NUMERO_EVENTO:'';?> </SPAN>
+      <div class="text-lg-end">
+        <span class="status-badge" style="background:<?php echo $COLOR; ?>color:#ffffff;">
+          STATUS:&nbsp;<?php echo isset($STATUS_EVENTO) ? $STATUS_EVENTO : ''; ?>
+        </span>
+      </div>
+    </div>
 
-</p> </strong> <strong>		<SPAN style="color:<?php echo $COLOR;?>font-size:17px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STATUS&nbsp;:&nbsp;<?php echo  isset($STATUS_EVENTO)?$STATUS_EVENTO:''; 
-				
-	$dias = array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
-	$meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
-	$ymd=date("Y-m-d");
-	//$ymd="2024-12-20";
-	
-	
-	/*
-	$CIERRE_TOTAL  , $FECHA_FINAL_EVENTO
-	*/
-	
-	$CIERRE_TOTAL11 = '';
-	
-	
-	if($CIERRE_TOTAL==''){
-		$CIERRE_TOTAL11= strtotime('+30 day', strtotime($FECHA_FINAL_EVENTO));
-	}else{
-		$CIERRE_TOTAL11= strtotime('+1 day',  strtotime($CIERRE_TOTAL));	
-	}
-	
-	$nuevafecha2 = date ( 'Y-m-d' , $CIERRE_TOTAL11 );
-	$var_bloquea_fecha = '';
-	if( strtotime($ymd) <= strtotime($nuevafecha2)){
-		$var_bloquea_fecha = 'no';
-		$totaldias = round((strtotime($nuevafecha2)-strtotime($ymd))/86400);
-		echo ",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QUEDAN: ".$totaldias. ' DÍAS PARA EL CIERRE DE ESTE EVENTO, SE CERRARÁ EL DÍA  
-		'.$dias[date('w',strtotime($nuevafecha2))].' '.date('d',strtotime($nuevafecha2)). ' DE '.$meses[date('n',strtotime($nuevafecha2))-1] .' DE '.date('Y',strtotime($nuevafecha2));
-	}else{
-		$var_bloquea_fecha = 'si'; 
-		echo ', EVENTO CERRADO, SE CERRÓ EL DÍA 
-		'.$dias[date('w',strtotime($nuevafecha2))].' '.date('d',strtotime($nuevafecha2)). ' DE '.$meses[date('n',strtotime($nuevafecha2))-1] .' DE '.date('Y',strtotime($nuevafecha2));	
-   if($conexion->variablespermisos('','Abrir_cierre','ver')=='si'){
-		$var_bloquea_fecha = 'no';
-		}
-	}
+    <!-- Fila 2: mensaje de días para el cierre o evento cerrado -->
+    <div class="mt-1">
+      <strong>
+        <span class="responsive-text-sm" style="color:<?php echo $COLOR; ?>">
+          <?php
+          $dias  = array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
+          $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
 
-	?>
-	
-	
-	</SPAN></strong></div>
+          $ymd = date("Y-m-d");
+          // $ymd = "2024-12-20";
 
-			
-			 
-			 
-			 
-             <div class="top-navbar-right ms-auto">
+          /*
+          $CIERRE_TOTAL  , $FECHA_FINAL_EVENTO
+          */
 
-              <ul class="navbar-nav align-items-center">
-                <li class="nav-item mobile-search-button">
-                  <a class="nav-link" href="javascript:;">
-                    <div class="">
-                      <ion-icon name="search-sharp"></ion-icon>
-                    </div>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link dark-mode-icon" href="javascript:;">
-                    <div class="mode-icon">
-                      <ion-icon name="moon-sharp"></ion-icon> 
-                    </div>
-                  </a>
-                </li>
-                <!--<li class="nav-item dropdown dropdown-large dropdown-apps">
-                  <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
-                    <div class="">
-                      <ion-icon name="apps-sharp"></ion-icon>
-                    </div>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                    <div class="row row-cols-3 g-3 p-3">
-                      <div class="col text-center">
-                        <div class="app-box mx-auto bg-gradient-purple text-white"><ion-icon name="cart-sharp"></ion-icon>
-                        </div>
-                        <div class="app-title">Orders</div>
-                      </div>
-                      <div class="col text-center">
-                        <div class="app-box mx-auto bg-gradient-info text-white"><ion-icon name="people-sharp"></ion-icon>
-                        </div>
-                        <div class="app-title">Teams</div>
-                      </div>
-                      <div class="col text-center">
-                        <div class="app-box mx-auto bg-gradient-success text-white"><ion-icon name="shield-checkmark-sharp"></ion-icon>
-                        </div>
-                        <div class="app-title">Tasks</div>
-                      </div>
-                      <div class="col text-center">
-                        <div class="app-box mx-auto bg-gradient-danger text-white"><ion-icon name="videocam-sharp"></ion-icon>
-                        </div>
-                        <div class="app-title">Media</div>  
-                      </div>
-                      <div class="col text-center">
-                        <div class="app-box mx-auto bg-gradient-warning text-white"><ion-icon name="file-tray-sharp"></ion-icon>
-                        </div>
-                        <div class="app-title">Files</div>
-                      </div>
-                      <div class="col text-center">
-                        <div class="app-box mx-auto bg-gradient-branding text-white"><ion-icon name="notifications-sharp"></ion-icon>
-                        </div>
-                        <div class="app-title">Alerts</div>
-                      </div>
-                    </div>
-                  </div>
-                </li>-->
-                <li class="nav-item dropdown dropdown-large">
-                  <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
-                    <div class="position-relative">
-                      <span class="notify-badge">0</span>
-                      <ion-icon name="notifications-sharp"></ion-icon>
-                    </div>
-                  </a>
-				  
-				  
-                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="javascript:;">
-                      <div class="msg-header">
-                        <p class="msg-header-title">SIN NOTIFICACIONES</p>
-                        <!--<p class="msg-header-clear ms-auto">Marks all as read</p>-->
-                      </div>
-                    </a>
-                    <div class="header-notifications-list">
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <!--<div class="notify text-primary"><ion-icon name="cart-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">New Orders <span class="msg-time float-end">2 min
-                          ago</span></h6>
-                            <p class="msg-info">You have recived new orders</p>
-                          </div>-->
-                        </div>
-                      </a>
-                       <!--<a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-danger"><ion-icon name="person-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">New Customers<span class="msg-time float-end">14 Sec
-                           ago</span></h6>
-                            <p class="msg-info">5 new user registered</p>
-                          </div>
-                        </div>
-                      </a>
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-success"><ion-icon name="document-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">24 PDF File<span class="msg-time float-end">19 min
-                          ago</span></h6>
-                            <p class="msg-info">The pdf files generated</p>
-                          </div>
-                        </div>
-                      </a>
-                      
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-info"><ion-icon name="checkmark-done-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">New Product Approved <span
-                          class="msg-time float-end">2 hrs ago</span></h6>
-                            <p class="msg-info">Your new product has approved</p>
-                          </div>
-                        </div>
-                      </a>
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-warning"><ion-icon name="send-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">Time Response <span class="msg-time float-end">28 min
-                          ago</span></h6>
-                            <p class="msg-info">5.1 min avarage time response</p>
-                          </div>
-                        </div>
-                      </a>
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-danger"><ion-icon name="chatbox-ellipses-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">New Comments <span class="msg-time float-end">4 hrs
-                          ago</span></h6>
-                            <p class="msg-info">New customer comments recived</p>
-                          </div>
-                        </div>
-                      </a>
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-primary"><ion-icon name="albums-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">New 24 authors<span class="msg-time float-end">1 day
-                          ago</span></h6>
-                            <p class="msg-info">24 new authors joined last week</p>
-                          </div>
-                        </div>
-                      </a>
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-success"><ion-icon name="shield-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">Your item is shipped <span class="msg-time float-end">5 hrs
-                          ago</span></h6>
-                            <p class="msg-info">Successfully shipped your item</p>
-                          </div>
-                        </div>
-                      </a>
-                      <a class="dropdown-item" href="javascript:;">
-                        <div class="d-flex align-items-center">
-                          <div class="notify text-warning"><ion-icon name="cafe-outline"></ion-icon>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="msg-name">Defense Alerts <span class="msg-time float-end">2 weeks
-                          ago</span></h6>
-                            <p class="msg-info">45% less alerts last 4 weeks</p>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <a href="javascript:;">
-                      <div class="text-center msg-footer">View All Notifications</div>
-                    </a>                
-				-->
-                  </div>
+          $CIERRE_TOTAL11 = '';
 
-				
-				</li>
-				
-							<li class="nav-item">
-							
-     
-                    <div class="mode-icon">
-	<h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
-                    </div>
-        
-                </li>			
-				
-                <li class="nav-item dropdown dropdown-user-setting">
-                  <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
-                    <div class="user-setting">
-                      <img src="<?PHP ECHO 'includes/archivos/'.$_SESSION["F_FOTO_ACTUAL"]; ?>" class="user-img" alt="">
-                    </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                       <a class="dropdown-item" href="#">
-                         <div class="d-flex flex-row align-items-center gap-2">
-                            <img src="<?PHP ECHO 'includes/archivos/'.$_SESSION["F_FOTO_ACTUAL"]; ?>" alt="" class="rounded-circle" width="54" height="54">
-                            <div class="">
-                              <h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
-                              <!--<small class="mb-0 dropdown-user-designation text-secondary">UI Developer</small>-->
-                            </div>
-                         </div>
-                       </a>
-                     </li>
-                     <!-- <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <a class="dropdown-item" href="pages-user-profile.html">
-                           <div class="d-flex align-items-center">
-                             <div class=""><ion-icon name="person-outline"></ion-icon></div>
-                             <div class="ms-3"><span>Profile</span></div>
-                           </div>
-                         </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">
-                           <div class="d-flex align-items-center">
-                             <div class=""><ion-icon name="settings-outline"></ion-icon></div>
-                             <div class="ms-3"><span>Setting</span></div>
-                           </div>
-                         </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="index2.html">
-                           <div class="d-flex align-items-center">
-                             <div class=""><ion-icon name="speedometer-outline"></ion-icon></div>
-                             <div class="ms-3"><span>Dashboard</span></div>
-                           </div>
-                         </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">
-                           <div class="d-flex align-items-center">
-                             <div class=""><ion-icon name="wallet-outline"></ion-icon></div>
-                             <div class="ms-3"><span>Earnings</span></div>
-                           </div>
-                         </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">
-                           <div class="d-flex align-items-center">
-                             <div class=""><ion-icon name="cloud-download-outline"></ion-icon></div>
-                             <div class="ms-3"><span>Downloads</span></div>
-                           </div>
-                         </a>
-                      </li>-->
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <a class="dropdown-item" href="index.php?salir=1">
-                           <div class="d-flex align-items-center">
-                             <div class=""><ion-icon name="log-out-outline"></ion-icon></div>
-                             <div class="ms-3"><span>SALIR</span></div>
-                           </div>
-                         </a>
-                      </li>
-                  </ul>
-                </li>
+          if($CIERRE_TOTAL==''){
+            $CIERRE_TOTAL11 = strtotime('+30 day', strtotime($FECHA_FINAL_EVENTO));
+          } else {
+            $CIERRE_TOTAL11 = strtotime('+1 day', strtotime($CIERRE_TOTAL)); 
+          }
 
-               </ul>
+          $nuevafecha2 = date('Y-m-d', $CIERRE_TOTAL11);
+          $var_bloquea_fecha = '';
 
+          if(strtotime($ymd) <= strtotime($nuevafecha2)){
+            $var_bloquea_fecha = 'no';
+            $totaldias = round((strtotime($nuevafecha2) - strtotime($ymd))/86400);
+            echo 'QUEDAN: '.$totaldias.
+                 ' DÍAS PARA EL CIERRE DE ESTE EVENTO. SE CERRARÁ EL DÍA '.
+                 $dias[date('w',strtotime($nuevafecha2))].' '.
+                 date('d',strtotime($nuevafecha2)).' DE '.
+                 $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
+                 date('Y',strtotime($nuevafecha2));
+          } else {
+            $var_bloquea_fecha = 'si';
+            echo 'EVENTO CERRADO. SE CERRÓ EL DÍA '.
+                 $dias[date('w',strtotime($nuevafecha2))].' '.
+                 date('d',strtotime($nuevafecha2)).' DE '.
+                 $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
+                 date('Y',strtotime($nuevafecha2));
+
+            if($conexion->variablespermisos('','Abrir_cierre','ver')=='si'){
+              $var_bloquea_fecha = 'no';
+            }
+          }
+          ?>
+        </span>
+      </strong>
+    </div>
+  </div>
+
+  <!-- Parte derecha: iconos, usuario, foto, salir -->
+  <div class="top-navbar-right ms-auto">
+    <ul class="navbar-nav align-items-center">
+      <li class="nav-item mobile-search-button">
+        <a class="nav-link" href="javascript:;">
+          <div>
+            <ion-icon name="search-sharp"></ion-icon>
+          </div>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link dark-mode-icon" href="javascript:;">
+          <div class="mode-icon">
+            <ion-icon name="moon-sharp"></ion-icon> 
+          </div>
+        </a>
+      </li>
+
+      <li class="nav-item dropdown dropdown-large">
+        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
+          <div class="position-relative">
+            <span class="notify-badge">0</span>
+            <ion-icon name="notifications-sharp"></ion-icon>
+          </div>
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-end">
+          <a href="javascript:;">
+            <div class="msg-header">
+              <p class="msg-header-title">SIN NOTIFICACIONES</p>
+            </div>
+          </a>
+          <div class="header-notifications-list">
+            <a class="dropdown-item" href="javascript:;">
+              <div class="d-flex align-items-center">
+                <!-- contenido notificaciones -->
               </div>
-            </nav>
+            </a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <div class="mode-icon">
+          <h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown dropdown-user-setting">
+        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
+          <div class="user-setting">
+            <img src="<?php echo 'includes/archivos/'.$_SESSION["F_FOTO_ACTUAL"]; ?>" class="user-img" alt="">
+          </div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="d-flex flex-row align-items-center gap-2">
+                <img src="<?php echo 'includes/archivos/'.$_SESSION["F_FOTO_ACTUAL"]; ?>" alt="" class="rounded-circle" width="54" height="54">
+                <div>
+                  <h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
+                </div>
+              </div>
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a class="dropdown-item" href="index.php?salir=1">
+              <div class="d-flex align-items-center">
+                <div><ion-icon name="log-out-outline"></ion-icon></div>
+                <div class="ms-3"><span>SALIR</span></div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </div>
+</nav>
