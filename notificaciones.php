@@ -1,4 +1,5 @@
-            <nav class="navbar navbar-expand gap-3">
+         <nav class="navbar navbar-expand gap-3 w-100" style="width: 100%;">
+
               <div class="mobile-menu-button"><ion-icon name="menu-sharp"></ion-icon></div>
              <!-- <form class="searchbar">
                 <div class="position-absolute top-50 translate-middle-y search-icon ms-3"><ion-icon name="search-sharp"></ion-icon></div>
@@ -31,7 +32,47 @@ if($prefijo=='EV'){
 
 <SPAN style="color:<?php echo $COLOR;?>font-size:22px;">NOMBRE DEL EVENTO&nbsp;:&nbsp;<?php echo  isset($NOMBRE_CORTO_EVENTO)?$NOMBRE_CORTO_EVENTO:'';?>&nbsp;--&nbsp;	 NÚMERO DE EVENTO&nbsp;:&nbsp;<?php echo  isset($NUMERO_EVENTO)?$NUMERO_EVENTO:'';?> </SPAN>
 
-</p> </strong> </div>
+</p> </strong> <strong>		<SPAN style="color:<?php echo $COLOR;?>font-size:17px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STATUS&nbsp;:&nbsp;<?php echo  isset($STATUS_EVENTO)?$STATUS_EVENTO:''; 
+				
+	$dias = array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
+	$meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+	$ymd=date("Y-m-d");
+	//$ymd="2024-12-20";
+	
+	
+	/*
+	$CIERRE_TOTAL  , $FECHA_FINAL_EVENTO
+	*/
+	
+	$CIERRE_TOTAL11 = '';
+	
+	
+	if($CIERRE_TOTAL==''){
+		$CIERRE_TOTAL11= strtotime('+30 day', strtotime($FECHA_FINAL_EVENTO));
+	}else{
+		$CIERRE_TOTAL11= strtotime('+1 day',  strtotime($CIERRE_TOTAL));	
+	}
+	
+	$nuevafecha2 = date ( 'Y-m-d' , $CIERRE_TOTAL11 );
+	$var_bloquea_fecha = '';
+	if( strtotime($ymd) <= strtotime($nuevafecha2)){
+		$var_bloquea_fecha = 'no';
+		$totaldias = round((strtotime($nuevafecha2)-strtotime($ymd))/86400);
+		echo ",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QUEDAN: ".$totaldias. ' DÍAS PARA EL CIERRE DE ESTE EVENTO, SE CERRARÁ EL DÍA  
+		'.$dias[date('w',strtotime($nuevafecha2))].' '.date('d',strtotime($nuevafecha2)). ' DE '.$meses[date('n',strtotime($nuevafecha2))-1] .' DE '.date('Y',strtotime($nuevafecha2));
+	}else{
+		$var_bloquea_fecha = 'si'; 
+		echo ', EVENTO CERRADO, SE CERRÓ EL DÍA 
+		'.$dias[date('w',strtotime($nuevafecha2))].' '.date('d',strtotime($nuevafecha2)). ' DE '.$meses[date('n',strtotime($nuevafecha2))-1] .' DE '.date('Y',strtotime($nuevafecha2));	
+   if($conexion->variablespermisos('','Abrir_cierre','ver')=='si'){
+		$var_bloquea_fecha = 'no';
+		}
+	}
+
+	?>
+	
+	
+	</SPAN></strong></div>
 
 			
 			 
