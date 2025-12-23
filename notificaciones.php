@@ -17,15 +17,43 @@
         $COLOR="#c028be;";
     }
     ?>
-<style>.responsive-text-lg {
+<style>
+  .responsive-text-lg {
     font-size: clamp(10px, 1.6vw, 18px);
-}
+    line-height: 1.3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .responsive-text-sm {
+    font-size: clamp(9px, 1.4vw, 15px);
+    line-height: 1.3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .event-meta {
+    max-width: 100%;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+  }
 </style>
     <!-- Fila 1: mostrar/contraer + nombre / número + badge STATUS a la derecha -->
     <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2">
       <div>
-        <strong>
-          <span class="text-uppercase responsive-text-lg" style="color:<?php echo $COLOR; ?>">
+ <strong>
+          <span class="text-uppercase responsive-text-lg event-meta" style="color:<?php echo $COLOR; ?>">
           
             NOMBRE:&nbsp;
             <?php echo isset($NOMBRE_CORTO_EVENTO) ? $NOMBRE_CORTO_EVENTO : ''; ?>
@@ -36,7 +64,7 @@
         </strong>
       </div>
 
-      <div class="text-lg-end">
+      <div class="text-md-end">
         <span class="status-badge" style="background:<?php echo $COLOR; ?>color:#ffffff;">
           STATUS:&nbsp;<?php echo isset($STATUS_EVENTO) ? $STATUS_EVENTO : ''; ?>
         </span>
@@ -61,7 +89,7 @@
           $CIERRE_TOTAL11 = '';
 
           if($CIERRE_TOTAL==''){
-            $CIERRE_TOTAL11 = strtotime('+30 day', strtotime($FECHA_FINAL_EVENTO));
+            $CIERRE_TOTAL11 = strtotime('+100 day', strtotime($FECHA_FINAL_EVENTO));
           } else {
             $CIERRE_TOTAL11 = strtotime('+1 day', strtotime($CIERRE_TOTAL)); 
           }
@@ -72,15 +100,15 @@
           if(strtotime($ymd) <= strtotime($nuevafecha2)){
             $var_bloquea_fecha = 'no';
             $totaldias = round((strtotime($nuevafecha2) - strtotime($ymd))/86400);
-            echo 'QUEDAN: '.$totaldias.
-                 ' DÍAS PARA EL CIERRE DE ESTE EVENTO. SE CERRARÁ EL DÍA '.
+            echo 'QUEDAN:&nbsp;'.$totaldias.
+                 '&nbsp;DÍAS PARA EL CIERRE DE ESTE EVENTO. &nbsp;&nbsp;SE CERRARÁ EL DÍA '.
                  $dias[date('w',strtotime($nuevafecha2))].' '.
                  date('d',strtotime($nuevafecha2)).' DE '.
                  $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
                  date('Y',strtotime($nuevafecha2));
           } else {
             $var_bloquea_fecha = 'si';
-            echo 'EVENTO CERRADO. SE CERRÓ EL DÍA '.
+            echo 'EVENTO CERRADO.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SE CERRÓ EL DÍA '.
                  $dias[date('w',strtotime($nuevafecha2))].' '.
                  date('d',strtotime($nuevafecha2)).' DE '.
                  $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
@@ -101,19 +129,7 @@
     <ul class="navbar-nav align-items-center">
       <li class="nav-item mobile-search-button">
         <a class="nav-link" href="javascript:;">
-          <div>
-            <ion-icon name="search-sharp"></ion-icon>
-          </div>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link dark-mode-icon" href="javascript:;">
-          <div class="mode-icon">
-            <ion-icon name="moon-sharp"></ion-icon> 
-          </div>
-        </a>
-      </li>
+         
 
       <li class="nav-item dropdown dropdown-large">
         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
