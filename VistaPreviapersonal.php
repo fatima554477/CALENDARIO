@@ -29,11 +29,74 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 			 </td>
 			 </tr>
 			 <tr>
-			 <td width="30%"><label>VIATICOS</label></td>
-			 <td width="70%"><input type="text" name="VIATICOS_PERSONAL" value="'.$row["VIATICOS_PERSONAL"].'"></td>
-			 </tr><tr>
-			 <td width="30%"><label>OBSERVACIONES</label></td>
+			 <td width="30%"><label>PUESTO</label></td>
+			 <td width="70%"> <input type="text" name="PUESTO_PERSONAL2" value="'.$row["PUESTO_PERSONAL2"].'"></td>
+			 </tr>
+			 <tr>
+			 <td width="30%"><label>WHATSAPP</label></td>
+			 <td width="70%"> <input type="text" name="WHAT_PERSONAL" value="'.$row["WHAT_PERSONAL"].'"></td>
+			 </tr>
+			 <tr>
+			 <td width="30%"><label>EMAIL</label></td>
+			 <td width="70%"> <input type="text" name="EMAIL_PERSONAL2" value="'.$row["EMAIL_PERSONAL2"].'"></td>
+			 </tr>
+			 
+			 <tr>
+			 <td width="30%"><label>FECHA DE INICIO DEL  EVENTO</label></td>
+			 <td width="70%"><input type="text" name="FECHA_INICIO" value="'.$row["FECHA_INICIO"].'"></td>
+
+			 </tr>
+			 
+			 
+			 			 <tr>
+			 <td width="30%"><label>FECHA FINAL DEL EVENTO</label></td>
+			 <td width="70%"><input type="text" name="FECHA_FINAL" value="'.$row["FECHA_FINAL"].'"></td>
+
+			 </tr>
+			 
+			 
+			 			 			 <tr>
+			 <td width="30%"><label>NÚMERO DE DIAS</label></td>
+			 <td width="70%"><input type="text" name="NUMERO_DIAS" value="'.$row["NUMERO_DIAS"].'"></td>
+
+			 </tr>
+			 
+			 
+			 			 			 			 <tr>
+			 <td width="30%"><label>MONTO DEL BONO</label></td>
+			 <td width="70%"><input type="text" name="MONTO_BONO" value="'.$row["MONTO_BONO"].'"></td>
+
+			 </tr>
+			 
+			 			 			 			 			 			 			 <tr>
+			 <td width="30%"><label>TOTAL DEL BONO</label></td>
+			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL" value="'.$row["MONTO_BONO_TOTAL"].'"></td>
+
+			 </tr>
+			 
+			 			 			 			 			 <tr>
+			 <td width="30%"><label>TOTAL DEL BONO</label></td>
+			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL" value="'.$row["MONTO_BONO_TOTAL"].'"></td>
+
+			 </tr>
+			 
+			 
+			 
+			 
+			 
+			 <tr>
+			 <td width="30%"><label>TOTAL BONO Y VIATICOS</label></td>
+			 <td width="70%"><input type="text" name="TOTAL" value="'.$row["TOTAL"].'"></td>
+			 </tr>
+			 
+
+			 
+			 
+			 
+			 <tr>
+			 <td width="30%"><label>MOTIVO DEL BONO</label></td>
 			 <td width="70%"><input type="text" name="OBSERVACIONES_PERSONAL" value="'.$row["OBSERVACIONES_PERSONAL"].'"></td>
+
 			 </tr>  <tr>
 			 <td width="30%"><label>FECHA DE ÚLTIMA CARGA</label></td>
 			 <td width="70%"><input type="text" name="PERSONAL_FECHA_ULTIMA_CARGA" value="'.$row["PERSONAL_FECHA_ULTIMA_CARGA"].'"></td>
@@ -89,7 +152,7 @@ var fileobj;
 	        form_data.append("IPpersonal",  $("#IPpersonal").val());
 	        $.ajax({
 	            type: 'POST',
-	            url: 'altaeventos/controladorAE.php',
+	            url: 'calendariodeeventos2/controladorAE.php',
 				  dataType: "html",
 	            contentType: false,
 	            processData: false,
@@ -120,7 +183,7 @@ $('#2'+nombre).html('<a target="_blank" href="includes/archivos/'+$.trim(respons
 $("#clickpersonal").click(function(){
 	
    $.ajax({  
-    url:"altaeventos/controladorAE.php",
+    url:"calendariodeeventos2/controladorAE.php",
     method:"POST",  
     data:$('#listado_personalform').serialize(),
 
