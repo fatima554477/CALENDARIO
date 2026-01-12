@@ -137,7 +137,7 @@ $queryVISTAPREV = $conexion->Listado_altaeventos2($identioficador);
 	 
 	 <tr>
 	 <td width="30%"><label>BLOQUEO DEL EVENTO:</label></td>
-	 <td width="70%"><input type="date" name="CIERRE_TOTAL" value="'.$row["CIERRE_TOTAL"].'">
+	 <td width="70%"><input type="date" name="CIERRE_TOTAL" id="CIERRE_TOTAL"  value="'.$row["CIERRE_TOTAL"].'">
 	 </td>
 	 </tr>
 	 
@@ -284,7 +284,7 @@ $queryVISTAPREV = $conexion->Listado_altaeventos2($identioficador);
 	 <td width="70%"><input type="time" name="NOMBRE_COMERCIAL" value="'.$row["NOMBRE_COMERCIAL"].'"></td>
 	 </tr> <tr>
 	 <td width="30%"><label>FECHA FINAL DEL EVENTO:</label></td>
-	 <td width="70%"><input type="date" name="FECHA_FINAL_EVENTO" value="'.$row["FECHA_FINAL_EVENTO"].'"><br><a style="color:red;font-size:10px">OBLIGATORIO</a></td>
+	 <td width="70%"><input type="date" name="FECHA_FINAL_EVENTO" id="FECHA_FINAL_EVENTO"  value="'.$row["FECHA_FINAL_EVENTO"].'"><br><a style="color:red;font-size:10px">OBLIGATORIO</a></td>
 	 </tr> <tr>
 	 <td width="30%"><label>HORA DE TERMINO EVENTO:</label></td>
 	 <td width="70%"><input type="time" name="HORA_TERMINO_EVENTO" value="'.$row["HORA_TERMINO_EVENTO"].'"></td>
@@ -439,9 +439,39 @@ function calcularTotal() {
 // Ejecutar al cargar la ventana
 window.onload = calcularTotal;
 
-// Escuchar cambios en los inputs
+
+
 document.getElementById('montoTotalEvento').addEventListener('input', calcularTotal);
 document.getElementById('montoTotalAvion').addEventListener('input', calcularTotal);
+
+function actualizarCierreTotalDesdeInput(fechaFinalInput) {
+    if (!fechaFinalInput || !fechaFinalInput.value) {
+        return;
+    }
+
+    const cierreTotalInput = fechaFinalInput
+        .closest('form')
+        ?.querySelector('[name="CIERRE_TOTAL"]');
+
+    if (!cierreTotalInput) {
+        return;
+    }
+
+    const fechaBase = new Date(`${fechaFinalInput.value}T00:00:00`);
+    if (Number.isNaN(fechaBase.getTime())) {
+        return;
+    }
+
+    fechaBase.setDate(fechaBase.getDate() + 30);
+    const year = fechaBase.getFullYear();
+    const month = String(fechaBase.getMonth() + 1).padStart(2, '0');
+    const day = String(fechaBase.getDate()).padStart(2, '0');
+    cierreTotalInput.value = `${year}-${month}-${day}`;
+}
+
+$(document).on('change input', '[name="FECHA_FINAL_EVENTO"]', function () {
+    actualizarCierreTotalDesdeInput(this);
+});
 
 
 //////////////////////////////////////////////////////////////////////////
