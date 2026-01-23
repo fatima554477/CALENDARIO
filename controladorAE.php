@@ -1132,7 +1132,7 @@ $ADJUNTO_COMPROBANTEP = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
             $FORMA_PAGO,
             $FECHA_EFECTIVA,
             $NOMBRE_RECIBIO,
-            $ADJUNTO_COMPROBANTEP1,
+            $ADJUNTO_COMPROBANTEP,
 			
             $NUMERO_EVENTO,
             $OBSERVACIONES_PERSONAL,

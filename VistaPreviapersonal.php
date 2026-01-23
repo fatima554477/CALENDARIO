@@ -17,13 +17,13 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
  <form  id="listado_personalform"> 
       <div class="table-responsive">  
            <table class="table table-bordered">';
-  $row = mysqli_fetch_array($queryVISTAPREV);
+    $row = mysqli_fetch_array($queryVISTAPREV);
     
-        if($row["ADJUNTO_COMPROBANTEP"]!=""){
-        $urlADJUNTO_COMPROBANTEP= "<a target='_blank'
-        href='includes/archivos/".$row["ADJUNTO_COMPROBANTEP"]."'>Visualizar!</a>";
-        }else{
+        if($row["ADJUNTO_COMPROBANTEP"]=="" or $row["ADJUNTO_COMPROBANTEP"]=='2'){
         $urlADJUNTO_COMPROBANTEP="";
+        }else{
+			$urlADJUNTO_COMPROBANTEP= "<a target='_blank'
+        href='includes/archivos/".$row["ADJUNTO_COMPROBANTEP"]."'>Visualizar!</a>";
         }		
              $output .= '
 
@@ -111,9 +111,12 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 			 
 <tr>
 <td width="30%"><label>DOCUMENTO:</label></td>
-<td width="70%"><div class="col-md-6"> 
+<td width="70%">
+
+
 
 <div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTEP\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTEP" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTEP\');" style="width:250px;" value="'.$row["ADJUNTO_COMPROBANTEP"].'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTEP" id="nono"/> <div id="2ADJUNTO_COMPROBANTEP"> "'.$urlADJUNTO_COMPROBANTEP.'" </div> </div> </div>
+
 
 
 </td>
@@ -156,10 +159,9 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 //
 ?>
 
+
+
 <script>
-
-
-
 
 
 
@@ -185,14 +187,13 @@ var fileobj;
 	        form_data.append("IPpersonal",  $("#IPpersonal").val());
 	        $.ajax({
 	            type: 'POST',
-	        url:"controladorAE.php",
+	            url: 'calendariodeeventos2/controladorAE.php',
 				  dataType: "html",
 	            contentType: false,
 	            processData: false,
 	            data: form_data,
  beforeSend: function() {
 $('#2'+nombre).html('<p style="color:green;">Cargando archivo!</p>');
-$('#respuestaser').html('<p style="color:green;">Actualizado!</p>');
     },				
 	            success:function(response) {
 
@@ -216,7 +217,7 @@ $('#2'+nombre).html('<a target="_blank" href="includes/archivos/'+$.trim(respons
 $("#clickpersonal").click(function(){
 	
    $.ajax({  
-    url:"controladorAE.php",
+    url: 'calendariodeeventos2/controladorAE.php',
     method:"POST",  
     data:$('#listado_personalform').serialize(),
 
