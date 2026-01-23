@@ -17,40 +17,33 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
  <form  id="listado_personalform"> 
       <div class="table-responsive">  
            <table class="table table-bordered">';
-    $row = mysqli_fetch_array($queryVISTAPREV);
+  $row = mysqli_fetch_array($queryVISTAPREV);
     
-        		
+        if($row["ADJUNTO_COMPROBANTEP"]!=""){
+        $urlADJUNTO_COMPROBANTEP= "<a target='_blank'
+        href='includes/archivos/".$row["ADJUNTO_COMPROBANTEP"]."'>Visualizar!</a>";
+        }else{
+        $urlADJUNTO_COMPROBANTEP="";
+        }		
              $output .= '
 
 			 <tr>
 			 <td width="30%"><label>NOMBRE</label></td>
 			 <td width="70%">
-			 '.$altaeventos->un_solo_colaborador($row["NOMBRE_PERSONAL"],'01empresa','USUARIO_CRM').'
+			 '.$altaeventos->un_solo_colaborador_nombre($row["NOMBRE_PERSONAL"],'01informacionpersonal','NOMBRE_1').'
 			 </td>
 			 </tr>
-			 <tr>
-			 <td width="30%"><label>PUESTO</label></td>
-			 <td width="70%"> <input type="text" name="PUESTO_PERSONAL2" value="'.$row["PUESTO_PERSONAL2"].'"></td>
-			 </tr>
-			 <tr>
-			 <td width="30%"><label>WHATSAPP</label></td>
-			 <td width="70%"> <input type="text" name="WHAT_PERSONAL" value="'.$row["WHAT_PERSONAL"].'"></td>
-			 </tr>
-			 <tr>
-			 <td width="30%"><label>EMAIL</label></td>
-			 <td width="70%"> <input type="text" name="EMAIL_PERSONAL2" value="'.$row["EMAIL_PERSONAL2"].'"></td>
-			 </tr>
 			 
-			 <tr>
-			 <td width="30%"><label>FECHA DE INICIO DEL  EVENTO</label></td>
-			 <td width="70%"><input type="text" name="FECHA_INICIO" value="'.$row["FECHA_INICIO"].'"></td>
+			 			 			 <tr>
+			 <td width="30%"><label>FECHA_INICIO DEL EVENTO</label></td>
+			 <td width="70%"><input type="date" name="FECHA_INICIO" value="'.$row["FECHA_INICIO"].'"></td>
 
 			 </tr>
-			 
+	
 			 
 			 			 <tr>
 			 <td width="30%"><label>FECHA FINAL DEL EVENTO</label></td>
-			 <td width="70%"><input type="text" name="FECHA_FINAL" value="'.$row["FECHA_FINAL"].'"></td>
+			 <td width="70%"><input type="date" name="FECHA_FINAL" value="'.$row["FECHA_FINAL"].'"></td>
 
 			 </tr>
 			 
@@ -74,14 +67,13 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 
 			 </tr>
 			 
-			 			 			 			 			 <tr>
-			 <td width="30%"><label>TOTAL DEL BONO</label></td>
-			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL" value="'.$row["MONTO_BONO_TOTAL"].'"></td>
-
+		
+			 
+			 
+			 		 <tr>
+			 <td width="30%"><label> VIATICOS</label></td>
+			 <td width="70%"><input type="text" name="VIATICOS_PERSONAL" value="'.$row["VIATICOS_PERSONAL"].'"></td>
 			 </tr>
-			 
-			 
-			 
 			 
 			 
 			 <tr>
@@ -89,15 +81,52 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 			 <td width="70%"><input type="text" name="TOTAL" value="'.$row["TOTAL"].'"></td>
 			 </tr>
 			 
-
-			 
-			 
-			 
 			 <tr>
+			 <td width="30%"><label>ÚLTIMO DÍA PARA COMPRAR VIATICOS</label></td>
+			 <td width="70%"><input type="date" name="ULTIMO_DIA" value="'.$row["ULTIMO_DIA"].'"></td>
+			 </tr>
+			 
+			 
+			 			 <tr>
 			 <td width="30%"><label>MOTIVO DEL BONO</label></td>
-			 <td width="70%"><input type="text" name="OBSERVACIONES_PERSONAL" value="'.$row["OBSERVACIONES_PERSONAL"].'"></td>
+			 <td width="70%"><input type="text" name="OBSERVACIONES_PERSONAL" value="'.$row["OBSERVACIONES_PERSONAL"].'"></td></tr>
+			 
+			 
+			 			 <tr>
+			 <td width="30%"><label>FECHA DE PROGRAMACIÓN DE PAGO</label></td>
+			 <td width="70%"><input type="date" name="FECHA_PPAGO" value="'.$row["FECHA_PPAGO"].'"></td>
+			 </tr>
+			 
+			 			 <tr>
+			 <td width="30%"><label>FORMA DE PAGO</label></td>
+			 <td width="70%"><input type="text" name="FORMA_PAGO" value="'.$row["FORMA_PAGO"].'"></td>
+			 </tr>
+			 
+			 			 <tr>
+			 <td width="30%"><label>FECHA EFECTIVA DE PAGO</label></td>
+			 <td width="70%"><input type="date" name="FECHA_EFECTIVA" value="'.$row["FECHA_EFECTIVA"].'"></td>
+			 </tr>
+			 
 
-			 </tr>  <tr>
+			 
+<tr>
+<td width="30%"><label>DOCUMENTO:</label></td>
+<td width="70%"><div class="col-md-6"> 
+
+<div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTEP\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTEP" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTEP\');" style="width:250px;" value="'.$row["ADJUNTO_COMPROBANTEP"].'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTEP" id="nono"/> <div id="2ADJUNTO_COMPROBANTEP"> "'.$urlADJUNTO_COMPROBANTEP.'" </div> </div> </div>
+
+
+</td>
+</tr>
+			 			 <tr>
+			 <td width="30%"><label>PAX QUE COBRO</label></td>
+			 <td width="70%"><input type="text" name="NOMBRE_RECIBIO" value="'.$row["NOMBRE_RECIBIO"].'"></td>
+			 </tr> 
+			 
+
+
+
+		  <tr>
 			 <td width="30%"><label>FECHA DE ÚLTIMA CARGA</label></td>
 			 <td width="70%"><input type="text" name="PERSONAL_FECHA_ULTIMA_CARGA" value="'.$row["PERSONAL_FECHA_ULTIMA_CARGA"].'"></td>
 			 </tr>  
@@ -130,6 +159,10 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 <script>
 
 
+
+
+
+
 var fileobj;
 	function upload_file(e,name) {
 	    e.preventDefault();
@@ -152,7 +185,7 @@ var fileobj;
 	        form_data.append("IPpersonal",  $("#IPpersonal").val());
 	        $.ajax({
 	            type: 'POST',
-	            url: 'calendariodeeventos2/controladorAE.php',
+	        url:"controladorAE.php",
 				  dataType: "html",
 	            contentType: false,
 	            processData: false,
@@ -183,7 +216,7 @@ $('#2'+nombre).html('<a target="_blank" href="includes/archivos/'+$.trim(respons
 $("#clickpersonal").click(function(){
 	
    $.ajax({  
-    url:"calendariodeeventos2/controladorAE.php",
+    url:"controladorAE.php",
     method:"POST",  
     data:$('#listado_personalform').serialize(),
 

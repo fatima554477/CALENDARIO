@@ -25,7 +25,24 @@ fecha fatima: 06 JUNIO 2025
  </div>
 </div>
 
+<div id="dataModal14" class="modal fade">
+ <div class="modal-dialog" style="width:80% !important; max-width:100% !important;">
+  <div class="modal-content">
+   <div class="modal-header">
 
+    <h4 class="modal-title">Detalles</h4>
+   </div>
+   <div class="modal-body" id="personal_detalles14">
+    
+   </div>
+   <div class="modal-footer">
+   
+   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+   
+   </div>
+  </div>
+ </div>
+</div>
 
 <div id="dataModal" class="modal fade">
  <div class="modal-dialog modal-lg">
@@ -108,6 +125,24 @@ fecha fatima: 06 JUNIO 2025
 </div>
 
 
+<div id="dataModal9" class="modal fade">
+ <div class="modal-dialog modal-fullscreen">
+  <div class="modal-content">
+   <div class="modal-header">
+
+    <h4 class="modal-title">Detalles</h4>
+   </div>
+   <div class="modal-body" id="personal_detalles9">
+    
+   </div>
+   <div class="modal-footer">
+   
+   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+   
+   </div>
+  </div>
+ </div>
+</div>
 
 
 
@@ -1205,7 +1240,8 @@ function OBTENER_fotoBOTI(){
 
               $("#actualizabonos2").click(function() {   
                                    $.getScript(totalfechas8());                     
-        });                             
+        });  
+		
 
 
 
@@ -2228,8 +2264,8 @@ beforeSend:function(){
 $('#mensajepagoproveedores').html('cargando');
 },
 success:function(data){
-$('#personal_detalles5').html(data);
-$('#dataModal5').modal('toggle');
+$('#personal_detalles9').html(data);
+$('#dataModal9').modal('toggle');
 $("#reset_totales").load(location.href + " #reset_totales");
 $("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");
 }
@@ -3590,38 +3626,45 @@ $('#mensajeboletosavion').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn
 //////////////////////////PERSONAL/////////////////////////////////
 
 
-$("#guardaPERSONAL").click(function(){
-const formData = new FormData($('#PERSONALform')[0]);
+$("#guardaPERSONAL").click(function () {
+    const formData = new FormData($('#PERSONALform')[0]);
 
-$.ajax({
-    url: 'calendariodeeventos2/controladorAE.php',
-    type: 'POST',
-    dataType: 'html',
-    data: formData,
-    cache: false,
-    contentType: false,
-    processData: false,
-	
-	 beforeSend:function(){  
-    $('#mensajePERSONAL').html('cargando'); 
-    },    
-   success:function(data){
-	
-		$("#reset_personal").load(location.href + " #reset_personal");	
-		$("#mensajePERSONAL").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
-		$("#reset_totales").load(location.href + " #reset_totales");
-		
-		$("#obtener_puesto").load(location.href + " #obtener_puesto");
-		$("#obtener_cel").load(location.href + " #obtener_cel");
-		$("#obtener_email").load(location.href + " #obtener_email");
-		$("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
-				$("#reset_totales").load(location.href + " #reset_totales");
-		
-		
-   }
-   
-})
+    $.ajax({
+        url: 'calendariodeeventos2/controladorAE.php',
+        type: 'POST',
+        dataType: 'html',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        beforeSend: function () {
+            $('#mensajePERSONAL').html('cargando');
+        },
+
+        success: function (data) {
+
+            // 🔹 BORRAR FORMULARIO
+            document.getElementById('PERSONALform').reset();
+
+            // 🔹 Recargas existentes
+            $("#reset_personal").load(location.href + " #reset_personal");
+            $("#reset_totales").load(location.href + " #reset_totales");
+            $("#obtener_puesto").load(location.href + " #obtener_puesto");
+            $("#obtener_cel").load(location.href + " #obtener_cel");
+            $("#NUMERO_DIAS").load(location.href + " #NUMERO_DIAS");
+            $("#obtener_email").load(location.href + " #obtener_email");
+            $("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
+
+            $("#mensajePERSONAL")
+                .html("<span id='ACTUALIZADO'>" + data + "</span>")
+                .fadeIn()
+                .delay(2000)
+                .fadeOut();
+        }
+    });
 });
+
 
 
 $(document).on('click', '.view_dataDATOSpersonalmodifica', function(){
@@ -3709,51 +3752,63 @@ $('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().d
 
 
 ////////////////////////////PERSONAL2/////////////////////////////////////////////////////////
-$("#guardaPERSONAL2").click(function(){
-const formData = new FormData($('#PERSONAL2form')[0]);
+$("#guardaPERSONAL2").click(function () {
+    const formData = new FormData($('#PERSONAL2form')[0]);
 
-$.ajax({
-    url: 'calendariodeeventos2/controladorAE.php',
-    type: 'POST',
-    dataType: 'html',
-    data: formData,
-    cache: false,
-    contentType: false,
-    processData: false,
-	
-	 beforeSend:function(){  
-    $('#mensajePERSONAL2').html('cargando'); 
-    },    
-   success:function(data){
-	
-		$("#reset_personal2").load(location.href + " #reset_personal2");	
-		$("#mensajePERSONAL2").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
-		$("#reset_totales").load(location.href + " #reset_totales");
-		
-		$("#obtener_puesto2").load(location.href + " #obtener_puesto2");
-		$("#obtener_cel2").load(location.href + " #obtener_cel2");
-		$("#obtener_email2").load(location.href + " #obtener_email2");
-		$("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
-		$("#reset_totales").load(location.href + " #reset_totales");
-		
-   }
-   
-})
+    $.ajax({
+        url: 'calendariodeeventos2/controladorAE.php',
+        type: 'POST',
+        dataType: 'html',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        beforeSend: function () {
+            $('#mensajePERSONAL2').html('cargando');
+        },
+
+        success: function (data) {
+
+            // 🔹 BORRAR FORMULARIO PERSONAL2
+            document.getElementById('PERSONAL2form').reset();
+
+            // 🔹 Recargas existentes
+            $("#reset_personal2").load(location.href + " #reset_personal2");
+            $("#reset_totales").load(location.href + " #reset_totales");
+
+            $("#obtener_puesto2").load(location.href + " #obtener_puesto2");
+            $("#obtener_cel2").load(location.href + " #obtener_cel2");
+            $("#obtener_email2").load(location.href + " #obtener_email2");
+            $("#NUMERO_DIAS1").load(location.href + " #NUMERO_DIAS1");
+
+            $("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
+            $("#reset_totales").load(location.href + " #reset_totales");
+
+            $("#mensajePERSONAL2")
+                .html("<span id='ACTUALIZADO'>" + data + "</span>")
+                .fadeIn()
+                .delay(2000)
+                .fadeOut();
+        }
+    });
 });
+
 
 
 $(document).on('click', '.view_dataDATOSpersonal2modifica', function(){
   //$('#dataModal').modal();
-  var personal2_id = $(this).attr("id");
+  var personal_id = $(this).attr("id");
   $.ajax({
    url:"calendariodeeventos2/VistaPreviapersonal2.php",
    method:"POST",
-   data:{personal2_id:personal2_id},
+   data:{personal_id:personal_id},
     beforeSend:function(){  
     $('#mensajePERSONAL2').html('CARGANDO'); 
     },    
    success:function(data){
-    $('#personal2_detalles').html(data);
+    $('#personal_detalles').html(data);
+    $('#personal_detalles').html(data);
     $('#dataModal').modal('show');
    }
   });
@@ -4925,6 +4980,23 @@ $(document).on('click', '.view_INCIDENCIAS', function(){
   });
  })	
  
+ $(document).on('click', '.view_INCIDENCIAS', function(){
+  //$('#dataModal').modal();
+  var personal_id = $(this).attr("id");
+  $.ajax({
+  url:"INCIDENCIAS/VistaPreviaINCIDENCIAS2.php",
+   method:"POST",
+   data:{personal_id:personal_id},
+    beforeSend:function(){  
+    $('#mensajeINCIDENCIAS').html('CARGANDO'); 
+    },    
+   success:function(data){
+    $('#personal_detalles').html(data);
+    $('#dataModal').modal('show');
+   }
+  });
+ })	
+ 
  $(document).on('click', '.view_MENSAJERIAmodifica', function(){
   //$('#dataModal').modal();
   var personal_id = $(this).attr("id");
@@ -5552,7 +5624,7 @@ $('#dataModal3').modal('hide');
 $('#mensajefiltroEgresoPagoProveedores').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 //$('#resetSB').load(location.href + ' #resetSB');
 		$("#reset_totales").load(location.href + " #reset_totales");
-			$.getScript(load(1));
+			$.getScript(loadAUT(1));
 }
 });
 });
@@ -5583,14 +5655,38 @@ $('#mensajepagoproveedores').html("<span id='ACTUALIZADO' >"+data+"</span>").fad
 //$('#resetSB').load(location.href + ' #resetSB');
 		$("#reset_totales").load(location.href + " #reset_totales");
 			$.getScript(load7(1));
-			$.getScript(loadCOM(1));
+			
 }
 });
 });
 });
 
 
-
+//SCRIPT PARA BORRAR view_dataSBborrar
+$(document).on('click', '.view_dataSBborrarCOM', function(){
+var borra_id_PAGOP = $(this).attr('id');
+var borrapagoaproveedores = 'borrapagoaproveedores';
+$('#personal_detalles3').html();
+$('#dataModal3').modal('show');
+$('#btnYes').click(function() {
+$.ajax({
+url:'comprobaciones/controladorPP.php',
+method:'POST',
+data:{borra_id_PAGOP:borra_id_PAGOP,borrapagoaproveedores:borrapagoaproveedores},
+beforeSend:function(){
+$('#mensajepagoproveedores').html('cargando');
+},
+success:function(data){
+$('#dataModal3').modal('hide');
+$('#mensajepagoproveedores').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+//$('#resetSB').load(location.href + ' #resetSB');
+		$("#reset_totales").load(location.href + " #reset_totales");
+			
+			$.getScript(loadCOM(1));
+}
+});
+});
+});
 
 
 
@@ -5632,6 +5728,78 @@ $("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");
 }
 });
 });
+
+
+/*match*//*match*//*match*//*match*//*match*//*match*//*match*/
+
+
+$(document).on('click', '.view_MATCH2filtroinbursa', function(){
+var personal_id = $(this).attr('id');
+$.ajax({
+url:'comprobacionesVYO/VistaPreviamatchinbursa.php',
+method:'POST',
+data:{personal_id:personal_id},
+beforeSend:function(){
+$('#mensajeDATOSBANCARIOS1').html('cargando');
+},
+success:function(data){
+$('#personal_detalles14').html(data);
+$('#dataModal14').modal('toggle');
+}
+});
+});
+
+
+$(document).on('click', '.view_MATCH2filtrobbva', function(){
+var personal_id = $(this).attr('id');
+$.ajax({
+url:'comprobacionesVYO/VistaPreviamatchBBVA.php',
+method:'POST',
+data:{personal_id:personal_id},
+beforeSend:function(){
+$('#mensajeDATOSBANCARIOS1').html('cargando');
+},
+success:function(data){
+$('#personal_detalles14').html(data);
+$('#dataModal14').modal('toggle');
+}
+});
+});
+
+
+$(document).on('click', '.view_MATCH2filtroAMEX', function(){
+var personal_id = $(this).attr('id');
+$.ajax({
+url:'comprobacionesVYO/VistaPreviamatchAMEX.php',
+method:'POST',
+data:{personal_id:personal_id},
+beforeSend:function(){
+$('#mensajeDATOSBANCARIOS1').html('cargando');
+},
+success:function(data){
+$('#personal_detalles14').html(data);
+$('#dataModal14').modal('toggle');
+}
+});
+});
+
+$(document).on('click', '.view_MATCH2filtroSIVALE', function(){
+var personal_id = $(this).attr('id');
+$.ajax({
+url:'comprobacionesVYO/VistaPreviamatchSANTANDER.php',
+method:'POST',
+data:{personal_id:personal_id},
+beforeSend:function(){
+$('#mensajeDATOSBANCARIOS1').html('cargando');
+},
+success:function(data){
+$('#personal_detalles14').html(data);
+$('#dataModal14').modal('toggle');
+}
+});
+});
+
+
 
 
 

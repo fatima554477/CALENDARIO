@@ -41,7 +41,8 @@
         $encabezadoA = '<select class="form-select mb-3" aria-label="Default select example" 
                         id="NOMBRE_PERSONAL2" required name="NOMBRE_PERSONAL2" 
                         onchange="getemployee2();">
-                       <option value="nada" selected>SELECIONA UNA OPCIÓN</option>';
+                       <option value="
+					  " selected>SELECIONA UNA OPCIÓN</option>';
 
         $queryper = $altaeventos->lista_colaboradoreventos2();
         $fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
@@ -86,7 +87,7 @@
 
     </tr>
     <tr>
-    <th style="background:#eff9eb; text-align:left" scope="col">NÚMERO DE OFICINA:</th>
+    <th style="background:#eff9eb; text-align:left" scope="col">TELEFONO DE OFICINA:</th>
     <td  style="background:#eff9eb" id="obtener_cel2">
 	
 	<?php echo $WHAT_PERSONAL2 = $altaeventos->un_solo_colaborador2($_SESSION['NOMBRE_PERSONAL21'],'01empresa','CORREO_3'); ?>
@@ -109,20 +110,33 @@
     </tr>
 
     <tr>
-    <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE INICIO DEL  EVENTO:<br><a style="color:red;font:7px">obligatorio</a></th>
+    <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE INICIO DE CORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
     <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_INICIO1; ?>" name="FECHA_INICIO1"></td>
 
     </tr>
     <tr>
-    <th style="background:#f7edf8; text-align:left" scope="col">FECHA FINAL DEL EVENTO:<br><a style="color:red;font:7px">obligatorio</a></th>
+    <th style="background:#f7edf8; text-align:left" scope="col">FECHA FINAL DE CORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
     <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_FINAL1; ?>" name="FECHA_FINAL1"></td>
 
     </tr>
+	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
     <tr>
+	
     <th style="background:#eff9eb; text-align:left" scope="col">NÚMERO DE DIAS:</th>
-    <td  style="background:#eff9eb"><input type="text" class="form-control" id="validationCustom03" required=""  value="<?php echo $NUMERO_DIAS1; ?>" name="NUMERO_DIAS1"></td>
+<td style="background:#eff9eb">
+  <div class="input-group">
+    <input type="text" class="form-control" id="validationCustom03"
+           required value="<?php echo $NUMERO_DIAS1; ?>" name="NUMERO_DIAS1">
+<button type="button" class="btn btn-sm btn-primary" onclick="totalfechas8()" >ACTUALIZAR</button>
+  </div>
+
+</td>
 
     </tr>
+	
+	
+	
+	 	
  	 <tr style="background:#f7edf8; text-align:left"> 
          <th  scope="row"> <label for="validationCustom03" class="form-label">MONTO DEL BONO:</label></th>
          <td>
@@ -154,11 +168,13 @@
     <tr style="background:#eff9eb; text-align:left"> 
          <th  scope="row"> <label for="validationCustom03" class="form-label">TOTAL BONO Y VIATICOS:</label></th>
          <td>
-
+  <div class="input-group">
          <div class="input-group mb-3"> <span class="input-group-text">$</span><input type="text"  style="width:450px;height:40px;"  class="form-control" id="TOTAL1" required="" value="<?php echo number_format($TOTAL1,2,'.',','); ?>" onkeyup="comasainput('TOTAL1')" name="TOTAL1" placeholder="">
- </div>
+ <button type="button" class="btn btn-sm btn-primary" onclick="totalfechas8()" >ACTUALIZAR</button>
+  </div></div>
  </td>
          </tr>
+		
          <tr>
          <th style="background:#eff9eb; text-align:left" scope="col">ÚLTIMO DÍA PARA COMPROBAR VIATICOS:</th>
          <td  style="background:#eff9eb"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $ULTIMO_DIA1; ?>" name="ULTIMO_DIA1"></td>
@@ -166,10 +182,10 @@
          </tr>
     
     <tr>
-    <th style="background:#f7edf8; text-align:left" scope="col">OBSERVACIONES:</th>
+<th style="background:#f7edf8; text-align:left" scope="col">MOTIVO DEL BONO:<br><a style="color:red;font:7px">obligatorio</a></th>
     <td  style="background:#f7edf8"><input type="text" class="form-control" id="validationCustom03" required=""  value="<?php echo $OBSERVACIONES_PERSONAL2; ?>" name="OBSERVACIONES_PERSONAL2"></td>
 
-    </tr><tr>
+    </tr> <?php } ?><tr>
 
            <th style="text-align:center;background:#faebee;" scope="col">FECHA DE ÚLTIMA CARGA</th>   
            <td  style="background:#faebee">
@@ -248,19 +264,26 @@
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
                <th width="20%"style="background:#c9e8e8">PUESTO</th>
-               <th width="20%"style="background:#c9e8e8">WHATSAPP</th>
+               <th width="20%"style="background:#c9e8e8">TELEFONO DE OFICINA</th>
                <th width="20%"style="background:#c9e8e8">EMAIL</th>
-			   	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
-               <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DEL EVENTO</th>
-               <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DEL EVENTO</th>
+			  
+               <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DE CORDINACIÓN</th>
+               <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DE CORDINACIÓN</th>
+			    	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
                <th width="20%"style="background:#c9e8e8">NÚMERO <br>DE DÍAS</th>
                <th width="20%"style="background:#c9e8e8">MONTO <br>DE BONO</th>
                <th width="20%"style="background:#c9e8e8">TOTAL <br>DE BONO</th>
                <th width="20%"style="background:#c9e8e8">VIATICOS</th>
                <th width="20%"style="background:#c9e8e8">TOTAL</th>
-			   <?php } ?>
+			   
                <th width="20%"style="background:#c9e8e8">ULTIMO DÍA PARA <br>COMPROBAR VIATICOS:</th>
-               <th width="20%"style="background:#c9e8e8">OBSERVACIONES</th>
+               <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
+			   <?php } ?>
+			                  <th width="20%"style="background:#c9e8e8">FECHA DE PROGRAMACIÓN<br> DE PAGO</th>
+               <th width="20%"style="background:#c9e8e8">FORMA DE PAGO</th>
+               <th width="20%"style="background:#c9e8e8">FORMA EFECTIVA DE PAGO</th>
+               <th width="20%"style="background:#c9e8e8">COMPROBANTE DE PAGO</th>
+               <th width="20%"style="background:#c9e8e8">PAX QUE COBRO</th>
                <th width="20%"style="background:#c9e8e8">FECHA DE <br>ÚLTIMA CARGA</th>
           </tr>
           <?php
@@ -295,15 +318,20 @@
 		  
           <td ><?php echo $altaeventos->un_solo_colaborador($row["NOMBRE_PERSONAL2"],'01empresa','CORREO_1'); ?>
 		  </td>
-          <td ><?php echo $row["FECHA_INICIO"]; ?></td>
-          <td ><?php echo $row["FECHA_FINAL"]; ?></td>
-          <td ><?php echo $row["NUMERO_DIAS"]; ?></td>
+          <td ><?php echo $row["FECHA_INICIO1"]; ?></td>
+          <td ><?php echo $row["FECHA_FINAL1"]; ?></td>
+          <td ><?php echo $row["NUMERO_DIAS1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
           <td ><?php echo $row["VIATICOS_PERSONAL2"]; ?></td>
           <td ><?php echo $row["TOTAL1"]; ?></td>
           <td ><?php echo $row["ULTIMO_DIA"]; ?></td>
           <td ><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
+		       <td ><?php echo $row["FECHA_PPAGO1"]; ?></td>
+               <td ><?php echo $row["FORMA_PAGO1"]; ?></td>
+               <td ><?php echo $row["FECHA_EFECTIVA1"]; ?></td>             
+              <td ><?php echo $urlADJUNTO_COMPROBANTE; ?></td>
+			   <td ><?php echo $row["NOMBRE_RECIBIO1"]; ?></td>
           <td ><?php echo $row["PERSONAL2_FECHA_ULTIMA_CARGA"]; ?></td>                        
           <td>
           <?php if($conexion->variablespermisos('','PERSONALNUEVO','modificar')=='si' and $var_bloquea_fecha=='no'){ ?><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2modifica" />
@@ -312,6 +340,8 @@
 </td>  <?php } ?>
           </tr>
           <?php
+          $NUMERO_DIAS12 += $row["NUMERO_DIAS1"];
+          $MONTO_BONO12 += $row["MONTO_BONO1"];
           $PER2SUNTOTAL += $row["MONTO_BONO_TOTAL1"];
           $PER2VIAT += $row["VIATICOS_PERSONAL2"];
           $PER2TOTAL += $row["TOTAL1"];
@@ -319,14 +349,17 @@
           ?>
           
           <tr>
-          <td colspan='10' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
+          <td colspan='9' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
+          <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS12); ?></td>
+          <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO12,2,'.',','); ?></td>
+		  
           <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2VIAT,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td><td></td></tr>
-            
+           </form> 
           </table>  
              </tbody>
-</form>
+
 
 
 </div>
