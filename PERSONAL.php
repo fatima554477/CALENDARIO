@@ -253,7 +253,8 @@ $puedeAutorizar = (
     1px 18px 6px rgba(16,16,16,0.4),
     1px 22px 10px rgba(16,16,16,0.2),
     1px 25px 35px rgba(16,16,16,0.2),
-    1px 30px 60px rgba(16,16,16,0.4);"id="mensajePERSONAL"></th></tr><?php } ?>
+    1px 30px 60px rgba(16,16,16,0.4);"  
+	id="mensajePERSONAL"></th></tr><?php } ?>
            
            
             </table>
@@ -362,23 +363,25 @@ while($row = mysqli_fetch_array($querycontras))
            
                <td ><?php echo $altaeventos->un_solo_colaborador($row["NOMBRE_PERSONAL"],'01empresa','CORREO_4'); ?>
            </td>
-		   	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
+		  
            <td ><?php echo $row["FECHA_INICIO"]; ?></td>
           <td ><?php echo $row["FECHA_FINAL"]; ?></td>
+		   	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
           <td ><?php echo $row["NUMERO_DIAS"]; ?></td>
           <td ><?php echo $row["MONTO_BONO"]; ?></td>
           <td ><?php echo $row["MONTO_BONO_TOTAL"]; ?></td>
           <td ><?php echo $row["VIATICOS_PERSONAL"]; ?></td>
           <td ><?php echo $row["TOTAL"]; ?></td>
-		  <?php } ?>
+		 
           <td ><?php echo $row["ULTIMO_DIA"]; ?></td>
                <td ><?php echo $row["OBSERVACIONES_PERSONAL"]; ?></td>
 			   
                <td ><?php echo $row["FECHA_PPAGO"]; ?></td>
                <td ><?php echo $row["FORMA_PAGO"]; ?></td>
                <td ><?php echo $row["FECHA_EFECTIVA"]; ?></td>             
-              <td ><?php echo $urlADJUNTO_COMPROBANTEP; ?></td>
+             <td ><?php echo $urlADJUNTO_COMPROBANTEP; ?></td>
 			   <td ><?php echo $row["NOMBRE_RECIBIO"]; ?></td>
+			    <?php } ?>
                <td ><?php echo $row["PERSONAL_FECHA_ULTIMA_CARGA"]; ?></td>                      
           <td>
           <?php if($conexion->variablespermisos('','PERSONAL','modificar')=='si' and $var_bloquea_fecha=='no'){ ?><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonalmodifica" />
@@ -396,10 +399,11 @@ while($row = mysqli_fetch_array($querycontras))
           $NUMERO_DIAS1 += $row["NUMERO_DIAS"];
           }
           ?>
-           	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
+           	<?php if($conexion->variablespermisos('','TOTALES_PERSOADMIN','ver')=='si' ){ ?>
           <tr>
 		  <td></td>
 		  <td></td>
+		  
           <td colspan='8' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
           <td style="text-align:center;"> <?php echo number_format($NUMERO_DIAS1); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO1,2,'.',','); ?></td>

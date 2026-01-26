@@ -278,12 +278,13 @@
 			   
                <th width="20%"style="background:#c9e8e8">ULTIMO DÍA PARA <br>COMPROBAR VIATICOS:</th>
                <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
-			   <?php } ?>
+			
 			                  <th width="20%"style="background:#c9e8e8">FECHA DE PROGRAMACIÓN<br> DE PAGO</th>
                <th width="20%"style="background:#c9e8e8">FORMA DE PAGO</th>
                <th width="20%"style="background:#c9e8e8">FORMA EFECTIVA DE PAGO</th>
                <th width="20%"style="background:#c9e8e8">COMPROBANTE DE PAGO</th>
                <th width="20%"style="background:#c9e8e8">PAX QUE COBRO</th>
+			      <?php } ?>
                <th width="20%"style="background:#c9e8e8">FECHA DE <br>ÚLTIMA CARGA</th>
           </tr>
           <?php
@@ -320,6 +321,7 @@
 		  </td>
           <td ><?php echo $row["FECHA_INICIO1"]; ?></td>
           <td ><?php echo $row["FECHA_FINAL1"]; ?></td>
+		   	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
           <td ><?php echo $row["NUMERO_DIAS1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
@@ -332,6 +334,7 @@
                <td ><?php echo $row["FECHA_EFECTIVA1"]; ?></td>             
               <td ><?php echo $urlADJUNTO_COMPROBANTE; ?></td>
 			   <td ><?php echo $row["NOMBRE_RECIBIO1"]; ?></td>
+			    <?php } ?>
           <td ><?php echo $row["PERSONAL2_FECHA_ULTIMA_CARGA"]; ?></td>                        
           <td>
           <?php if($conexion->variablespermisos('','PERSONALNUEVO','modificar')=='si' and $var_bloquea_fecha=='no'){ ?><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2modifica" />
@@ -347,7 +350,7 @@
           $PER2TOTAL += $row["TOTAL1"];
           }
           ?>
-          
+          	<?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si' ){ ?>
           <tr>
           <td colspan='9' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
           <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS12); ?></td>
@@ -355,7 +358,7 @@
 		  
           <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2VIAT,2,'.',','); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td><td></td></tr>
+          <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td><td></td></tr><?php } ?>
            </form> 
           </table>  
              </tbody>

@@ -1080,8 +1080,7 @@ echo $conexion2->email($EMAILnombre, $html, $adjuntos, $embebida, $Subject,$smtp
 
 
 if ($hDatosPERSONAL == 'hDatosPERSONAL' OR $ENVIARpersonal == 'ENVIARpersonal') {
-    $ADJUNTO_COMPROBANTEP = isset($_POST["ADJUNTO_COMPROBANTEP"]) ? $_POST["ADJUNTO_COMPROBANTEP"] : "";
-			  	   	   if( $_FILES["ADJUNTO_COMPROBANTEP"] == true){
+		  	   	   if( $_FILES["ADJUNTO_COMPROBANTEP"] == true){
 $ADJUNTO_COMPROBANTEP = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
 }if($ADJUNTO_COMPROBANTEP=='2' or $ADJUNTO_COMPROBANTEP=='' or $ADJUNTO_COMPROBANTEP=='1'){
  $ADJUNTO_COMPROBANTEP1 = "";	
@@ -1132,7 +1131,7 @@ $ADJUNTO_COMPROBANTEP = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
             $FORMA_PAGO,
             $FECHA_EFECTIVA,
             $NOMBRE_RECIBIO,
-            $ADJUNTO_COMPROBANTEP,
+            $ADJUNTO_COMPROBANTEP1,
 			
             $NUMERO_EVENTO,
             $OBSERVACIONES_PERSONAL,

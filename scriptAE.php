@@ -3668,21 +3668,25 @@ $("#guardaPERSONAL").click(function () {
 
 
 $(document).on('click', '.view_dataDATOSpersonalmodifica', function(){
-  //$('#dataModal').modal();
   var personal_id = $(this).attr("id");
   $.ajax({
-   url:"calendariodeeventos2/VistaPreviapersonal.php",
-   method:"POST",
-   data:{personal_id:personal_id},
-    beforeSend:function(){  
-    $('#mensajePERSONAL').html('CARGANDO'); 
+    url: "calendariodeeventos2/VistaPreviapersonal.php",
+    method: "POST",
+    data: { personal_id: personal_id },
+    beforeSend: function(){  
+      $('#mensajePERSONAL').html('CARGANDO');
+
+      setTimeout(function(){
+        $('#mensajePERSONAL').html('');
+      }, 2000);
     },    
-   success:function(data){
-    $('#personal_detalles').html(data);
-    $('#dataModal').modal('show');
-   }
+    success: function(data){
+      $('#personal_detalles').html(data);
+      $('#dataModal').modal('show');
+    }
   });
- })
+});
+
 
 
 
