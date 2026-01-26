@@ -451,11 +451,35 @@ function pasara1_personalAUT(pasara1_personalAUT_id){
 
 }
 
+///////////////////////////////////////PARA DAR DE ALTA ADMIN//////////////////////////////////
+function pasara1_personalADMIN(pasara1_personalADMIN_id){
 
+	var checkBox = document.getElementById("admin"+pasara1_personalADMIN_id);
+	var pasapersonalADMIN_text = "";
+	if (checkBox.checked == true){
+	pasapersonalADMIN_text = "si";
+	}else{
+	pasapersonalADMIN_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{pasara1_personalADMIN_id:pasara1_personalADMIN_id,pasapersonalADMIN_text:pasapersonalADMIN_text},
+		beforeSend:function(){
+		$('#mensajePERSONAL').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_personal").load(location.href + " #reset_personal");			
+			
+		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
 
 
 function pasara1_personal2(pasara1_personal2_id){
-	//$('#personal2_detalles4').html();
 
 
 	var checkBox = document.getElementById("pasarapersonal2"+pasara1_personal2_id);

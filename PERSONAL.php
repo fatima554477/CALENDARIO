@@ -345,7 +345,7 @@ while($row = mysqli_fetch_array($querycontras))
               
 
 <td style="text-align:center">
-    <input type="checkbox" style="width:40PX;" class="form-check-input"   name="admin[]" id="admin" value="<?php echo $row["id"]; ?>"/> </td>  
+    <input type="checkbox" style="width:40PX;" class="form-check-input" name="admin[]" id="admin<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personalADMIN(<?php echo $row["id"]; ?>)" <?php if(isset($row["admin"]) && $row["admin"]=='si'){ echo "checked"; } ?>/> </td> 
 
 
  			   
@@ -392,11 +392,13 @@ while($row = mysqli_fetch_array($querycontras))
 </td>  <?php } ?>
           </tr>
           <?php
-          $PERSUNTOTAL1 += $row["MONTO_BONO_TOTAL"];
-          $PERVIAT1 += $row["VIATICOS_PERSONAL"];
-          $PERTOTAL1 += $row["TOTAL"];
-          $MONTO_BONO1 += $row["MONTO_BONO"];
-          $NUMERO_DIAS1 += $row["NUMERO_DIAS"];
+     if(!isset($row["admin"]) || $row["admin"] != 'si'){
+              $PERSUNTOTAL1 += $row["MONTO_BONO_TOTAL"];
+              $PERVIAT1 += $row["VIATICOS_PERSONAL"];
+              $PERTOTAL1 += $row["TOTAL"];
+              $MONTO_BONO1 += $row["MONTO_BONO"];
+              $NUMERO_DIAS1 += $row["NUMERO_DIAS"];
+          }
           }
           ?>
            	<?php if($conexion->variablespermisos('','TOTALES_PERSOADMIN','ver')=='si' ){ ?>

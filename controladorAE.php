@@ -1192,6 +1192,14 @@ if($pasara1_personalAUT_id!='' and ($pasapersonalAUT_text=='si' or $pasapersonal
 echo $altaeventos->actualizapersonalAUT ($pasara1_personalAUT_id , $pasapersonalAUT_text  );
 }
 
+///////////////////////////////ADMIN////////////////////////
+$pasara1_personalADMIN_id= isset($_POST["pasara1_personalADMIN_id"])?$_POST["pasara1_personalADMIN_id"]:"";
+$pasapersonalADMIN_text= isset($_POST["pasapersonalADMIN_text"])?$_POST["pasapersonalADMIN_text"]:"";
+
+if($pasara1_personalADMIN_id!='' and ($pasapersonalADMIN_text=='si' or $pasapersonalADMIN_text=='no') ){
+echo $altaeventos->actualizapersonalADMIN ($pasara1_personalADMIN_id , $pasapersonalADMIN_text  );
+}
+
 
 if($PERSONAL_ENVIAR_IMAIL ==true){
 

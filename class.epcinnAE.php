@@ -2086,7 +2086,30 @@ public function actualizapersonalAUT($pasara1_personalAUT_id, $pasapersonalAUT_t
     ";
     mysqli_query($conn, $var1) or die('P156'.mysqli_error($conn));
 
-    return "Actualizado";
+  return "Actualizado";
+}
+
+/////////////////////////////////////////PARA ADMIN/////////////////////////////////////
+public function actualizapersonalADMIN($pasara1_personalADMIN_id, $pasapersonalADMIN_text){
+
+	$conn = $this->db();
+	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
+	if($session != ''){
+		$idPersonal = (int)$pasara1_personalADMIN_id;
+		$valor = ($pasapersonalADMIN_text === 'si') ? 'si' : 'no';
+
+		$var1 = "
+			UPDATE 04personal
+			SET admin = '".$conn->real_escape_string($valor)."'
+			WHERE id = ".$idPersonal."
+			LIMIT 1
+		";
+		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+		return "Actualizado";
+
+	}else{
+		echo "TU SESIÓN HA TERMINADO";
+	}
 }
 
     
