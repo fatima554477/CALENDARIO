@@ -2107,8 +2107,6 @@ public function actualizapersonalADMIN($pasara1_personalADMIN_id, $pasapersonalA
 		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
 		return "Actualizado";
 
-	}else{
-		echo "TU SESIÓN HA TERMINADO";
 	}
 }
 

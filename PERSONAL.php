@@ -4,8 +4,11 @@ $eventoPermisos   = $altaeventos->var_altaeventos();
 $vendedorEvento   = isset($eventoPermisos['NOMBRE_VENDEDOR_id']) ? $eventoPermisos['NOMBRE_VENDEDOR_id'] : '';
 $usuarioActual    = isset($_SESSION['idem']) ? $_SESSION['idem'] : '';
 
-// ¿Tiene permiso PERSONALAUTORIZA (ver=si)?
+
 $tienePermisoPersonal = ($conexion->variablespermisos('', 'PERSONALAUTORIZA', 'ver') === 'si');
+$puedeVerAdmin = ($conexion->variablespermisos('', 'PERSO', 'ver') === 'si');
+$puedeGuardarAdmin = ($conexion->variablespermisos('', 'PERSO', 'guardar') === 'si');
+$puedeModificarAdmin = ($conexion->variablespermisos('', 'PERSO', 'modificar') === 'si');
 
 // Puede autorizar si es el vendedor del evento O si tiene PERSONALAUTORIZA=ver=si
 $puedeAutorizar = (
@@ -290,7 +293,9 @@ $puedeAutorizar = (
                <tr style="text-align:center">
                <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O</th> 
                <th width="15%"style="background:#c9e8e8">AUTORIZA<br>P y CG</th> 
+                  <?php if($puedeVerAdmin){ ?>
                <th width="15%"style="background:#c9e8e8">ADMIN</th> 
+			   <?php } ?> 
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
                <th width="20%"style="background:#c9e8e8">PUESTO</th>
@@ -339,13 +344,23 @@ while($row = mysqli_fetch_array($querycontras))
      
            </td>
            
-               <td style="text-align:center" >
-               <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal[]" id="personal" value="<?php echo $row["id"]; ?>"/> </td>
+      
 
               
 
+ 
+
+              <?php if($puedeVerAdmin){ ?>
 <td style="text-align:center">
-    <input type="checkbox" style="width:40PX;" class="form-check-input" name="admin[]" id="admin<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personalADMIN(<?php echo $row["id"]; ?>)" <?php if(isset($row["admin"]) && $row["admin"]=='si'){ echo "checked"; } ?>/> </td> 
+    <input type="checkbox" style="width:40PX;" class="form-check-input" name="admin[]" id="admin<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personalADMIN(<?php echo $row["id"]; ?>)" <?php if(isset($row["admin"]) && $row["admin"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarAdmin || ((isset($row["admin"]) && $row["admin"]=='si') && !$puedeModificarAdmin)) { echo "disabled"; } ?>/> </td> 
+			  <?php } ?>
+	
+	
+	
+	
+	
+	         <td style="text-align:center" >
+               <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal[]" id="personal" value="<?php echo $row["id"]; ?>"/> </td>
 
 
  			   
