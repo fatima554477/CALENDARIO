@@ -1,4 +1,10 @@
-<div id="content">     
+<?php
+$puedeVerAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'ver') === 'si');
+$puedeGuardarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'guardar') === 'si');
+$puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar') === 'si');
+?>
+
+<div id="content">   
 			<hr/>
 			<strong>  <p class="mb-0 text-uppercase">
 <img src="includes/contraer31.png" id="mostrar18" style="cursor:pointer;"/>
@@ -260,7 +266,9 @@
           <table class="table table-striped table-bordered" style="width:100%"  id='reset_personal2' name='reset_personal2'>
           <tr style="text-align:center">
                <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR VYO</th>
-               <th width="15%"style="background:#c9e8e8">ADMIN</th> 			   
+		   <?php if($puedeVerAdmin2){ ?>
+               <th width="15%"style="background:#c9e8e8">AUDITORÍA</th>
+			   <?php } ?> 			   
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
                <th width="20%"style="background:#c9e8e8">PUESTO</th>
@@ -301,10 +309,17 @@
 
 		  </td>
 		  
+		  
+		  		  	  <?php if($puedeVerAdmin2){ ?>
           <td style="text-align:center" >
-          <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td>
-		                 <td style="text-align:center" >
-               <input type="checkbox" style="width:40PX;" class="form-check-input"   name="admin[]" id="admin" value="<?php echo $row["id"]; ?>"/> </td>   
+               <input type="checkbox" style="width:40PX;" class="form-check-input" name="admin[]" id="admin<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2ADMIN(<?php echo $row["id"]; ?>)" <?php if(isset($row["admin"]) && $row["admin"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarAdmin2 || ((isset($row["admin"]) && $row["admin"]=='si') && !$puedeModificarAdmin2)) { echo "disabled"; } ?>/> </td>
+		  <?php } ?>
+          <td style="text-align:center" >
+          <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td> 
+		  
+  
+		  
+
 		  
           <td >
 		  <?php echo $altaeventos->un_solo_colaborador_nombre($row["NOMBRE_PERSONAL2"],'01informacionpersonal','NOMBRE_1'); ?>
@@ -343,11 +358,13 @@
 </td>  <?php } ?>
           </tr>
           <?php
+		       if(!isset($row["admin"]) || $row["admin"] != 'si'){
           $NUMERO_DIAS12 += $row["NUMERO_DIAS1"];
           $MONTO_BONO12 += $row["MONTO_BONO1"];
           $PER2SUNTOTAL += $row["MONTO_BONO_TOTAL1"];
           $PER2VIAT += $row["VIATICOS_PERSONAL2"];
           $PER2TOTAL += $row["TOTAL1"];
+          }
           }
           ?>
           	<?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si' ){ ?>

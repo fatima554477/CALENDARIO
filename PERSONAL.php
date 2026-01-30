@@ -294,7 +294,7 @@ $puedeAutorizar = (
                <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O</th> 
                <th width="15%"style="background:#c9e8e8">AUTORIZA<br>P y CG</th> 
                   <?php if($puedeVerAdmin){ ?>
-               <th width="15%"style="background:#c9e8e8">ADMIN</th> 
+               <th width="15%"style="background:#c9e8e8">AUDITORÍA</th> 
 			   <?php } ?> 
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>

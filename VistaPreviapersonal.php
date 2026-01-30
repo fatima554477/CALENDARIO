@@ -11,9 +11,9 @@ if($identioficador != '')
 	require "controladorAE.php";
 	$conexion = NEW accesoclase();
 
-$queryVISTAPREV = $conexion->listado_personal2($identioficador);
+$queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
  $output .= '
-<div id="mensajePERSONAL1"></div> 
+ <div id="mensajePERSONAL"></div> 
  <form  id="listado_personalform"> 
       <div class="table-responsive">  
            <table class="table table-bordered">';
@@ -26,6 +26,7 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
         href='includes/archivos/".$row["ADJUNTO_COMPROBANTEP"]."'>Visualizar!</a>";
         }		
              $output .= '
+	
 
 			 <tr>
 			 <td width="30%"><label>NOMBRE</label></td>
@@ -35,14 +36,14 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 			 </tr>
 			 
 			 			 			 <tr>
-			 <td width="30%"><label>FECHA_INICIO DEL EVENTO</label></td>
+			 <td width="30%"><label>FECHA_INICIO DE LA CORDINACIÓN</label></td>
 			 <td width="70%"><input type="date" name="FECHA_INICIO" value="'.$row["FECHA_INICIO"].'"></td>
 
 			 </tr>
 	
 			 
 			 			 <tr>
-			 <td width="30%"><label>FECHA FINAL DEL EVENTO</label></td>
+			 <td width="30%"><label>FECHA FINAL DE LA CORDINACIÓN</label></td>
 			 <td width="70%"><input type="date" name="FECHA_FINAL" value="'.$row["FECHA_FINAL"].'"></td>
 
 			 </tr>
@@ -110,13 +111,10 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 
 			 
 <tr>
-<td width="30%"><label>DOCUMENTO:</label></td>
-<td width="70%">
+<td width="30%"><label>COMPROBANTE DE PAGO</label></td>
+<td width="70%"><div class="col-md-6"> 
 
-
-
-<div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTEP\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTEP" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTEP\');" style="width:250px;" value="'.$row["ADJUNTO_COMPROBANTEP"].'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTEP" id="nono"/> <div id="2ADJUNTO_COMPROBANTEP"> "'.$urlADJUNTO_COMPROBANTEP.'" </div> </div> </div>
-
+<div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTEP\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTEP" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTEP\');" style="width:250px;" value="'.$row["ADJUNTO_COMPROBANTEP"].'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTEP" id="nono"/> <div id="2ADJUNTO_COMPROBANTEP"> "'.$urlADJUNTO_COMPROBANTEP.'" </div> </div> 
 
 
 </td>
@@ -158,8 +156,6 @@ $queryVISTAPREV = $conexion->listado_personal2($identioficador);
 }
 //
 ?>
-
-
 
 <script>
 
@@ -212,22 +208,28 @@ $('#2'+nombre).html('<a target="_blank" href="includes/archivos/'+$.trim(respons
 	}
 
 
+
     $(document).ready(function(){
 
 $("#clickpersonal").click(function(){
 	
    $.ajax({  
-    url: 'calendariodeeventos2/controladorAE.php',
+  url:"calendariodeeventos2/controladorAE.php",
     method:"POST",  
     data:$('#listado_personalform').serialize(),
 
     beforeSend:function(){  
-    $('#mensajePERSONAL1').html('cargando'); 
+    $('#mensajePERSONAL').html('cargando'); 
     }, 	
 	
     success:function(data){
+		 $('#PERSONALform')[0].reset();
+	
 		$("#reset_personal").load(location.href + " #reset_personal");
-    $('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>"); 
+    $('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>");
+            setTimeout(function () {
+                $('#mensajePERSONAL').html('');
+            }, 2000);	
 
 			$('#dataModal').modal('hide');
 

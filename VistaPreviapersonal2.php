@@ -34,14 +34,14 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 			 </td>
 			 </tr>
 					 			 			 <tr>
-			 <td width="30%"><label>FECHA_INICIO DEL EVENTO</label></td>
+			 <td width="30%"><label>FECHA_INICIO DE A CORDINACIÓN</label></td>
 			 <td width="70%"><input type="date" name="FECHA_INICIO1" value="'.$row["FECHA_INICIO1"].'"></td>
 
 			 </tr>
 	
 			 
 			 			 <tr>
-			 <td width="30%"><label>FECHA FINAL DEL EVENTO</label></td>
+			 <td width="30%"><label>FECHA FINAL DE LA CORDINACIÓN</label></td>
 			 <td width="70%"><input type="date" name="FECHA_FINAL1" value="'.$row["FECHA_FINAL1"].'"></td>
 
 			 </tr>

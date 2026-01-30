@@ -2110,7 +2110,26 @@ public function actualizapersonalADMIN($pasara1_personalADMIN_id, $pasapersonalA
 	}
 }
 
-    
+/////////////////////////////////////////PARA ADMIN/////////////////////////////////////
+public function actualizapersonal2ADMIN($pasara1_personal2ADMIN_id, $pasapersonal2ADMIN_text){
+
+	$conn = $this->db();
+	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
+	if($session != ''){
+		$idPersonal = (int)$pasara1_personal2ADMIN_id;
+		$valor = ($pasapersonal2ADMIN_text === 'si') ? 'si' : 'no';
+
+		$var1 = "
+			UPDATE 04personal2
+			SET admin = '".$conn->real_escape_string($valor)."'
+			WHERE id = ".$idPersonal."
+			LIMIT 1
+		";
+		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+		return "Actualizado";
+
+	}
+}    
 //////////////////  vehiculos eventos ///////////////////////////////////////////////
 
     public function VEHICULO($VEHICULOSEVE_VEHICULO , $VEHICULOSEVE_CANTIDAD , $VEHICULOSEVE_ENTREGA ,$VEHICULOSEVE_FOTO, $VEHICULOSEVE_LUGAR , $VEHICULOSEVE_HORA , $VEHICULOSEVE_DEVOLU , $VEHICULOSEVE_LUDEVO , $VEHICULOSEVE_HORADEVO , $VEHICULOSEVE_SOLICITUD , $VEHICULOSEVE_DIAS , $VEHICULOSEVE_COSTO , $VEHICULOSEVE_IVA, $VEHICULOSEVE_SUB , $PRECIOPESOS_SOFTWARE , $VEHICULOSEVE_OBSERVA ,$COLORV,$PLACASV, $HVEHICULOSEVE,$enviarVEHICULOSEVE,$IpVEHICULOSEVE){

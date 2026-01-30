@@ -1201,6 +1201,15 @@ echo $altaeventos->actualizapersonalADMIN ($pasara1_personalADMIN_id , $pasapers
 }
 
 
+///////////////////////////////ADMIN////////////////////////
+$pasara1_personal2ADMIN_id= isset($_POST["pasara1_personal2ADMIN_id"])?$_POST["pasara1_personal2ADMIN_id"]:"";
+$pasapersonal2ADMIN_text= isset($_POST["pasapersonal2ADMIN_text"])?$_POST["pasapersonal2ADMIN_text"]:"";
+
+if($pasara1_personal2ADMIN_id!='' and ($pasapersonal2ADMIN_text=='si' or $pasapersonalADMIN_text=='no') ){
+echo $altaeventos->actualizapersonal2ADMIN ($pasara1_personal2ADMIN_id , $pasapersonal2ADMIN_text  );
+}
+
+
 if($PERSONAL_ENVIAR_IMAIL ==true){
 
 $conexion2 = new herramientas();
