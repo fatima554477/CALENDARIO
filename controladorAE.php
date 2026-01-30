@@ -75,6 +75,8 @@ $EMAIL_BOLETOS_AVION= isset($_POST["EMAIL_BOLETOS_AVION"])?$_POST["EMAIL_BOLETOS
 $hDatosPERSONAL= isset($_POST["hDatosPERSONAL"])?$_POST["hDatosPERSONAL"]:"";
 $ENVIARpersonal= isset($_POST["ENVIARpersonal"])?$_POST["ENVIARpersonal"]:"";
 $borra_PERSONAL= isset($_POST["borra_PERSONAL"])?$_POST["borra_PERSONAL"]:"";
+$borra_ADJUNTO_PERSONAL = isset($_POST["borra_ADJUNTO_PERSONAL"])?$_POST["borra_ADJUNTO_PERSONAL"]:"";
+$archivo_adjunto_personal = isset($_POST["archivo"])?$_POST["archivo"]:"";
 $PERSONAL_ENVIAR_IMAIL= isset($_POST["PERSONAL_ENVIAR_IMAIL"])?$_POST["PERSONAL_ENVIAR_IMAIL"]:"";
 $IPpersonal = isset($_POST["IPpersonal"])?$_POST["IPpersonal"]:"";
 $Ipcobroscliente = isset($_POST["Ipcobroscliente"])?$_POST["Ipcobroscliente"]:"";
@@ -1161,11 +1163,17 @@ $ADJUNTO_COMPROBANTEP = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
 
 
 
-     if($borra_PERSONAL == 'borra_PERSONAL' ){
+    if($borra_PERSONAL == 'borra_PERSONAL' ){
 
 $borra_bole_perso = isset($_POST["borra_bole_perso"])?$_POST["borra_bole_perso"]:"";
 	echo $altaeventos->borra_PERSONAL( $borra_bole_perso );
 }
+
+    if($borra_ADJUNTO_PERSONAL == 'borra_ADJUNTO_PERSONAL' ){
+		echo $altaeventos->borra_ADJUNTO_PERSONAL($IPpersonal, $archivo_adjunto_personal);
+	}
+
+
 
 
 $NOMBRE_PERSONAL1 = isset($_POST['NOMBRE_PERSONAL1'])?$_POST['NOMBRE_PERSONAL1']:'';

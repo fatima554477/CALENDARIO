@@ -1958,13 +1958,42 @@ public function borra_CONTRATO($id){
 		return $arrayquery = mysqli_query($conn,$variablequery);
 	}
 	
-	    public function borra_PERSONAL($id){
+    public function borra_PERSONAL($id){
 		$conn = $this->db();
 		$variablequery = "delete from 04personal where id = '".$id."' ";
 		$arrayquery = mysqli_query($conn,$variablequery);
 		RETURN 
 		
 		"<P style='color:green;font-size:25px;'>ELEMENTO BORRADO</P>";
+	}
+
+	public function borra_ADJUNTO_PERSONAL($id, $archivo){
+		$conn = $this->db();
+		$archivo = trim($archivo);
+		if($archivo == ''){
+			return "<P style='color:red;font-size:25px;'>ARCHIVO NO ENCONTRADO</P>";
+		}
+
+		$consulta = mysqli_query($conn, "select ADJUNTO_COMPROBANTEP from 04personal where id = '".$id."' limit 1");
+		$fila = mysqli_fetch_array($consulta, MYSQLI_ASSOC);
+		$adjuntos = array();
+		if($fila && isset($fila["ADJUNTO_COMPROBANTEP"])){
+			$adjuntos = array_filter(array_map('trim', explode(',', $fila["ADJUNTO_COMPROBANTEP"])), function($valor){
+				return $valor !== '' && $valor !== '2';
+			});
+		}
+		$adjuntos = array_values(array_filter($adjuntos, function($valor) use ($archivo){
+			return $valor !== $archivo;
+		}));
+		$valorAdjuntos = implode(',', $adjuntos);
+		mysqli_query($conn, "update 04personal set ADJUNTO_COMPROBANTEP = '".$valorAdjuntos."' where id = '".$id."' ");
+
+		$archivoPath = __ROOT3__.'/includes/archivos/'.$archivo;
+		if(file_exists($archivoPath)){
+			unlink($archivoPath);
+		}
+
+		return "<P style='color:green;font-size:25px;'>ARCHIVO BORRADO</P>";
 	}
 
 	

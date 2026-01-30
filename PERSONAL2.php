@@ -295,10 +295,30 @@ $puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar')
 			      <?php } ?>
                <th width="20%"style="background:#c9e8e8">FECHA DE <br>ÚLTIMA CARGA</th>
           </tr>
-          <?php
-          while($row = mysqli_fetch_array($querycontras))
-          {
-          ?>
+<?php
+$urlADJUNTO_COMPROBANTE ='';
+while($row = mysqli_fetch_array($querycontras))
+{	
+	$adjuntosComprobante = array_filter(array_map('trim', explode(',', $row["ADJUNTO_COMPROBANTE"])));
+	if($row["ADJUNTO_COMPROBANTE"]=="" or $row["ADJUNTO_COMPROBANTE"]=='2' or empty($adjuntosComprobante)){
+		$urlADJUNTO_COMPROBANTE = '';
+	}else{
+		$urlADJUNTO_COMPROBANTE = "<ul class='list-unstyled mb-0'>";
+	foreach ($adjuntosComprobante as $adjuntoComprobante) {
+			if ($adjuntoComprobante == '' || $adjuntoComprobante == '2') {
+				continue;
+			}
+			$botonBorrarAdjunto = '';
+			if ($puedeBorrarAdjuntoPersonal) {
+				$botonBorrarAdjunto = " <button type='button' class='btn btn-link p-0 text-danger view_dataPERSONALadjuntoBorrar' data-personal='".$row["id"]."' data-archivo='".$adjuntoComprobante."'>Borrar</button>";
+			}
+			$urlADJUNTO_COMPROBANTE .= "<li class='d-flex align-items-center gap-2'><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a>".$botonBorrarAdjunto."</li>";
+		}
+		$urlADJUNTO_COMPROBANTE .= "</ul>";
+
+	}
+
+?>
           <tr style="background:#f5f9fc;text-align:center">
 		  
           <td style="text-align:center" >

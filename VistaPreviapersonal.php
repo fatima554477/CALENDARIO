@@ -19,6 +19,7 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
            <table class="table table-bordered">';
     $row = mysqli_fetch_array($queryVISTAPREV);
     
+     $puedeBorrarAdjuntoPersonal = ($conexion->variablespermisos('','PERSONAL','borrar')=='si' && (!isset($var_bloquea_fecha) || $var_bloquea_fecha=='no'));
       $adjuntosComprobante = array_filter(array_map('trim', explode(',', $row["ADJUNTO_COMPROBANTEP"])));
         if($row["ADJUNTO_COMPROBANTEP"]=="" or $row["ADJUNTO_COMPROBANTEP"]=='2' or empty($adjuntosComprobante)){
         $urlADJUNTO_COMPROBANTEP="";
@@ -29,11 +30,15 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 				if ($adjuntoComprobante == '' || $adjuntoComprobante == '2') {
 					continue;
 				}
-				$urlADJUNTO_COMPROBANTEP .= "<li><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a></li>";
+				$botonBorrarAdjunto = '';
+				if ($puedeBorrarAdjuntoPersonal) {
+					$botonBorrarAdjunto = " <button type='button' class='btn btn-link p-0 text-danger view_dataPERSONALadjuntoBorrar' data-personal='".$row["id"]."' data-archivo='".$adjuntoComprobante."'>Borrar</button>";
+				}
+				$urlADJUNTO_COMPROBANTEP .= "<li class='d-flex align-items-center gap-2'><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a>".$botonBorrarAdjunto."</li>";
 			}
 			$urlADJUNTO_COMPROBANTEP .= "</ul>";
         $valorADJUNTO_COMPROBANTEP = implode(',', $adjuntosComprobante);
-        }				
+        }					
              $output .= '
 	
 

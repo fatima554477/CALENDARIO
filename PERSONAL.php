@@ -331,14 +331,20 @@ while($row = mysqli_fetch_array($querycontras))
 		$urlADJUNTO_COMPROBANTEP = '';
 	}else{
 		$urlADJUNTO_COMPROBANTEP = "<ul class='list-unstyled mb-0'>";
-		foreach ($adjuntosComprobante as $adjuntoComprobante) {
+	foreach ($adjuntosComprobante as $adjuntoComprobante) {
 			if ($adjuntoComprobante == '' || $adjuntoComprobante == '2') {
 				continue;
 			}
-			$urlADJUNTO_COMPROBANTEP .= "<li><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a></li>";
+			$botonBorrarAdjunto = '';
+			if ($puedeBorrarAdjuntoPersonal) {
+				$botonBorrarAdjunto = " <button type='button' class='btn btn-link p-0 text-danger view_dataPERSONALadjuntoBorrar' data-personal='".$row["id"]."' data-archivo='".$adjuntoComprobante."'>Borrar</button>";
+			}
+			$urlADJUNTO_COMPROBANTEP .= "<li class='d-flex align-items-center gap-2'><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a>".$botonBorrarAdjunto."</li>";
 		}
 		$urlADJUNTO_COMPROBANTEP .= "</ul>";
+
 	}
+
 ?>
 
                <tr style="background:#f5f9fc;text-align:center">
