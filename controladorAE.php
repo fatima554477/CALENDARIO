@@ -76,6 +76,7 @@ $hDatosPERSONAL= isset($_POST["hDatosPERSONAL"])?$_POST["hDatosPERSONAL"]:"";
 $ENVIARpersonal= isset($_POST["ENVIARpersonal"])?$_POST["ENVIARpersonal"]:"";
 $borra_PERSONAL= isset($_POST["borra_PERSONAL"])?$_POST["borra_PERSONAL"]:"";
 $PERSONAL_ENVIAR_IMAIL= isset($_POST["PERSONAL_ENVIAR_IMAIL"])?$_POST["PERSONAL_ENVIAR_IMAIL"]:"";
+$IPpersonal = isset($_POST["IPpersonal"])?$_POST["IPpersonal"]:"";
 $Ipcobroscliente = isset($_POST["Ipcobroscliente"])?$_POST["Ipcobroscliente"]:"";
 $IpINGRESOS = isset($_POST["IpINGRESOS"])?$_POST["IpINGRESOS"]:"";
 $IpEGRESOS = isset($_POST["IpEGRESOS"])?$_POST["IpEGRESOS"]:""; 
@@ -1107,13 +1108,24 @@ $ADJUNTO_COMPROBANTEP = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
 	
     $VIATICOS_PERSONAL = isset($_POST["VIATICOS_PERSONAL"]) ? $_POST["VIATICOS_PERSONAL"] : "";
     $OBSERVACIONES_PERSONAL = isset($_POST["OBSERVACIONES_PERSONAL"]) ? $_POST["OBSERVACIONES_PERSONAL"] : "";
-    $PERSONAL_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL_FECHA_ULTIMA_CARGA"]) ? $_POST["PERSONAL_FECHA_ULTIMA_CARGA"] : "";
+ $PERSONAL_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL_FECHA_ULTIMA_CARGA"]) ? $_POST["PERSONAL_FECHA_ULTIMA_CARGA"] : "";
+
+
     $hDatosPERSONAL = isset($_POST["hDatosPERSONAL"]) ? $_POST["hDatosPERSONAL"] : "";
     $IPpersonal = isset($_POST["IPpersonal"]) ? $_POST["IPpersonal"] : "";
+
+	if($IPpersonal != "" && $ADJUNTO_COMPROBANTEP1 == ""){
+		$adjuntoActual = $altaeventos->listado_personal2($IPpersonal);
+		$rowAdjunto = mysqli_fetch_array($adjuntoActual, MYSQLI_ASSOC);
+		if($rowAdjunto && isset($rowAdjunto["ADJUNTO_COMPROBANTEP"])){
+			$ADJUNTO_COMPROBANTEP1 = $rowAdjunto["ADJUNTO_COMPROBANTEP"];
+		}
+	}
 
 
         // Si todo bien, ejecuta el alta
         echo $altaeventos->PERSONAL(
+
             $NOMBRE_PERSONAL,
             $PUESTO_PERSONAL,
             $WHAT_PERSONAL,
@@ -3083,11 +3095,28 @@ foreach($_FILES AS $ETQIETA => $VALOR){
 
 }
 
-  if($IPpersonal == true and ( $_FILES["ADJUNTO_COMPROBANTEP"] == true ) ){
-foreach($_FILES AS $ETQIETA => $VALOR){
-	echo $conexion->cargar($ETQIETA,'04personal','3',$IPpersonal);
-}	
-
-} 
+ if($IPpersonal == true and ( $_FILES["ADJUNTO_COMPROBANTEP"] == true ) ){
+	$nuevoAdjunto = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
+	if($nuevoAdjunto=='2' or $nuevoAdjunto=='' or $nuevoAdjunto=='1'){
+		echo $nuevoAdjunto;
+	}else{
+		$conn = $altaeventos->db();
+		$adjuntosActuales = '';
+		$consultaAdjuntos = mysqli_query($conn, "select ADJUNTO_COMPROBANTEP from 04personal where id = '".$IPpersonal."' limit 1");
+		if($consultaAdjuntos){
+			$filaAdjuntos = mysqli_fetch_array($consultaAdjuntos, MYSQLI_ASSOC);
+			if($filaAdjuntos && isset($filaAdjuntos["ADJUNTO_COMPROBANTEP"])){
+				$adjuntosActuales = $filaAdjuntos["ADJUNTO_COMPROBANTEP"];
+			}
+		}
+		$listaAdjuntos = array_filter(array_map('trim', explode(',', $adjuntosActuales)));
+		if(!in_array($nuevoAdjunto, $listaAdjuntos, true)){
+			$listaAdjuntos[] = $nuevoAdjunto;
+		}
+		$valorAdjuntos = implode(',', $listaAdjuntos);
+		mysqli_query($conn, "update 04personal set ADJUNTO_COMPROBANTEP = '".$valorAdjuntos."' where id = '".$IPpersonal."' ");
+		echo $nuevoAdjunto;
+	}
+}   
  
 ?>

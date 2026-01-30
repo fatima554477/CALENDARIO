@@ -19,12 +19,21 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
            <table class="table table-bordered">';
     $row = mysqli_fetch_array($queryVISTAPREV);
     
-        if($row["ADJUNTO_COMPROBANTEP"]=="" or $row["ADJUNTO_COMPROBANTEP"]=='2'){
+      $adjuntosComprobante = array_filter(array_map('trim', explode(',', $row["ADJUNTO_COMPROBANTEP"])));
+        if($row["ADJUNTO_COMPROBANTEP"]=="" or $row["ADJUNTO_COMPROBANTEP"]=='2' or empty($adjuntosComprobante)){
         $urlADJUNTO_COMPROBANTEP="";
+        $valorADJUNTO_COMPROBANTEP = "";
         }else{
-			$urlADJUNTO_COMPROBANTEP= "<a target='_blank'
-        href='includes/archivos/".$row["ADJUNTO_COMPROBANTEP"]."'>Visualizar!</a>";
-        }		
+			$urlADJUNTO_COMPROBANTEP= "<ul class='list-unstyled mb-0'>";
+			foreach ($adjuntosComprobante as $adjuntoComprobante) {
+				if ($adjuntoComprobante == '' || $adjuntoComprobante == '2') {
+					continue;
+				}
+				$urlADJUNTO_COMPROBANTEP .= "<li><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a></li>";
+			}
+			$urlADJUNTO_COMPROBANTEP .= "</ul>";
+        $valorADJUNTO_COMPROBANTEP = implode(',', $adjuntosComprobante);
+        }				
              $output .= '
 	
 
@@ -114,7 +123,7 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 <td width="30%"><label>COMPROBANTE DE PAGO</label></td>
 <td width="70%"><div class="col-md-6"> 
 
-<div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTEP\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTEP" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTEP\');" style="width:250px;" value="'.$row["ADJUNTO_COMPROBANTEP"].'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTEP" id="nono"/> <div id="2ADJUNTO_COMPROBANTEP"> "'.$urlADJUNTO_COMPROBANTEP.'" </div> </div> 
+<div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTEP\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTEP" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTEP\');" style="width:250px;" value="'.$valorADJUNTO_COMPROBANTEP.'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTEP" id="nono" multiple/> <div id="2ADJUNTO_COMPROBANTEP"> "'.$urlADJUNTO_COMPROBANTEP.'" </div> </div> 
 
 
 </td>
@@ -160,20 +169,54 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 <script>
 
 
-
 var fileobj;
 	function upload_file(e,name) {
 	    e.preventDefault();
-	    fileobj = e.dataTransfer.files[0];
-	    ajax_file_upload1(fileobj,name);
+	    upload_files(e.dataTransfer.files, name);
+	}
+
+	function upload_files(files, name) {
+	    if(!files || files.length === 0) {
+	        return;
+	    }
+	    Array.from(files).forEach(function(file){
+	        ajax_file_upload1(file, name);
+	    });
 	}
 	 
 	function file_explorer(name) {
 	    document.getElementsByName(name)[0].click();
 	    document.getElementsByName(name)[0].onchange = function() {
-	        fileobj = document.getElementsByName(name)[0].files[0];
-	        ajax_file_upload1(fileobj,name);
+	        upload_files(document.getElementsByName(name)[0].files, name);
 	    };
+	}
+
+	function normalizarAdjuntos(valor) {
+	    return valor
+	        .split(',')
+	        .map(function(item){ return item.trim(); })
+	        .filter(function(item){ return item !== '' && item !== '2'; });
+	}
+
+	function renderAdjuntos(nombre, adjuntos) {
+	    if(adjuntos.length === 0) {
+	        return '';
+	    }
+	    var html = '<ul class="list-unstyled mb-0">';
+	    adjuntos.forEach(function(archivo){
+	        html += '<li><a target="_blank" href="includes/archivos/' + archivo + '">Visualizar!</a></li>';
+	    });
+	    html += '</ul>';
+	    return html;
+	}
+
+	function actualizarAdjuntos(nombre, nuevoAdjunto) {
+	    var actuales = normalizarAdjuntos($('#'+nombre).val());
+	    if(nuevoAdjunto && actuales.indexOf(nuevoAdjunto) === -1) {
+	        actuales.push(nuevoAdjunto);
+	    }
+	    $('#'+nombre).val(actuales.join(','));
+	    $('#2'+nombre).html(renderAdjuntos(nombre, actuales));
 	}
 
 	function ajax_file_upload1(file_obj,nombre) {
@@ -198,8 +241,8 @@ if($.trim(response) == 2 ){
 $('#2'+nombre).html('<p style="color:red;">Error, archivo diferente a PDF, JPG o GIF.</p>');
 $('#'+nombre).val("");
 }else{
-$('#'+nombre).val(response);
-$('#2'+nombre).html('<a target="_blank" href="includes/archivos/'+$.trim(response)+'">Visualizar!</a>');	
+var nuevoAdjunto = $.trim(response);
+actualizarAdjuntos(nombre, nuevoAdjunto);
 }
 
 	            }

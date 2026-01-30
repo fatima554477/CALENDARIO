@@ -326,8 +326,21 @@ $puedeAutorizar = (
 $urlADJUNTO_COMPROBANTEP ='';
 while($row = mysqli_fetch_array($querycontras))
 {	
-	$urlADJUNTO_COMPROBANTEP = $conexion->descargararchivo($row["ADJUNTO_COMPROBANTEP"]);
+	$adjuntosComprobante = array_filter(array_map('trim', explode(',', $row["ADJUNTO_COMPROBANTEP"])));
+	if($row["ADJUNTO_COMPROBANTEP"]=="" or $row["ADJUNTO_COMPROBANTEP"]=='2' or empty($adjuntosComprobante)){
+		$urlADJUNTO_COMPROBANTEP = '';
+	}else{
+		$urlADJUNTO_COMPROBANTEP = "<ul class='list-unstyled mb-0'>";
+		foreach ($adjuntosComprobante as $adjuntoComprobante) {
+			if ($adjuntoComprobante == '' || $adjuntoComprobante == '2') {
+				continue;
+			}
+			$urlADJUNTO_COMPROBANTEP .= "<li><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a></li>";
+		}
+		$urlADJUNTO_COMPROBANTEP .= "</ul>";
+	}
 ?>
+
                <tr style="background:#f5f9fc;text-align:center">
            
                <td style="text-align:center" >
