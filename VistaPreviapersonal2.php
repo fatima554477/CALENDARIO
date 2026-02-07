@@ -75,7 +75,7 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 
 			 </tr>
 			 
-			 			 			 			 			 			 			 <tr>
+			 	<tr>
 			 <td width="30%"><label>TOTAL DEL BONO</label></td>
 			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL1" value="'.$row["MONTO_BONO_TOTAL1"].'"></td>
 
@@ -253,11 +253,49 @@ actualizarAdjuntos(nombre, nuevoAdjunto);
 	            }
 	        });
 	    }
+}
+
+	function convertirANumero(valor) {
+		if(typeof valor === 'number') {
+			return isNaN(valor) ? 0 : valor;
+		}
+		if(!valor) {
+			return 0;
+		}
+		var numero = parseFloat(String(valor).replace(',', '.'));
+		return isNaN(numero) ? 0 : numero;
+	}
+
+	function formatearNumero(valor) {
+		if(Math.round(valor) === valor) {
+			return String(valor);
+		}
+		return valor.toFixed(2);
+	}
+
+	function recalcularTotalesPersonal2() {
+		var numeroDias = convertirANumero($('input[name="NUMERO_DIAS1"]').val());
+		var montoBono = convertirANumero($('input[name="MONTO_BONO1"]').val());
+		var viaticos = convertirANumero($('input[name="VIATICOS_PERSONAL2"]').val());
+		var totalBono = numeroDias * montoBono;
+		var totalBonoYViaticos = totalBono + viaticos;
+
+		$('input[name="MONTO_BONO_TOTAL1"]').val(formatearNumero(totalBono));
+		$('input[name="TOTAL1"]').val(formatearNumero(totalBonoYViaticos));
 	}
 
 
 
-    $(document).ready(function(){
+
+
+
+	$(document).ready(function(){
+
+	$('input[name="NUMERO_DIAS1"], input[name="MONTO_BONO1"], input[name="VIATICOS_PERSONAL2"]').on('input', function(){
+		recalcularTotalesPersonal2();
+	});
+
+	recalcularTotalesPersonal2();
 
 $("#clickpersonal2").click(function(){
 	
@@ -271,6 +309,7 @@ $("#clickpersonal2").click(function(){
     }, 	
 	
     success:function(data){
+		
 		$("#reset_personal2").load(location.href + " #reset_personal2");
     $('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>"); 
 

@@ -478,9 +478,60 @@ function pasara1_personalADMIN(pasara1_personalADMIN_id){
 
 }
 
+/////////////////PARA AUTORIZAR BONO VYO////////////////////////////////////
+function pasara1_personalVYO(pasara1_personalVYO_id){
 
+	var checkBox = document.getElementById("VYO"+pasara1_personalVYO_id);
+	var pasapersonalVYO_text = "";
+	if (checkBox.checked == true){
+	pasapersonalVYO_text = "si";
+	}else{
+	pasapersonalVYO_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{pasara1_personalVYO_id:pasara1_personalVYO_id,pasapersonalVYO_text:pasapersonalVYO_text},
+		beforeSend:function(){
+		$('#mensajePERSONAL').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_personal").load(location.href + " #reset_personal");			
+			
+		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
 
-///////////////////////////////////////PARA DAR DE ALTA ADMIN//////////////////////////////////
+}
+/////////////////PARA AUTORIZAR BONO DIRECCION////////////////////////////////////
+function pasara1_personalDIRECCION(pasara1_personalDIRECCION_id){
+
+	var checkBox = document.getElementById("DIRECCION"+pasara1_personalDIRECCION_id);
+	var pasapersonalDIRECCION_text = "";
+	if (checkBox.checked == true){
+	pasapersonalDIRECCION_text = "si";
+	}else{
+	pasapersonalDIRECCION_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{pasara1_personalDIRECCION_id:pasara1_personalDIRECCION_id,pasapersonalDIRECCION_text:pasapersonalDIRECCION_text},
+		beforeSend:function(){
+		$('#mensajePERSONAL').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_personal").load(location.href + " #reset_personal");			
+			
+		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
+
+///////////////////////////////////////PARA DAR DE ALTA ADMIN2//////////////////////////////////
 function pasara1_personal2ADMIN(pasara1_personal2ADMIN_id){
 
 	var checkBox = document.getElementById("admin"+pasara1_personal2ADMIN_id);
@@ -495,17 +546,74 @@ function pasara1_personal2ADMIN(pasara1_personal2ADMIN_id){
 		method:'POST',
 		data:{pasara1_personal2ADMIN_id:pasara1_personal2ADMIN_id,pasapersonal2ADMIN_text:pasapersonal2ADMIN_text},
 		beforeSend:function(){
-		$('#mensajePERSONAL').html('cargando');
+		$('#mensajePERSONAL2').html('cargando');
 	},
 		success:function(data){
 			
-	$("#reset_personal").load(location.href + " #reset_personal");			
+	$("#reset_personal2").load(location.href + " #reset_personal2");			
 			
-		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
 	});
 
 }
+
+/////////////////PARA AUTORIZAR BONO VYO////////////////////////////////////
+function pasara1_personal2VYO(pasara1_personal2VYO_id){
+
+	var checkBox = document.getElementById("VYO"+pasara1_personal2VYO_id);
+	var pasapersonal2VYO_text = "";
+	if (checkBox.checked == true){
+	pasapersonal2VYO_text = "si";
+	}else{
+	pasapersonal2VYO_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{pasara1_personal2VYO_id:pasara1_personal2VYO_id,pasapersonal2VYO_text:pasapersonal2VYO_text},
+		beforeSend:function(){
+		$('#mensajePERSONAL2').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_personal2").load(location.href + " #reset_personal2");			
+			
+		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
+/////////////////PARA AUTORIZAR BONO DIRECCION////////////////////////////////////
+function pasara1_personal2DIRECCION(pasara1_personal2DIRECCION_id){
+
+	var checkBox = document.getElementById("DIRECCION"+pasara1_personal2DIRECCION_id);
+	var pasapersonal2DIRECCION_text = "";
+	if (checkBox.checked == true){
+	pasapersonal2DIRECCION_text = "si";
+	}else{
+	pasapersonal2DIRECCION_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{pasara1_personal2DIRECCION_id:pasara1_personal2DIRECCION_id,pasapersonal2DIRECCION_text:pasapersonal2DIRECCION_text},
+		beforeSend:function(){
+		$('#mensajePERSONAL2').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_personal2").load(location.href + " #reset_personal2");			
+			
+		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
+
+
+
+
 
 
 
@@ -3758,7 +3866,7 @@ $(document).on('click', '.view_dataDATOSpersonalborrar', function(){
 
   
   $.ajax({
-   url: 'calendariodeeventos2/controladorAE.php',
+   url:'calendariodeeventos2/controladorAE.php',
    method:"POST",
    data:{borra_bole_perso:borra_bole_perso,borra_PERSONAL:borra_PERSONAL},
    
@@ -3790,7 +3898,7 @@ $(document).on('click', '.view_dataPERSONALadjuntoBorrar', function(){
   $('#dataModal3').modal('show');
   $('#btnYes').click(function() {
     $.ajax({
-     url: 'calendariodeeventos2/controladorAE.php',
+     url:'calendariodeeventos2/controladorAE.php',
      method:"POST",
      data:{IPpersonal:personal_id, archivo:archivo, borra_ADJUNTO_PERSONAL:borra_ADJUNTO_PERSONAL},
      
@@ -3833,7 +3941,7 @@ var PERSONAL_ENVIAR_IMAIL = $('#PERSONAL_ENVIAR_IMAIL').val();
 var dataString = $("#form_emai_personal").serialize();
 
 $.ajax({
-    url: 'calendariodeeventos2/controladorAE.php',
+    url:'calendariodeeventos2/controladorAE.php',
 method:'POST',
 dataType: 'html',
 
@@ -3856,7 +3964,7 @@ $("#guardaPERSONAL2").click(function () {
     const formData = new FormData($('#PERSONAL2form')[0]);
 
     $.ajax({
-        url: 'calendariodeeventos2/controladorAE.php',
+        url:'calendariodeeventos2/controladorAE.php',
         type: 'POST',
         dataType: 'html',
         data: formData,
@@ -3929,7 +4037,7 @@ $(document).on('click', '.view_dataDATOSpersonal2borrar', function(){
 
   
   $.ajax({
-   url: 'calendariodeeventos2/controladorAE.php',
+   url:'calendariodeeventos2/controladorAE.php',
    method:"POST",
    data:{borra_perso2:borra_perso2,borra_PERSONAL2:borra_PERSONAL2},
    
@@ -3963,7 +4071,7 @@ var PERSONAL2_ENVIAR_IMAIL = $('#PERSONAL2_ENVIAR_IMAIL').val();
 var dataString = $("#form_emai_personal2").serialize();
 
 $.ajax({
-    url: 'calendariodeeventos2/controladorAE.php',
+    url:'calendariodeeventos2/controladorAE.php',
 method:'POST',
 dataType: 'html',
 
@@ -3983,17 +4091,17 @@ $('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().
 
 $(document).on('click', '.view_dataPERSONAL2adjuntoBorrar', function(){
   var personal_id = $(this).data("personal");
-  var archivo2 = $(this).data("archivo2");
+  var archivo = $(this).data("archivo");
   var borra_ADJUNTO_PERSONAL2 = "borra_ADJUNTO_PERSONAL2";
   var $adjuntoItem = $(this).closest("li");
 
   $('#personal_detalles3').html();
   $('#dataModal3').modal('show');
   $('#btnYes').click(function() {
-    $.ajax({
+  $.ajax({
      url: 'calendariodeeventos2/controladorAE.php',
      method:"POST",
-     data:{IPpersonal:personal_id, archivo2:archivo2, borra_ADJUNTO_PERSONAL2:borra_ADJUNTO_PERSONAL2},
+     data:{IPpersonal2:personal_id, archivo:archivo, borra_ADJUNTO_PERSONAL2:borra_ADJUNTO_PERSONAL2},
      
       beforeSend:function(){  
       $('#mensajePERSONAL2').html('CARGANDO'); 
@@ -4003,10 +4111,10 @@ $(document).on('click', '.view_dataPERSONAL2adjuntoBorrar', function(){
         $("#mensajePERSONAL2").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
         var $listaAdjuntos = $adjuntoItem.closest("ul");
         $adjuntoItem.remove();
-        if($listaAdjuntos.find("li").length === 0){
+   if($listaAdjuntos.find("li").length === 0){
           $listaAdjuntos.remove();
         }
-        var $inputAdjunto = $('#ADJUNTO_COMPROBANTEP');
+        var $inputAdjunto = $('#ADJUNTO_COMPROBANTE');
         if($inputAdjunto.length){
           var actuales = $inputAdjunto.val()
             .split(',')

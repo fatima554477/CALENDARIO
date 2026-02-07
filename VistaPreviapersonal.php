@@ -65,20 +65,20 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 			 
 			 			 			 <tr>
 			 <td width="30%"><label>NÚMERO DE DIAS</label></td>
-			 <td width="70%"><input type="text" name="NUMERO_DIAS" value="'.$row["NUMERO_DIAS"].'"></td>
+			 <td width="70%"><input type="text" name="NUMERO_DIAS" id="NUMERO_DIAS" value="'.$row["NUMERO_DIAS"].'"></td>
 
 			 </tr>
 			 
 			 
 			 			 			 			 <tr>
 			 <td width="30%"><label>MONTO DEL BONO</label></td>
-			 <td width="70%"><input type="text" name="MONTO_BONO" value="'.$row["MONTO_BONO"].'"></td>
+			 <td width="70%"><input type="text" name="MONTO_BONO" id="MONTO_BONO" value="'.$row["MONTO_BONO"].'"></td>
 
 			 </tr>
 			 
 			 			 			 			 			 			 			 <tr>
 			 <td width="30%"><label>TOTAL DEL BONO</label></td>
-			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL" value="'.$row["MONTO_BONO_TOTAL"].'"></td>
+			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL" id="MONTO_BONO_TOTAL" value="'.$row["MONTO_BONO_TOTAL"].'"></td>
 
 			 </tr>
 			 
@@ -87,13 +87,13 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 			 
 			 		 <tr>
 			 <td width="30%"><label> VIATICOS</label></td>
-			 <td width="70%"><input type="text" name="VIATICOS_PERSONAL" value="'.$row["VIATICOS_PERSONAL"].'"></td>
+			 <td width="70%"><input type="text" name="VIATICOS_PERSONAL" id="VIATICOS_PERSONAL"value="'.$row["VIATICOS_PERSONAL"].'"></td>
 			 </tr>
 			 
 			 
 			 <tr>
 			 <td width="30%"><label>TOTAL BONO Y VIATICOS</label></td>
-			 <td width="70%"><input type="text" name="TOTAL" value="'.$row["TOTAL"].'"></td>
+			 <td width="70%"><input type="text" name="TOTAL" id="TOTAL" value="'.$row["TOTAL"].'"></td>
 			 </tr>
 			 
 			 <tr>
@@ -112,10 +112,24 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 			 <td width="70%"><input type="date" name="FECHA_PPAGO" value="'.$row["FECHA_PPAGO"].'"></td>
 			 </tr>
 			 
-			 			 <tr>
-			 <td width="30%"><label>FORMA DE PAGO</label></td>
-			 <td width="70%"><input type="text" name="FORMA_PAGO" value="'.$row["FORMA_PAGO"].'"></td>
-			 </tr>
+<tr>
+    <td width="30%" style="font-weight:bold;" ><label>FORMA DE PAGO:</label></td>
+    <td width="70%" class="form-control">
+        <select name="FORMA_PAGO" style="background:#daddf5">
+            <option style="background:#f2b4f5" value="">SELECCIONA UNA OPCIÓN</option>
+            <option style="background:#f2b4f5" value="03" '.($row["FORMA_PAGO"] == "03" ? "selected" : "").'>03 TRANSFERENCIA ELECTRÓNICA</option>
+            <option style="background:#ddf5da" value="01" '.($row["FORMA_PAGO"] == "01" ? "selected" : "").'>01 EFECTIVO</option>
+            <option style="background:#fceade" value="02" '.($row["FORMA_PAGO"] == "02" ? "selected" : "").'>02 CHEQUE NOMINATIVO</option>
+            <option style="background:#dee6fc" value="04" '.($row["FORMA_PAGO"] == "04" ? "selected" : "").'>04 TARJETA DE CRÉDITO</option>
+            <option style="background:#f6fcde" value="05" '.($row["FORMA_PAGO"] == "05" ? "selected" : "").'>05 MONEDERO ELECTRÓNICO</option>
+            <option style="background:#dee2fc" value="06" '.($row["FORMA_PAGO"] == "06" ? "selected" : "").'>06 DINERO ELECTRÓNICO</option>
+            <option style="background:#f9e5fa" value="08" '.($row["FORMA_PAGO"] == "08" ? "selected" : "").'>08 VALES DE DESPENSA</option>
+            <option style="background:#eefcde" value="28" '.($row["FORMA_PAGO"] == "28" ? "selected" : "").'>28 TARJETA DE DÉBITO</option>
+            <option style="background:#fcfbde" value="29" '.($row["FORMA_PAGO"] == "29" ? "selected" : "").'>29 TARJETA DE SERVICIO</option>
+            <option style="background:#f9e5fa" value="99" '.($row["FORMA_PAGO"] == "99" ? "selected" : "").'>99 OTRO</option>
+        </select>
+    </td>
+</tr>
 			 
 			 			 <tr>
 			 <td width="30%"><label>FECHA EFECTIVA DE PAGO</label></td>
@@ -257,7 +271,42 @@ actualizarAdjuntos(nombre, nuevoAdjunto);
 
 
 
-    $(document).ready(function(){
+	function valorMoneda(numero) {
+		if(numero === undefined || numero === null) {
+			return 0;
+		}
+		var limpio = numero.toString().replace(/,/g, '').trim();
+		if(limpio === '') {
+			return 0;
+		}
+		var convertido = parseFloat(limpio);
+		return isNaN(convertido) ? 0 : convertido;
+	}
+
+	function calcularTotalesBonoPersonal() {
+		var numeroDias = valorMoneda($('#NUMERO_DIAS').val());
+		var montoBono = valorMoneda($('#MONTO_BONO').val());
+		var viaticos = valorMoneda($('#VIATICOS_PERSONAL').val());
+
+		var totalBono = numeroDias * montoBono;
+		var totalBonoViaticos = totalBono + viaticos;
+
+		$('#MONTO_BONO_TOTAL').val(totalBono.toFixed(2));
+		$('#TOTAL').val(totalBonoViaticos.toFixed(2));
+	}
+
+
+
+
+
+
+	$(document).ready(function(){
+
+	$('#NUMERO_DIAS, #MONTO_BONO, #VIATICOS_PERSONAL').off('input').on('input', function(){
+		calcularTotalesBonoPersonal();
+	});
+
+	calcularTotalesBonoPersonal();
 
 $("#clickpersonal").click(function(){
 	

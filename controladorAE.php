@@ -79,6 +79,7 @@ $borra_ADJUNTO_PERSONAL = isset($_POST["borra_ADJUNTO_PERSONAL"])?$_POST["borra_
 $archivo_adjunto_personal = isset($_POST["archivo"])?$_POST["archivo"]:"";
 $PERSONAL_ENVIAR_IMAIL= isset($_POST["PERSONAL_ENVIAR_IMAIL"])?$_POST["PERSONAL_ENVIAR_IMAIL"]:"";
 $IPpersonal = isset($_POST["IPpersonal"])?$_POST["IPpersonal"]:"";
+$IPpersonal2 = isset($_POST["IPpersonal2"])?$_POST["IPpersonal2"]:"";
 $Ipcobroscliente = isset($_POST["Ipcobroscliente"])?$_POST["Ipcobroscliente"]:"";
 $IpINGRESOS = isset($_POST["IpINGRESOS"])?$_POST["IpINGRESOS"]:"";
 $IpEGRESOS = isset($_POST["IpEGRESOS"])?$_POST["IpEGRESOS"]:""; 
@@ -106,6 +107,8 @@ $EMAIL_CONTRATO = isset($_POST["EMAIL_CONTRATO"])?$_POST["EMAIL_CONTRATO"]:"";
 $hDatosPERSONAL2= isset($_POST["hDatosPERSONAL2"])?$_POST["hDatosPERSONAL2"]:"";
 $ENVIARpersonal2= isset($_POST["ENVIARpersonal2"])?$_POST["ENVIARpersonal2"]:"";
 $borra_PERSONAL2= isset($_POST["borra_PERSONAL2"])?$_POST["borra_PERSONAL2"]:"";
+$borra_ADJUNTO_PERSONAL2 = isset($_POST["borra_ADJUNTO_PERSONAL2"])?$_POST["borra_ADJUNTO_PERSONAL2"]:"";
+$archivo_adjunto_personal2 = isset($_POST["archivo"])?$_POST["archivo"]:"";
 $PERSONAL2_ENVIAR_IMAIL= isset($_POST["PERSONAL2_ENVIAR_IMAIL"])?$_POST["PERSONAL2_ENVIAR_IMAIL"]:"";
 $HVEHICULOSEVE= isset($_POST["HVEHICULOSEVE"])?$_POST["HVEHICULOSEVE"]:"";
 $enviarVEHICULOSEVE= isset($_POST["enviarVEHICULOSEVE"])?$_POST["enviarVEHICULOSEVE"]:"";
@@ -965,6 +968,7 @@ echo number_format($resultado,2,'.',','). '^'. $resultado_php. '^'.$porcentaje ;
 
 ///////////////////////////////PERSONAL2 2///////////////////////////////////////
 if($hDatosPERSONAL2 == 'hDatosPERSONAL2' OR $ENVIARpersonal2=='ENVIARpersonal2'){
+
 	
 			  	   	   if( $_FILES["ADJUNTO_COMPROBANTE"] == true){
 $ADJUNTO_COMPROBANTE = $conexion->solocargar("ADJUNTO_COMPROBANTE");
@@ -999,8 +1003,26 @@ $PERSONAL2_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL2_FECHA_ULTIMA_CARGA"])?$_
 $hDatosPERSONAL2 = isset($_POST["hDatosPERSONAL2"])?$_POST["hDatosPERSONAL2"]:"";
 $IPpersonal2 = isset($_POST["IPpersonal2"])?$_POST["IPpersonal2"]:"";
 
+
 	
-     echo $altaeventos->PERSONAL2($NOMBRE_PERSONAL2 ,$PUESTO_PERSONAL2 ,$WHAT_PERSONAL2 , $EMAIL_PERSONAL2 ,$FECHA_INICIO1,$FECHA_FINAL1,$NUMERO_DIAS1, $MONTO_BONO1,$MONTO_BONO_TOTAL1,$TOTAL1,$ULTIMO_DIA1,      $FECHA_PPAGO1,$FORMA_PAGO1,$FECHA_EFECTIVA1,$NOMBRE_RECIBIO1,$ADJUNTO_COMPROBANTE, $VIATICOS_PERSONAL2 , $OBSERVACIONES_PERSONAL2 , $PERSONAL2_FECHA_ULTIMA_CARGA , $hDatosPERSONAL2,$ENVIARpersonal2,$IPpersonal2);  
+	if($IPpersonal2 != "" && $ADJUNTO_COMPROBANTE1 == ""){
+		$adjuntoActual = $altaeventos->listado_personal33($IPpersonal2);
+		$rowAdjunto2 = mysqli_fetch_array($adjuntoActual, MYSQLI_ASSOC);
+		if($rowAdjunto2 && isset($rowAdjunto2["ADJUNTO_COMPROBANTE"])){
+			$ADJUNTO_COMPROBANTE1 = $rowAdjunto2["ADJUNTO_COMPROBANTE"];
+		}
+	}
+
+	if($IPpersonal2 != "" && (!isset($_SESSION['idevento']) || $_SESSION['idevento'] == '')){
+		$datosPersonal = $altaeventos->listado_personal33($IPpersonal2);
+		$rowPersonal2 = mysqli_fetch_array($datosPersonal, MYSQLI_ASSOC);
+		if($rowPersonal2 && isset($rowPersonal2['idRelacion']) && $rowPersonal2['idRelacion'] != ''){
+			$_SESSION['idevento'] = $rowPersonal2['idRelacion'];
+		}
+	}
+	
+	
+     echo $altaeventos->PERSONAL2($NOMBRE_PERSONAL2 ,$PUESTO_PERSONAL2 ,$WHAT_PERSONAL2 , $EMAIL_PERSONAL2 ,$FECHA_INICIO1,$FECHA_FINAL1,$NUMERO_DIAS1, $MONTO_BONO1,$MONTO_BONO_TOTAL1,$TOTAL1,$ULTIMO_DIA1,      $FECHA_PPAGO1,$FORMA_PAGO1,$FECHA_EFECTIVA1,$NOMBRE_RECIBIO1,$ADJUNTO_COMPROBANTE1, $VIATICOS_PERSONAL2 , $OBSERVACIONES_PERSONAL2 , $PERSONAL2_FECHA_ULTIMA_CARGA , $hDatosPERSONAL2,$ENVIARpersonal2,$IPpersonal2);  
 	$_SESSION['NOMBRE_PERSONAL21']="";
 
 }
@@ -1116,11 +1138,19 @@ $ADJUNTO_COMPROBANTEP = $conexion->solocargar("ADJUNTO_COMPROBANTEP");
     $hDatosPERSONAL = isset($_POST["hDatosPERSONAL"]) ? $_POST["hDatosPERSONAL"] : "";
     $IPpersonal = isset($_POST["IPpersonal"]) ? $_POST["IPpersonal"] : "";
 
-	if($IPpersonal != "" && $ADJUNTO_COMPROBANTEP1 == ""){
+if($IPpersonal != "" && $ADJUNTO_COMPROBANTEP1 == ""){
 		$adjuntoActual = $altaeventos->listado_personal2($IPpersonal);
 		$rowAdjunto = mysqli_fetch_array($adjuntoActual, MYSQLI_ASSOC);
 		if($rowAdjunto && isset($rowAdjunto["ADJUNTO_COMPROBANTEP"])){
 			$ADJUNTO_COMPROBANTEP1 = $rowAdjunto["ADJUNTO_COMPROBANTEP"];
+		}
+	}
+
+	if($IPpersonal != "" && (!isset($_SESSION['idevento']) || $_SESSION['idevento'] == '')){
+		$datosPersonal = $altaeventos->listado_personal2($IPpersonal);
+		$rowPersonal = mysqli_fetch_array($datosPersonal, MYSQLI_ASSOC);
+		if($rowPersonal && isset($rowPersonal['idRelacion']) && $rowPersonal['idRelacion'] != ''){
+			$_SESSION['idevento'] = $rowPersonal['idRelacion'];
 		}
 	}
 
@@ -1169,8 +1199,12 @@ $borra_bole_perso = isset($_POST["borra_bole_perso"])?$_POST["borra_bole_perso"]
 	echo $altaeventos->borra_PERSONAL( $borra_bole_perso );
 }
 
-    if($borra_ADJUNTO_PERSONAL == 'borra_ADJUNTO_PERSONAL' ){
+  if($borra_ADJUNTO_PERSONAL == 'borra_ADJUNTO_PERSONAL' ){
 		echo $altaeventos->borra_ADJUNTO_PERSONAL($IPpersonal, $archivo_adjunto_personal);
+	}
+
+    if($borra_ADJUNTO_PERSONAL2 == 'borra_ADJUNTO_PERSONAL2' ){
+		echo $altaeventos->borra_ADJUNTO_PERSONAL2($IPpersonal2, $archivo_adjunto_personal2);
 	}
 
 
@@ -1220,14 +1254,45 @@ if($pasara1_personalADMIN_id!='' and ($pasapersonalADMIN_text=='si' or $pasapers
 echo $altaeventos->actualizapersonalADMIN ($pasara1_personalADMIN_id , $pasapersonalADMIN_text  );
 }
 
+			  ///////////////////////////////VYO////////////////////////
+$pasara1_personalVYO_id= isset($_POST["pasara1_personalVYO_id"])?$_POST["pasara1_personalVYO_id"]:"";
+$pasapersonalVYO_text= isset($_POST["pasapersonalVYO_text"])?$_POST["pasapersonalVYO_text"]:"";
 
-///////////////////////////////ADMIN////////////////////////
+if($pasara1_personalVYO_id!='' and ($pasapersonalVYO_text=='si' or $pasapersonalVYO_text=='no') ){
+echo $altaeventos->actualizapersonalVYO ($pasara1_personalVYO_id , $pasapersonalVYO_text  );
+}
+
+			  ///////////////////////////////DIRECCION////////////////////////
+$pasara1_personalDIRECCION_id= isset($_POST["pasara1_personalDIRECCION_id"])?$_POST["pasara1_personalDIRECCION_id"]:"";
+$pasapersonalDIRECCION_text= isset($_POST["pasapersonalDIRECCION_text"])?$_POST["pasapersonalDIRECCION_text"]:"";
+
+if($pasara1_personalDIRECCION_id!='' and ($pasapersonalDIRECCION_text=='si' or $pasapersonalDIRECCION_text=='no') ){
+echo $altaeventos->actualizapersonalDIRECCION ($pasara1_personalDIRECCION_id , $pasapersonalDIRECCION_text  );
+}
+///////////////////////////////ADMIN2////////////////////////
 $pasara1_personal2ADMIN_id= isset($_POST["pasara1_personal2ADMIN_id"])?$_POST["pasara1_personal2ADMIN_id"]:"";
 $pasapersonal2ADMIN_text= isset($_POST["pasapersonal2ADMIN_text"])?$_POST["pasapersonal2ADMIN_text"]:"";
 
-if($pasara1_personal2ADMIN_id!='' and ($pasapersonal2ADMIN_text=='si' or $pasapersonalADMIN_text=='no') ){
+if($pasara1_personal2ADMIN_id!='' and ($pasapersonal2ADMIN_text=='si' or $pasapersonal2ADMIN_text=='no') ){
 echo $altaeventos->actualizapersonal2ADMIN ($pasara1_personal2ADMIN_id , $pasapersonal2ADMIN_text  );
 }
+
+///////////////////////////////VYO2////////////////////////
+$pasara1_personal2VYO_id= isset($_POST["pasara1_personal2VYO_id"])?$_POST["pasara1_personal2VYO_id"]:"";
+$pasapersonal2VYO_text= isset($_POST["pasapersonal2VYO_text"])?$_POST["pasapersonal2VYO_text"]:"";
+
+if($pasara1_personal2VYO_id!='' and ($pasapersonal2VYO_text=='si' or $pasapersonal2VYO_text=='no') ){
+echo $altaeventos->actualizapersonal2VYO ($pasara1_personal2VYO_id , $pasapersonal2VYO_text  );
+}
+
+///////////////////////////////DIRECCION2////////////////////////
+$pasara1_personal2DIRECCION_id= isset($_POST["pasara1_personal2DIRECCION_id"])?$_POST["pasara1_personal2DIRECCION_id"]:"";
+$pasapersonal2DIRECCION_text= isset($_POST["pasapersonal2DIRECCION_text"])?$_POST["pasapersonal2DIRECCION_text"]:"";
+
+if($pasara1_personal2DIRECCION_id!='' and ($pasapersonal2DIRECCION_text=='si' or $pasapersonal2DIRECCION_text=='no') ){
+echo $altaeventos->actualizapersonal2DIRECCION ($pasara1_personal2DIRECCION_id , $pasapersonal2DIRECCION_text  );
+}
+
 
 
 if($PERSONAL_ENVIAR_IMAIL ==true){
@@ -3096,11 +3161,28 @@ foreach($_FILES AS $ETQIETA => $VALOR){
 }
 
 
-  if($IPpersonal2 == true and ( $_FILES["ADJUNTO_COMPROBANTE"] == true ) ){
-foreach($_FILES AS $ETQIETA => $VALOR){
-	echo $conexion->cargar($ETQIETA,'04personal2','3',$IPpersonal2);
-}	
-
+ if($IPpersonal2 == true and ( $_FILES["ADJUNTO_COMPROBANTE"] == true ) ){
+	$nuevoAdjunto = $conexion->solocargar("ADJUNTO_COMPROBANTE");
+	if($nuevoAdjunto=='2' or $nuevoAdjunto=='' or $nuevoAdjunto=='1'){
+		echo $nuevoAdjunto;
+	}else{
+		$conn = $altaeventos->db();
+		$adjuntosActuales = '';
+		$consultaAdjuntos = mysqli_query($conn, "select ADJUNTO_COMPROBANTE from 04personal2 where id = '".$IPpersonal2."' limit 1");
+		if($consultaAdjuntos){
+			$filaAdjuntos = mysqli_fetch_array($consultaAdjuntos, MYSQLI_ASSOC);
+			if($filaAdjuntos && isset($filaAdjuntos["ADJUNTO_COMPROBANTE"])){
+				$adjuntosActuales = $filaAdjuntos["ADJUNTO_COMPROBANTE"];
+			}
+		}
+		$listaAdjuntos = array_filter(array_map('trim', explode(',', $adjuntosActuales)));
+		if(!in_array($nuevoAdjunto, $listaAdjuntos, true)){
+			$listaAdjuntos[] = $nuevoAdjunto;
+		}
+		$valorAdjuntos = implode(',', $listaAdjuntos);
+		mysqli_query($conn, "update 04personal2 set ADJUNTO_COMPROBANTE = '".$valorAdjuntos."' where id = '".$IPpersonal2."' ");
+		echo $nuevoAdjunto;
+	}
 }
 
  if($IPpersonal == true and ( $_FILES["ADJUNTO_COMPROBANTEP"] == true ) ){

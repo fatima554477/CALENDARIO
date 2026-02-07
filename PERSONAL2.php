@@ -2,6 +2,12 @@
 $puedeVerAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'ver') === 'si');
 $puedeGuardarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'guardar') === 'si');
 $puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar') === 'si');
+$puedeVerVYO2 = ($conexion->variablespermisos('', 'PERSOvyo2', 'ver') === 'si');
+$puedeGuardarVYO2= ($conexion->variablespermisos('', 'PERSOvyo2', 'guardar') === 'si');
+$puedeModificarVYO2 = ($conexion->variablespermisos('', 'PERSOvyo2', 'modificar') === 'si');
+$puedeVerDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'ver') === 'si');
+$puedeGuardarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'guardar') === 'si');
+$puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'modificar') === 'si');
 ?>
 
 <div id="content">   
@@ -17,7 +23,7 @@ $puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar')
 								</strong>
 	        <div id="target18" style="display:block;"  class="content2">
         <div class="card">
-      <div  id='actualizabonos2'>
+      
             
 
       
@@ -161,7 +167,11 @@ $puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar')
  </td>
          </tr>    
 
+    <tr>
+    <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE PROGRAMACIÓN PAGO DE BONO:</th>
+    <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_PPAGO1; ?>" name="FECHA_PPAGO1"></td>
 
+    </tr>
 
          <tr style="background:#f7edf8; text-align:left"> 
          <th  scope="row"> <label for="validationCustom03" class="form-label">VIATICOS:</label></th>
@@ -266,6 +276,8 @@ $puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar')
           <table class="table table-striped table-bordered" style="width:100%"  id='reset_personal2' name='reset_personal2'>
           <tr style="text-align:center">
                <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR VYO</th>
+			   <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>PAGO BONO</th> 
+               <th width="15%"style="background:#c9e8e8">AUTORIZA<br>DIRECCIÓN</th> 
 		   <?php if($puedeVerAdmin2){ ?>
                <th width="15%"style="background:#c9e8e8">AUDITORÍA</th>
 			   <?php } ?> 			   
@@ -309,8 +321,8 @@ while($row = mysqli_fetch_array($querycontras))
 				continue;
 			}
 			$botonBorrarAdjunto = '';
-			if ($puedeBorrarAdjuntoPersonal) {
-				$botonBorrarAdjunto = " <button type='button' class='btn btn-link p-0 text-danger view_dataPERSONALadjuntoBorrar' data-personal='".$row["id"]."' data-archivo='".$adjuntoComprobante."'>Borrar</button>";
+	if ($puedeBorrarAdjuntoPersonal) {
+				$botonBorrarAdjunto = " <button type='button' class='btn btn-link p-0 text-danger view_dataPERSONAL2adjuntoBorrar' data-personal='".$row["id"]."' data-archivo='".$adjuntoComprobante."'>Borrar</button>";
 			}
 			$urlADJUNTO_COMPROBANTE .= "<li class='d-flex align-items-center gap-2'><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a>".$botonBorrarAdjunto."</li>";
 		}
@@ -328,6 +340,16 @@ while($row = mysqli_fetch_array($querycontras))
 } ?>/>		  
 
 		  </td>
+		  
+		  		                 <?php if($puedeVerVYO2){ ?>
+<td style="text-align:center">
+    <input type="checkbox" style="width:40PX;" class="form-check-input" name="VYO[]" id="VYO<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2VYO(<?php echo $row["id"]; ?>)" <?php if(isset($row["VYO"]) && $row["VYO"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarVYO2 || ((isset($row["VYO"]) && $row["VYO"]=='si') && !$puedeModificarVYO2)) { echo "disabled"; } ?>/> </td> 
+			  <?php } ?>
+			  
+			              		                 <?php if($puedeVerDIRECCION2){ ?>
+<td style="text-align:center">
+    <input type="checkbox" style="width:40PX;" class="form-check-input" name="DIRECCION[]" id="DIRECCION<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2DIRECCION(<?php echo $row["id"]; ?>)" <?php if(isset($row["DIRECCION"]) && $row["DIRECCION"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarDIRECCION2 || ((isset($row["DIRECCION"]) && $row["DIRECCION"]=='si') && !$puedeModificarDIRECCION2)) { echo "disabled"; } ?>/> </td> 
+			  <?php } ?> 
 		  
 		  
 		  		  	  <?php if($puedeVerAdmin2){ ?>
@@ -403,8 +425,7 @@ while($row = mysqli_fetch_array($querycontras))
 
 
 </div>
-</div>
-</div>   
+</div> 
 </div>
 </div>
 </div>  
