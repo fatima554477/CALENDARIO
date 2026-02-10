@@ -13,131 +13,13 @@ if($identioficador != '')
 $tikets = new TIKETSYAVION();
 $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 
-?>
-<div id="actualizatabla">
-<?php
+
+$output .= '<div id="actualizatabla"></div><form  id="Listadoticketsform"> 
+      <div class="table-responsive">  
+           <table class="table table-bordered">';
+ 
    while($row = mysqli_fetch_array($queryVISTAPREV))
     {
-
-		
-
-/*	$queryVISTAPREV = $tikets->Listado_tiketsDOCTOS($row['id']);		
-	while($rowDOCTOS = mysqli_fetch_array($queryVISTAPREV))
-	{
-
-
-
-        if($rowDOCTOS["ADJUNTAR_FACTURA_PDF"]!=""){$ADJUNTAR_FACTURA_PDF .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["ADJUNTAR_FACTURA_PDF"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$ADJUNTAR_FACTURA_PDF = "";
-			
-		}
-        
-        
-        if($rowDOCTOS["ADJUNTAR_FACTURA_XML"]!=""){$ADJUNTAR_FACTURA_XML .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["ADJUNTAR_FACTURA_XML"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$ADJUNTAR_FACTURA_XML = "";
-			
-		}
-
-         
-        if($rowDOCTOS["ADJUNTAR_COTIZACION"]!=""){$ADJUNTAR_COTIZACION .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["ADJUNTAR_COTIZACION"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$ADJUNTAR_COTIZACION = "";
-			
-		}
-        
-        if($rowDOCTOS["CONPROBANTE_TRANSFERENCIA"]!=""){$CONPROBANTE_TRANSFERENCIA =  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["CONPROBANTE_TRANSFERENCIA"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$CONPROBANTE_TRANSFERENCIA = "";
-			
-		}
-        
-        if($rowDOCTOS["FOTO_ESTADO_PROVEE"]!=""){$FOTO_ESTADO_PROVEE .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["FOTO_ESTADO_PROVEE"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$FOTO_ESTADO_PROVEE = "";
-			
-		}
-        
-        if($rowDOCTOS["COMPLEMENTOS_PAGO_PDF"]!=""){$COMPLEMENTOS_PAGO_PDF .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["COMPLEMENTOS_PAGO_PDF"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$COMPLEMENTOS_PAGO_PDF = "";
-			
-		}
-        
-
-        if($rowDOCTOS["COMPLEMENTOS_PAGO_XML"]!=""){$COMPLEMENTOS_PAGO_XML .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["COMPLEMENTOS_PAGO_XML"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$COMPLEMENTOS_PAGO_XML = "";
-			
-		}
-
-        if($rowDOCTOS["CANCELACIONES_PDF"]!=""){$CANCELACIONES_PDF .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["CANCELACIONES_PDF"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$CANCELACIONES_PDF = "";
-			
-		}
-
-        if($rowDOCTOS["CANCELACIONES_XML"]!=""){$CANCELACIONES_XML .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["CANCELACIONES_XML"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$CANCELACIONES_XML = "";
-			
-		}
-
-        
-        if($rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_PDF"]!=""){$ADJUNTAR_FACTURA_DE_COMISION_PDF .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_PDF"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$ADJUNTAR_FACTURA_DE_COMISION_PDF = "";
-			
-		}
-
-        if($rowDOCTOS["ADJUNTAR_ARCHIVO_1"]!=""){$ADJUNTAR_ARCHIVO_1 .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["ADJUNTAR_ARCHIVO_1"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$ADJUNTAR_ARCHIVO_1 = "";
-			
-		}
-        
-        if($rowDOCTOS["CALCULO_DE_COMISION"]!=""){$CALCULO_DE_COMISION .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["CALCULO_DE_COMISION"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$CALCULO_DE_COMISION = "";
-			
-		}
-
-        if($rowDOCTOS["COMPROBANTE_DE_DEVOLUCION"]!=""){$COMPROBANTE_DE_DEVOLUCION .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["COMPROBANTE_DE_DEVOLUCION"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$COMPROBANTE_DE_DEVOLUCION = "";
-			
-		}
-
-        if($rowDOCTOS["NOTA_DE_CREDITO_COMPRA"]!=""){$NOTA_DE_CREDITO_COMPRA .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["NOTA_DE_CREDITO_COMPRA"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$NOTA_DE_CREDITO_COMPRA = "";
-			
-		}
-
-      
-        if($rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_XML"]!=""){$ADJUNTAR_FACTURA_DE_COMISION_XML .=  "<a target='_blank' href='includes/archivos/".$rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_XML"]."'>Visualizar!</a>"." <span id='".$rowDOCTOS['id']."' class='view_dataSBborrar2' style='cursor:pointer;color:blue;'>Borrar!</span> <span > ".$rowDOCTOS['fechaingreso']."</span>".'<br/>'; 
-		}	else{
-			
-			//$ADJUNTAR_FACTURA_DE_COMISION_XML = "";
-			
-		}
-
-}*/
 
 
 ?>
@@ -145,26 +27,24 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 <?php
 
 
- $output .= '<div id="actualizatabla"></div><form  id="Listadoticketsform"> 
-      <div class="table-responsive">  
-           <table class="table table-bordered">';
- 
+
      $output .= '
 
 
 
 
 
- <tr>
+<tr>
  
-<td width="30%"><label>ADJUNTAR FACTURA (FORMATO PDF)</label></td>
+ 
+<td width="30%" style="font-weight:bold;" ><label>ADJUNTAR FACTURA (FORMATO PDF)</label></td>
 <td width="70%">	<div id="drop_file_zone" ondrop="upload_file2(event,\'ADJUNTAR_FACTURA_PDF\')" ondragover="return false" style="width:300px;">
 <p>Suelta aquí o busca tu archivo</p>
 <p><input class="form-control form-control-sm" id="ADJUNTAR_FACTURA_PDF" type="text" onkeydown="return false" onclick="file_explorer2(\'ADJUNTAR_FACTURA_PDF\');" style="width:250px;" VALUE="'.$row["ADJUNTAR_FACTURA_PDF"] .' " required /></p>
 <input type="file" name="ADJUNTAR_FACTURA_PDF" id="nono"/>
-<div id="2ADJUNTAR_FACTURA_PDF">
+<div id="3ADJUNTAR_FACTURA_PDF">
 '.$ADJUNTAR_FACTURA_PDF.'
-</tr> 
+</tr>
 
 <tr>
 
@@ -173,7 +53,7 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 <p>Suelta aquí o busca tu archivo</p>
 <p><input class="form-control form-control-sm" id="ADJUNTAR_FACTURA_XML" type="text" onkeydown="return false" onclick="file_explorer2(\'ADJUNTAR_FACTURA_XML\');" style="width:250px;" VALUE="'.$row["ADJUNTAR_FACTURA_XML"] .' " required /></p>
 <input type="file" name="ADJUNTAR_FACTURA_XML" id="nono"/>
-<div id="2ADJUNTAR_FACTURA_XML">
+<div id="3ADJUNTAR_FACTURA_XML">
 '.$ADJUNTAR_FACTURA_XML.'
 </tr> 
 <tr>
@@ -215,23 +95,25 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 <td width="70%"><input type="text" name="CONCEPTO_PROVEE" value="'.$row["CONCEPTO_PROVEE"].'"></td>
 </tr>
 
-<tr>
-<td width="30%"><label>MONTO TOTAL DE LA COTIZACIÓN O DEL ADEUDO</label></td>
-<td width="70%"><input type="text" name="MONTO_TOTAL_COTIZACION_ADEUDO" value="'.$row["MONTO_TOTAL_COTIZACION_ADEUDO"].'"></td>
-</tr> 
+
 
 <tr style="background: #c3f5d9">
-<td width="30%"><label>MONTO DE LA FACTURA</label></td>
+<td width="30%"><label>SUB TOTAL</label></td>
 <td width="70%"><input type="text" name="MONTO_FACTURA" value="'.$row["MONTO_FACTURA"].'"></td>
 </tr>
 
 <tr>
-<td width="30%"><label>MONTO DE LA PROPINA O SERVICIO NO INCLUIDO EN LA FACTURA</label></td>
+<td width="30%"><label>IVA</label></td>
+<td width="70%"><input type="text" name="MONTO_TOTAL_COTIZACION_ADEUDO" value="'.$row["MONTO_TOTAL_COTIZACION_ADEUDO"].'"></td>
+</tr>
+
+<tr>
+<td width="30%"><label>TUA</label></td>
 <td width="70%"><input type="text" name="MONTO_PROPINA" value="'.$row["MONTO_PROPINA"].'"></td>
 </tr> 
 
 <tr>
-<td width="30%"><label>MONTO A COMPROBAR</label></td>
+<td width="30%"><label>TOTAL</label></td>
 <td width="70%"><input type="text" name="MONTO_DEPOSITAR" value="'.$row["MONTO_DEPOSITAR"].'"></td>
 </tr> 
 
@@ -257,7 +139,7 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 <p>Suelta aquí o busca tu archivo</p>
 <p><input class="form-control form-control-sm" id="ADJUNTAR_COTIZACION" type="text" onkeydown="return false" onclick="file_explorer2(\'ADJUNTAR_COTIZACION\');" style="width:250px;" VALUE="'.$row["ADJUNTAR_COTIZACION"] .' " required /></p>
 <input type="file" name="ADJUNTAR_COTIZACION" id="nono"/>
-<div id="2ADJUNTAR_COTIZACION">
+<div id="3ADJUNTAR_COTIZACION">
 '.$ADJUNTAR_COTIZACION.'
 </tr> 
 
@@ -311,7 +193,7 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 <p>Suelta aquí o busca tu archivo</p>
 <p><input class="form-control form-control-sm" id="COMPLEMENTOS_PAGO_PDF" type="text" onkeydown="return false" onclick="file_explorer2(\'COMPLEMENTOS_PAGO_PDF\');" style="width:250px;" VALUE="'.$row["COMPLEMENTOS_PAGO_PDF"] .' " required /></p>
 <input type="file" name="COMPLEMENTOS_PAGO_PDF" id="nono"/>
-<div id="2COMPLEMENTOS_PAGO_PDF">
+<div id="3COMPLEMENTOS_PAGO_PDF">
 '.$COMPLEMENTOS_PAGO_PDF.'
 </tr> 
 
@@ -321,7 +203,7 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 <p>Suelta aquí o busca tu archivo</p>
 <p><input class="form-control form-control-sm" id="COMPLEMENTOS_PAGO_XML" type="text" onkeydown="return false" onclick="file_explorer2(\'COMPLEMENTOS_PAGO_XML\');" style="width:250px;" VALUE="'.$row["COMPLEMENTOS_PAGO_XML"] .' " required /></p>
 <input type="file" name="COMPLEMENTOS_PAGO_XML" id="nono"/>
-<div id="2COMPLEMENTOS_PAGO_XML">
+<div id="3COMPLEMENTOS_PAGO_XML">
 '.$COMPLEMENTOS_PAGO_XML.'
 </tr> 
 
@@ -412,7 +294,7 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 
 <tr>
 <td width="30%"><label>OBSERVACIONES</label></td>
-<td width="70%"><input type="text" name="OBSERVACIONES_1" value="'.$row["OBSERVACIONES_1"].'"></td>
+<td width="70%"><input type="text" name="OBSERVACIONESA" value="'.$row["OBSERVACIONESA"].'"></td>
 </tr>
 
 
@@ -427,6 +309,13 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 </tr>
 
 
+
+<tr>
+<td width="30%"><label>STATUS DE PAGO:</label></td>
+<td width="70%"><input  type="text" name="STATUS_DE_PAGO" value="'.$row["STATUS_DE_PAGO"].'"></td>
+</tr>
+
+
 <tr>
 <td width="30%"><label>FECHA DE ÚLTIMA CARGA:</label></td>
 <td width="70%"><input  type=»text» readonly=»readonly» name="FECHA_DE_LLENADO" value="'.$row["FECHA_DE_LLENADO"].'"></td>
@@ -437,6 +326,8 @@ $queryVISTAPREV = $tikets->Listado_tickets2($identioficador);
 	        <tr>
             <td width="30%"><label>GUARDAR</label></td>  
             <td width="70%"><button class="btn btn-sm btn-outline-success px-5"  type="button" id="clicktickets">GUARDAR</button>
+			<input type="hidden" value="'.$row["tipo_documento"].'"  name="tipo_documento"/>
+			<input type="hidden" value="'.$row["idRelacion"].'"  name="idem_relacion"/>
 			
 			<input type="hidden" value="ENVIARtickets"  name="ENVIARtickets"/>
 			<input type="hidden" value="'.$row["id"].'"  name="ipactualiza" id="ipactualiza"/>
@@ -510,7 +401,7 @@ $('#respuestaser').html('<p style="color:green;">'+response+'</p>');
 
 $("#clicktickets").click(function(){
 	
-   $.ajax({  
+   $.ajax({
     url:'calendariodeeventos2/controladorTIKETS.php',
     method:"POST",  
     data:$('#Listadoticketsform').serialize(),
@@ -524,8 +415,8 @@ $("#clicktickets").click(function(){
 		if($.trim(data)=='Ingresado' || $.trim(data)=='Actualizado'){
 				
 			$('#dataModal').modal('hide');
-			//$("#results").load("pagoproveedores/fetch_pagesPP.php");
-			$.getScript(load(1));
+
+			$.getScript(loadAVION(1));
 			$("#mensajeAVION").html("<span id='ACTUALIZADO' >"+data+"</span>");
 
 			}else{
@@ -533,6 +424,9 @@ $("#clicktickets").click(function(){
 			$("#mensajeAVION").html(data);
 			
 		}
+		
+
+		
     }  
    });
    
