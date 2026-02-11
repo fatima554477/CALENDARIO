@@ -75,11 +75,13 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 
 			 </tr>
 			 
-			 	<tr>
+	<tr>
 			 <td width="30%"><label>TOTAL DEL BONO</label></td>
-			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL1" value="'.$row["MONTO_BONO_TOTAL1"].'"></td>
+			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL1" value="'.$row["MONTO_BONO_TOTAL1"].'" ></td>
+
 
 			 </tr>
+
 			 
 				 
 			 		 <tr>
@@ -91,9 +93,9 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 			 
 			 
 			 
-			 <tr>
+		 <tr>
 			 <td width="30%"><label>TOTAL BONO Y VIATICOS</label></td>
-			 <td width="70%"><input type="text" name="TOTAL1" value="'.$row["TOTAL1"].'"></td>
+			 <td width="70%"><input type="text" name="TOTAL1" value="'.$row["TOTAL1"].'" readonly></td>
 			 </tr>
 			 
 			 <tr>
@@ -255,7 +257,7 @@ actualizarAdjuntos(nombre, nuevoAdjunto);
 	    }
 }
 
-	function convertirANumero(valor) {
+	function convertirANumero2(valor) {
 		if(typeof valor === 'number') {
 			return isNaN(valor) ? 0 : valor;
 		}
@@ -266,7 +268,7 @@ actualizarAdjuntos(nombre, nuevoAdjunto);
 		return isNaN(numero) ? 0 : numero;
 	}
 
-	function formatearNumero(valor) {
+	function formatearNumero2(valor) {
 		if(Math.round(valor) === valor) {
 			return String(valor);
 		}
@@ -280,8 +282,8 @@ actualizarAdjuntos(nombre, nuevoAdjunto);
 		var totalBono = numeroDias * montoBono;
 		var totalBonoYViaticos = totalBono + viaticos;
 
-		$('input[name="MONTO_BONO_TOTAL1"]').val(formatearNumero(totalBono));
-		$('input[name="TOTAL1"]').val(formatearNumero(totalBonoYViaticos));
+		$('input[name="MONTO_BONO_TOTAL1"]').val(formatearNumero2(totalBono));
+		$('input[name="TOTAL1"]').val(formatearNumero2(totalBonoYViaticos));
 	}
 
 
