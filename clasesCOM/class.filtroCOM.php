@@ -27,6 +27,92 @@ define("__ROOT1__", dirname(dirname(__FILE__)));
 		$count=$query->num_rows;
 		return $count;
 	}
+	
+	
+		/*se ocupa en MATCH_BBVA.php regresa checked*/
+	public function validaexistematch2COMPROBACION($IpMATCHDOCUMENTOS2,$TARJETA){
+		$conn = $this->db();		
+			$pregunta = 'select * from 12matchDocumentos where 
+			estatus = "si" and documentoConFactura="'.$IpMATCHDOCUMENTOS2.'" AND tarjeta="'.$TARJETA.'" ';
+			$preguntaQ = mysqli_query($conn,$pregunta) or die('P1533'.mysqli_error($conn));
+			$ROWP = MYSQLI_FETCH_ARRAY($preguntaQ, MYSQLI_ASSOC);
+
+		
+				
+			if($ROWP['id']==0){
+			return '';
+			}else{
+			return 'checked';				
+			}
+	}
+
+
+
+
+
+
+	public function validaexistematch2COMPROBACIONtodos($IpMATCHDOCUMENTOS2,$TARJETA){
+		$conn = $this->db();
+	
+			$pregunta1 = 'select * from 12matchDocumentos where 
+			estatus = "si" and documentoConFactura="'.$IpMATCHDOCUMENTOS2.'" AND tarjeta="AMERICANE" ';
+			$preguntaQ1 = mysqli_query($conn,$pregunta1) or die('P1533'.mysqli_error($conn));
+			$ROWP1 = MYSQLI_FETCH_ARRAY($preguntaQ1, MYSQLI_ASSOC);
+
+			$pregunta2 = 'select * from 12matchDocumentos where 
+			estatus = "si" and documentoConFactura="'.$IpMATCHDOCUMENTOS2.'" AND tarjeta="INBURSA" ';
+			$preguntaQ2 = mysqli_query($conn,$pregunta2) or die('P1533'.mysqli_error($conn));
+			$ROWP2 = MYSQLI_FETCH_ARRAY($preguntaQ2, MYSQLI_ASSOC);
+
+			$pregunta3 = 'select * from 12matchDocumentos where 
+			estatus = "si" and documentoConFactura="'.$IpMATCHDOCUMENTOS2.'" AND tarjeta="TARJETABBVA" ';
+			$preguntaQ3 = mysqli_query($conn,$pregunta3) or die('P1533'.mysqli_error($conn));
+			$ROWP3 = MYSQLI_FETCH_ARRAY($preguntaQ3, MYSQLI_ASSOC);
+			
+			if($ROWP1['id']==0 and $ROWP2['id']==0 and $ROWP3['id']==0){
+			return '';
+			}else{
+			return 'checked';				
+			}
+	}
+	
+		public function nombreCompletoPorID($id) {
+    $conn = $this->db(); // tu conexión a la base de datos
+
+    // Previene SQL injection
+    $id = mysqli_real_escape_string($conn, trim($id));
+
+    // Consulta
+    $sql = "
+        SELECT NOMBRE_1, NOMBRE_2, APELLIDO_PATERNO, APELLIDO_MATERNO
+        FROM 01informacionpersonal
+        WHERE idRelacion = '$id'
+        LIMIT 1
+    ";
+
+    $nombreCompleto = 'SIN INFORMACIÓN'; // valor por defecto (gris clarito)
+    
+    if ($query = mysqli_query($conn, $sql)) {
+        if ($row = mysqli_fetch_assoc($query)) {
+            // Une los nombres con espacios y elimina dobles espacios
+            $nombreCompleto = trim(
+                $row['NOMBRE_1'].' '.
+                $row['NOMBRE_2'].' '.
+                $row['APELLIDO_PATERNO'].' '.
+                $row['APELLIDO_MATERNO']
+            );
+
+            // Si por alguna razón está vacío, mantiene el texto “SIN INFORMACIÓN”
+            if ($nombreCompleto == '') {
+                $nombreCompleto = 'SIN INFORMACIÓN';
+            }
+        }
+    }
+
+    return $nombreCompleto;
+}
+	
+	
 	//STATUS_EVENTO,NOMBRE_CORTO_EVENTO,NOMBRE_EVENTO
 	public function getData($tables,$campos,$search){
 		
@@ -35,10 +121,12 @@ define("__ROOT1__", dirname(dirname(__FILE__)));
 		$NUMERO_EVENTO = isset($ROWevento["NUMERO_EVENTO"])?$ROWevento["NUMERO_EVENTO"]:"";
 				
 		
-		$offset=$search['offset'];
-		$per_page=$search['per_page'];
-		$offset=$search['offset'];
-		$per_page=$search['per_page'];
+            $offset=$search['offset'];
+                $per_page=$search['per_page'];
+                $offset=$search['offset'];
+                $per_page=$search['per_page'];
+
+                $queryGeneral = isset($search['query']) ? trim((string) $search['query']) : '';
 		
 		$tables = '07COMPROBACION';
 		$tables2 = '07XML';		
@@ -233,7 +321,116 @@ if($search['propina']!=""){
 	$propina = str_replace(',','',str_replace('$','',$search['propina']));
 $sWhere2.="  $tables2.propina = '".$propina."' OR ";}
 
+if ($queryGeneral !== '') {
+        $columnasTexto = [
+                $tables => [
+                        'NUMERO_CONSECUTIVO_PROVEE',
+                        'NOMBRE_COMERCIAL',
+                        'RAZON_SOCIAL',
+                        'RFC_PROVEEDOR',
+                        'NOMBRE_EVENTO',
+                        'MOTIVO_GASTO',
+                        'CONCEPTO_PROVEE',
+                        'STATUS_DE_PAGO',
+                        'NUMERO_EVENTOFIJO'
+                ],
+                $tables2 => [
+                        'UUID',
+                        'serie',
+                        'folio',
+                        'metodoDePago',
+                        'regimenE',
+                        'UsoCFDI',
+                        'nombreR',
+                        'rfcR'
+                ]
+        ];
 
+        $columnasNumericas = [
+                $tables => [
+                        'MONTO_TOTAL_COTIZACION_ADEUDO',
+                        'MONTO_FACTURA',
+                        'MONTO_PROPINA',
+                        'MONTO_DEPOSITAR',
+                        'IVA',
+                        'TImpuestosRetenidosIVA',
+                        'TImpuestosRetenidosISR'
+                ],
+                $tables2 => [
+                        'total',
+                        'TImpuestosTrasladados',
+                        'TImpuestosRetenidos',
+                        'subTotal',
+                        'propina',
+                        'DESCUENTO',
+                        'TuaTotalCargos',
+                        'TUA'
+                ]
+        ];
+
+        $terminos = preg_split('/\s+/', $queryGeneral);
+        $terminos = array_values(array_filter($terminos, static function ($termino) {
+                return $termino !== '';
+        }));
+
+        $condicionesFrase = [];
+        $queryEscaped = $this->mysqli->real_escape_string($queryGeneral);
+        foreach ($columnasTexto as $tabla => $columnas) {
+                foreach ($columnas as $columna) {
+                        $condicionesFrase[] = "$tabla.`$columna` LIKE '%$queryEscaped%'";
+                }
+        }
+
+        $queryNumericaCompleta = preg_replace('/[^0-9.]/', '', $queryGeneral);
+        if ($queryNumericaCompleta !== '') {
+                $queryNumericaEscapada = $this->mysqli->real_escape_string($queryNumericaCompleta);
+                foreach ($columnasNumericas as $tabla => $columnas) {
+                        foreach ($columnas as $columna) {
+                                $columnaNormalizada = "REPLACE(REPLACE(REPLACE($tabla.`$columna`, ',', ''), '$', ''), ' ', '')";
+                                $condicionesFrase[] = "$columnaNormalizada LIKE '%$queryNumericaEscapada%'";
+                        }
+                }
+        }
+
+        $condicionesTokens = [];
+        foreach ($terminos as $termino) {
+                $terminoEscapado = $this->mysqli->real_escape_string($termino);
+                $condicionesPorTermino = [];
+
+                foreach ($columnasTexto as $tabla => $columnas) {
+                        foreach ($columnas as $columna) {
+                                $condicionesPorTermino[] = "$tabla.`$columna` LIKE '%$terminoEscapado%'";
+                        }
+                }
+
+                $terminoNumerico = preg_replace('/[^0-9.]/', '', $termino);
+                if ($terminoNumerico !== '') {
+                        $terminoNumericoEscapado = $this->mysqli->real_escape_string($terminoNumerico);
+                        foreach ($columnasNumericas as $tabla => $columnas) {
+                                foreach ($columnas as $columna) {
+                                        $columnaNormalizada = "REPLACE(REPLACE(REPLACE($tabla.`$columna`, ',', ''), '$', ''), ' ', '')";
+                                        $condicionesPorTermino[] = "$columnaNormalizada LIKE '%$terminoNumericoEscapado%'";
+                                }
+                        }
+                }
+
+                if (!empty($condicionesPorTermino)) {
+                        $condicionesTokens[] = '(' . implode(' OR ', $condicionesPorTermino) . ')';
+                }
+        }
+
+        $clausulasBusqueda = [];
+        if (!empty($condicionesFrase)) {
+                $clausulasBusqueda[] = '(' . implode(' OR ', $condicionesFrase) . ')';
+        }
+        if (!empty($condicionesTokens)) {
+                $clausulasBusqueda[] = '(' . implode(' AND ', $condicionesTokens) . ')';
+        }
+
+        if (!empty($clausulasBusqueda)) {
+                $sWhere2 .= ' (' . implode(' OR ', $clausulasBusqueda) . ') OR ';
+        }
+}
 
 /*IF($sWhere2!=""){
 				$sWhere22 = substr($sWhere2,0,-3);
@@ -244,7 +441,7 @@ $sWhere2.="  $tables2.propina = '".$propina."' OR ";}
 		}*/
 		
 IF($sWhere2!=""){
-			$sWhere22 = substr($sWhere2,0,-3);
+			$sWhere22 = substr($sWhere2,0,-4);
 			$sWhere33  = ' ('.$sWhere22.') ';
 			$sWhere3  = ' '.$sWhereCC.' where (
 			 07COMPROBACION.NUMERO_EVENTO = "'.$NUMERO_EVENTO.'" AND '.$sWhere33.' ) ';			

@@ -20,7 +20,7 @@
 		success:function(data){
 		var result = data.split('^');			
 		$('#pasarpagado2').html("<span 'ACTUALIZADO'</span>").fadeIn().delay(500).fadeOut();
-		load7(1);
+		
 		
 		if(pasarpagado_text=='si'){
 		$('#color_pagado1a'+pasarpagado_id).css('background-color', '#ceffcc');
@@ -92,7 +92,7 @@
 		success:function(data){
 		var result = data.split('^');				
 		$('#STATUS_AUDITORIA1').html("ACTUALIZADO").fadeIn().delay(1000).fadeOut();
-		 load7(1);
+		 
 
 		if(result[1]=='si'){
 		$('#color_AUDITORIA1'+AUDITORIA1_id).css('background-color', '#ceffcc');
@@ -106,27 +106,127 @@
 	});
 }
 
-function STATUS_CHECKBOX2(CHECKBOX_id) {
-    lastCheckboxID = CHECKBOX_id;
 
-    var checkBox = document.getElementById("STATUS_CHECKBOX2" + CHECKBOX_id);
+function STATUS_CHECKBOX(CHECKBOX_id, permisoModificar) {
+    var checkBox = document.getElementById("STATUS_CHECKBOX" + CHECKBOX_id);
     var CHECKBOX_text = checkBox.checked ? "si" : "no";
 
+    // Cambiar color visual inmediato (optimista)
+    var newColor = checkBox.checked ? '#ceffcc' : '#e9d8ee';
+    $('#color_CHECKBOX' + CHECKBOX_id).css('background-color', newColor);
+
+    let monto = $('#montoOriginal_' + CHECKBOX_id).text().replace(/,/g, '');
+    
+    // Bloqueo inmediato si se activa sin permiso
+    if (checkBox.checked && !permisoModificar) {
+        setTimeout(() => {
+            checkBox.disabled = true;
+        }, 100);
+    }
+
+    // Actualizar el valor calculado en la interfaz inmediatamente
+    if (checkBox.checked) {
+        $('#valorCalculado_' + CHECKBOX_id).text('');
+    } else {
+        if (!isNaN(monto)) {
+            let resultado = monto * 1.46;
+            let resultadoFormateado = resultado.toLocaleString('es-MX', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            $('#valorCalculado_' + CHECKBOX_id).text('$' + resultadoFormateado);
+        } else {
+            $('#valorCalculado_' + CHECKBOX_id).text('NaN');
+        }
+    }
+
+    // Enviar actualización al servidor
     $.ajax({
         url: 'comprobaciones/controladorPP.php',
         method: 'POST',
-        data: { CHECKBOX_id: CHECKBOX_id, CHECKBOX_text: CHECKBOX_text },
-        beforeSend: function () {
-            $('#pasarpagado2').html('cargando');
+        data: { 
+            CHECKBOX_id: CHECKBOX_id,
+            CHECKBOX_text: CHECKBOX_text 
         },
-        success: function (data) {
-            var result = data.split('^');
-            $('#pasarpagado2').html("Cargando...").fadeIn().delay(500).fadeOut();
-            load7(1);
-				$("#reset_totales").load(location.href + " #reset_totales");
+        beforeSend: function() {
+            $('#ajax-notification')
+                .html('<div class="loader"></div> ⏳ ACTUALIZANDO...')
+                .fadeIn();
+        },
+        success: function(data) {
+            var result = data.split('^'); // ejemplo de retorno: "ok^si" o "ok^no"
+
+            // Mostrar notificación de éxito
+            $('#ajax-notification')
+                .html("✅ ACTUALIZADO")
+                .delay(1000)
+                .fadeOut();
+
+            // Validar respuesta del servidor
+            if (result[1] === 'si') {
+                $('#color_CHECKBOX' + CHECKBOX_id).css('background-color', '#ceffcc');
+                $('#valorCalculado_' + CHECKBOX_id).text('');
+                
+                // Bloquear después de confirmación si no hay permiso
+                if (!permisoModificar) {
+                    checkBox.disabled = true;
+                }
+            } else if (result[1] === 'no') {
+                $('#color_CHECKBOX' + CHECKBOX_id).css('background-color', '#e9d8ee');
+                
+                if (!isNaN(monto)) {
+                    let resultado = monto * 1.46;
+                    let resultadoFormateado = resultado.toLocaleString('es-MX', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    $('#valorCalculado_' + CHECKBOX_id).text('$' + resultadoFormateado);
+                } else {
+                    $('#valorCalculado_' + CHECKBOX_id).text('NaN');
+                }
+                
+                // Re-habilitar si falló el guardado
+                checkBox.disabled = false;
+            }
+        },
+        error: function() {
+            // Revertir el cambio si ocurre un error
+            checkBox.checked = !checkBox.checked;
+            let originalColor = checkBox.checked ? '#ceffcc' : '#e9d8ee';
+            $('#color_CHECKBOX' + CHECKBOX_id).css('background-color', originalColor);
+            
+            // Re-habilitar en caso de error
+            checkBox.disabled = false;
+
+            $('#ajax-notification')
+                .html("❌ Error al actualizar")
+                .delay(2000)
+                .fadeOut();
         }
     });
+    recalcularTotal();
 }
+
+
+function recalcularTotal() {
+    let total = 0;
+
+    $('[id^=valorCalculado_]').each(function() {
+        let texto = $(this).text().replace(/[$,]/g, ''); // quitar $ y ,
+        let valor = parseFloat(texto);
+        if (!isNaN(valor)) {
+            total += valor;
+        }
+    });
+
+    let totalFormateado = total.toLocaleString('es-MX', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    $('#totalCalculado').text('$' + totalFormateado);
+}
+
+
 
 
 
@@ -168,7 +268,37 @@ function STATUS_CHECKBOX2(CHECKBOX_id) {
 	});
 }
 
+	function STATUS_AUDITORIA3(AUDITORIA3_id){
+	
 
+	var checkBox = document.getElementById("STATUS_AUDITORIA3"+AUDITORIA3_id);
+	var AUDITORIA3_text = "";
+	if (checkBox.checked == true){
+	AUDITORIA3_text = "si";
+	}else{
+	AUDITORIA3_text = "no";
+	}
+	  $.ajax({
+		url:'comprobaciones/controladorPP.php',
+		method:'POST',
+		data:{AUDITORIA3_id:AUDITORIA3_id,AUDITORIA3_text:AUDITORIA3_text},
+		beforeSend:function(){
+		$('#pasarpagado2').html('cargando');
+	},
+		success:function(data){
+		var result = data.split('^');				
+		$('#pasarpagado2').html("Cargando...").fadeIn().delay(500).fadeOut();
+
+		if(result[1]=='si'){
+		$('#color_AUDITORIA3'+AUDITORIA3_id).css('background-color', '#ceffcc');
+		}
+		if(result[1]=='no'){
+		$('#color_AUDITORIA3'+AUDITORIA3_id).css('background-color', '#e9d8ee');
+		}		
+		
+	}
+	});
+}
 
 	function STATUS_FINANZAS(FINANZAS_id){
 
@@ -237,7 +367,7 @@ function STATUS_CHECKBOX2(CHECKBOX_id) {
         $(function() {
                 const triggerSearch = () => load7(1);
 
-                $('#target5').on('keydown', 'thead input, thead select', function(event) {
+                $('#target46').on('keydown', 'thead input, thead select', function(event) {
                         if (event.key === 'Enter' || event.which === 13) {
                                 event.preventDefault();
                                 triggerSearch();
