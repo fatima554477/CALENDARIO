@@ -119,6 +119,152 @@ function refrescaesetotales2() {
 
 
 
+function STATUS_AUDITORIA3(id){
+  var $cb = $("#STATUS_AUDITORIA3" + id);
+  var permGuardar   = ($cb.data("perm-guardar")   == 1);
+  var permModificar = ($cb.data("perm-modificar") == 1);
+  var valorPrevio   = String($cb.data("prev")); // 'si' | 'no'
+  var valorNuevo    = $cb.is(":checked") ? "si" : "no";
+
+  // 1) Sin guardar ni modificar: nunca debería disparar, pero por seguridad:
+  if(!permGuardar && !permModificar){
+    $cb.prop('checked', (valorPrevio === 'si'));
+    showNotify("Sin permiso para modificar", false);
+    return;
+  }
+
+  // 2) Si NO tiene modificar:
+  // - Puede pasar de 'no' -> 'si'
+  // - NO puede pasar de 'si' -> 'no' (revertir y salir)
+  if(!permModificar){
+    if(valorPrevio === 'si' && valorNuevo === 'no'){
+      // No permitido apagar
+      $cb.prop('checked', true);
+      showNotify("Solo puedes prender, no apagar", false);
+      return;
+    }
+  }
+
+  // Pintado optimista
+  $("#color_AUDITORIA3" + id).css('background-color', (valorNuevo === 'si') ? '#ceffcc' : '#e9d8ee');
+
+  $.ajax({
+    url: 'pagoproveedores/controladorPP.php',
+    type: 'POST',
+    data: { AUDITORIA3_id: id, AUDITORIA3_text: valorNuevo },
+    beforeSend: function(){
+      $('#pasarpagado2').html('cargando...');
+    },
+    success: function(resp){
+      // Éxito → fijar nuevo previo
+      $cb.data("prev", valorNuevo);
+
+      // 3) Regla clave: si SOLO tiene guardar y acaba de prender -> BLOQUEAR
+      if(!permModificar && permGuardar && valorNuevo === 'si'){
+        $cb.prop('disabled', true)
+           .css('cursor','not-allowed')
+           .attr('title','Autorizado (bloqueado)');
+      }
+
+      $('#pasarpagado2').html("<span>ACTUALIZADO</span>").fadeIn().delay(500).fadeOut();
+      showNotify("Autorización actualizada ✅", true);
+	  	load3(1);
+    },
+
+    error: function(xhr){
+      // Rollback total
+      var volverSi = (valorPrevio === 'si');
+      $cb.prop('checked', volverSi);
+      $("#color_AUDITORIA3" + id).css('background-color', volverSi ? '#ceffcc' : '#e9d8ee');
+
+      showNotify("❌ Error de conexión (" + xhr.status + ")", false);
+    }
+  });
+}
+
+function showNotify(msg, ok){
+  $("#ajax-notification").stop(true,true)
+    .text(msg)
+    .css('background', ok ? '#4CAF50' : '#E53935')
+    .fadeIn(150).delay(1000).fadeOut(300);
+}
+
+
+
+
+function STATUS_SINXML(id){
+  var $cb = $("#STATUS_SINXML" + id);
+  var permGuardar2   = ($cb.data("perm-guardar2")   == 1);
+  var permModificar2 = ($cb.data("perm-modificar2") == 1);
+  var valorPrevio2   = String($cb.data("prev2")); // 'si' | 'no'
+  var valorNuevo2    = $cb.is(":checked") ? "si" : "no";
+
+  // 1) Sin guardar ni modificar: nunca debería disparar, pero por seguridad:
+  if(!permGuardar2 && !permModificar2){
+    $cb.prop('checked', (valorPrevio2 === 'si'));
+    showNotify2("Sin permiso para modificar", false);
+    return;
+  }
+
+  // 2) Si NO tiene modificar:
+  // - Puede pasar de 'no' -> 'si'
+  // - NO puede pasar de 'si' -> 'no' (revertir y salir)
+  if(!permModificar2){
+    if(valorPrevio2 === 'si' && valorNuevo2 === 'no'){
+      // No permitido apagar
+      $cb.prop('checked', true);
+      showNotify2("Solo puedes prender, no apagar", false);
+      return;
+    }
+  }
+
+  // Pintado optimista
+  $("#color_SINXML" + id).css('background-color', (valorNuevo2 === 'si') ? '#ceffcc' : '#e9d8ee');
+
+  $.ajax({
+    url: 'pagoproveedores/controladorPP.php',
+    type: 'POST',
+    data: { SINXML_id: id, SINXML_text: valorNuevo2 },
+    beforeSend: function(){
+      $('#pasarpagado2').html('cargando...');
+    },
+    success: function(resp){
+      // Éxito → fijar nuevo prev2io
+      $cb.data("prev2", valorNuevo2);
+
+      // 3) Regla clave: si SOLO tiene guardar y acaba de prender -> BLOQUEAR
+      if(!permModificar2 && permGuardar2 && valorNuevo2 === 'si'){
+        $cb.prop('disabled', true)
+           .css('cursor','not-allowed')
+           .attr('title','Autorizado (bloqueado)');
+      }
+
+      $('#pasarpagado2').html("<span>ACTUALIZADO</span>").fadeIn().delay(500).fadeOut();
+      showNotify2("Autorización actualizada ✅", true);
+	  	load3(1);
+    },
+
+    error: function(xhr){
+      // Rollback total
+      var volverSi = (valorPrevio2 === 'si');
+      $cb.prop('checked', volverSi);
+      $("#color_SINXML" + id).css('background-color', volverSi ? '#ceffcc' : '#e9d8ee');
+
+      showNotify2("❌ Error de conexión (" + xhr.status + ")", false);
+    }
+  });
+}
+
+function showNotify2(msg, ok){
+  $("#ajax-notification").stop(true,true)
+    .text(msg)
+    .css('background', ok ? '#4CAF50' : '#E53935')
+    .fadeIn(150).delay(1000).fadeOut(300);
+}
+
+
+
+
 
 	function STATUS_AUDITORIA1(AUDITORIA1_id){
 
@@ -391,50 +537,59 @@ function recalcularTotal() {
 	/*filtro */
 
 /* iniciaB1*/
+        $(function() {
+                const triggerSearch = () => load3(1);
 
-		$(function() {
-			load3(1);
-		});
+                $('#target19').on('keydown', 'thead input, thead select', function(event) {
+                        if (event.key === 'Enter' || event.which === 13) {
+                                event.preventDefault();
+                                triggerSearch();
+                        }
+                });
+
+                load3(1);
+        });
 		function load3(page){
-	var query=$("#NOMBRE_EVENTO").val();
-	var DEPARTAMENTO2=$("#DEPARTAMENTO2WE").val();
-	var NUMERO_CONSECUTIVO_PROVEE=$("#NUMERO_CONSECUTIVO_PROVEE_1_1").val();
-var NOMBRE_COMERCIAL=$("#NOMBRE_COMERCIAL_1").val();
+			
+			var query=$("#NOMBRE_EVENTO").val();
+			var DEPARTAMENTO2=$("#DEPARTAMENTO2WE").val();
+	var NUMERO_CONSECUTIVO_PROVEE=$("#NUMERO_CONSECUTIVO_PROVEE_6_6").val();
+var NOMBRE_COMERCIAL=$("#NOMBRE_COMERCIAL_6").val();
 var ID_RELACIONADO=$("#ID_RELACIONADO").val();
-var RAZON_SOCIAL=$("#RAZON_SOCIAL_1").val();
-var RFC_PROVEEDOR=$("#RFC_PROVEEDOR_1").val();
-var NUMERO_EVENTO=$("#NUMERO_EVENTO_1").val();
-var NOMBRE_EVENTO=$("#NOMBRE_EVENTO_1").val();
-var MOTIVO_GASTO=$("#MOTIVO_GASTO_1").val();
-var CONCEPTO_PROVEE=$("#CONCEPTO_PROVEE_1").val();
-var MONTO_TOTAL_COTIZACION_ADEUDO=$("#MONTO_TOTAL_COTIZACION_ADEUDO_1").val();
-var MONTO_FACTURA=$("#MONTO_FACTURA_1").val();
-var MONTO_PROPINA=$("#MONTO_PROPINA_1").val();
-var MONTO_DEPOSITAR=$("#MONTO_DEPOSITAR_1").val();
-var MONTO_DEPOSITADO=$("#MONTO_DEPOSITADO_1").val();
-var TIPO_DE_MONEDA=$("#TIPO_DE_MONEDA_1").val();
-var PFORMADE_PAGO=$("#PFORMADE_PAGO_1").val();
-var FECHA_DE_PAGO=$("#FECHA_DE_PAGO_1").val();
-var FECHA_A_DEPOSITAR=$("#FECHA_A_DEPOSITAR_1").val();
-var STATUS_DE_PAGO=$("#STATUS_DE_PAGO_1").val();
-var ACTIVO_FIJO=$("#ACTIVO_FIJO_1").val();
-var GASTO_FIJO=$("#GASTO_FIJO_1").val();
-var PAGAR_CADA=$("#PAGAR_CADA_1").val();
-var FECHA_PPAGO=$("#FECHA_PPAGO_1").val();
-var FECHA_TPROGRAPAGO=$("#FECHA_TPROGRAPAGO_1").val();
-var NUMERO_EVENTOFIJO=$("#NUMERO_EVENTOFIJO_1").val();
-var CLASI_GENERAL=$("#CLASI_GENERAL_1").val();
-var SUB_GENERAL=$("#SUB_GENERAL_1").val();
-var NUMERO_EVENTO1=$("#NUMERO_EVENTO1_1").val();
-var CLASIFICACION_GENERAL=$("#CLASIFICACION_GENERAL_1").val();
-var CLASIFICACION_ESPECIFICA=$("#CLASIFICACION_ESPECIFICA_1").val();
-var PLACAS_VEHICULO=$("#PLACAS_VEHICULO_1").val();
-var MONTO_DE_COMISION=$("#MONTO_DE_COMISION_1").val();
-var POLIZA_NUMERO=$("#POLIZA_NUMERO_1").val();
-var NOMBRE_DEL_EJECUTIVO=$("#NOMBRE_DEL_EJECUTIVO_1").val();
-var OBSERVACIONES_1=$("#OBSERVACIONES_1_1").val();
-var FECHA_DE_LLENADO=$("#FECHA_DE_LLENADO_1").val();
-var hiddenpagoproveedores=$("#hiddenpagoproveedores_1").val();
+var RAZON_SOCIAL=$("#RAZON_SOCIAL_6").val();
+var RFC_PROVEEDOR=$("#RFC_PROVEEDOR_6").val();
+var NUMERO_EVENTO=$("#NUMERO_EVENTO_6").val();
+var NOMBRE_EVENTO=$("#NOMBRE_EVENTO_6").val();
+var MOTIVO_GASTO=$("#MOTIVO_GASTO_6").val();
+var CONCEPTO_PROVEE=$("#CONCEPTO_PROVEE_6").val();
+var MONTO_TOTAL_COTIZACION_ADEUDO=$("#MONTO_TOTAL_COTIZACION_ADEUDO_6").val();
+var MONTO_FACTURA=$("#MONTO_FACTURA_6").val();
+var MONTO_PROPINA=$("#MONTO_PROPINA_6").val();
+var MONTO_DEPOSITAR=$("#MONTO_DEPOSITAR_6").val();
+var MONTO_DEPOSITADO=$("#MONTO_DEPOSITADO_6").val();
+var TIPO_DE_MONEDA=$("#TIPO_DE_MONEDA_6").val();
+var PFORMADE_PAGO=$("#PFORMADE_PAGO_6").val();
+var FECHA_DE_PAGO=$("#FECHA_DE_PAGO_6").val();
+var FECHA_A_DEPOSITAR=$("#FECHA_A_DEPOSITAR_6").val();
+var STATUS_DE_PAGO=$("#STATUS_DE_PAGO_6").val();
+var ACTIVO_FIJO=$("#ACTIVO_FIJO_6").val();
+var GASTO_FIJO=$("#GASTO_FIJO_6").val();
+var PAGAR_CADA=$("#PAGAR_CADA_6").val();
+var FECHA_PPAGO=$("#FECHA_PPAGO_6").val();
+var FECHA_TPROGRAPAGO=$("#FECHA_TPROGRAPAGO_6").val();
+var NUMERO_EVENTOFIJO=$("#NUMERO_EVENTOFIJO_6").val();
+var CLASI_GENERAL=$("#CLASI_GENERAL_6").val();
+var SUB_GENERAL=$("#SUB_GENERAL_6").val();
+var NUMERO_EVENTO1=$("#NUMERO_EVENTO1_6").val();
+var CLASIFICACION_GENERAL=$("#CLASIFICACION_GENERAL_6").val();
+var CLASIFICACION_ESPECIFICA=$("#CLASIFICACION_ESPECIFICA_6").val();
+var PLACAS_VEHICULO=$("#PLACAS_VEHICULO_6").val();
+var MONTO_DE_COMISION=$("#MONTO_DE_COMISION_6").val();
+var POLIZA_NUMERO=$("#POLIZA_NUMERO_6").val();
+var NOMBRE_DEL_EJECUTIVO=$("#NOMBRE_DEL_EJECUTIVO_6").val();
+var OBSERVACIONES_6=$("#OBSERVACIONES_6_6").val();
+var FECHA_DE_LLENADO=$("#FECHA_DE_LLENADO_6").val();
+var hiddenpagoproveedores=$("#hiddenpagoproveedores_6").val();
 var RAZON_SOCIAL_orden=$("#RAZON_SOCIAL_orden").val();
 var RFC_PROVEEDOR_orden=$("#RFC_PROVEEDOR_orden").val();
 var MONTO_FACTURA_orden=$("#MONTO_FACTURA_orden").val();
@@ -523,7 +678,7 @@ var subTotal=$("#subTotal").val();
 'MONTO_DE_COMISION':MONTO_DE_COMISION,
 'POLIZA_NUMERO':POLIZA_NUMERO,
 'NOMBRE_DEL_EJECUTIVO':NOMBRE_DEL_EJECUTIVO,
-'OBSERVACIONES_1':OBSERVACIONES_1,
+'OBSERVACIONES_6':OBSERVACIONES_6,
 'FECHA_DE_LLENADO':FECHA_DE_LLENADO,
 'hiddenpagoproveedores':hiddenpagoproveedores,
 'RAZON_SOCIAL_orden':RAZON_SOCIAL_orden,
