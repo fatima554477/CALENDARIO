@@ -8,7 +8,8 @@
 <div id="content">     
 			<hr/>
 		<strong>	  <p class="mb-0 text-uppercase" ><img src="includes/contraer31.png" id="mostrar19" style="cursor:pointer;"/>
-<img src="includes/contraer41.png" id="ocultar19" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp; RESUMEN EGRESOS PAGO A PROVEEDORES</p></strong></div>
+<img src="includes/contraer41.png" id="ocultar19" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp; RESUMEN EGRESOS PAGO A PROVEEDORES&nbsp;&nbsp;
+<a style="color:#ff0000; font-weight:bold;">(SOLO CONSULTA)</a></p></strong></div>
 
 
 <div  id="mensajefiltro"></div>
@@ -91,6 +92,30 @@ echo $encabezado . $options . '</select>';
 </div>
 </div>
 
+<div class="modal fade" id="modalRechazoPago" tabindex="-1" role="dialog" aria-labelledby="modalRechazoPagoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#ebf9e9;">
+                <h5 class="modal-title" id="modalRechazoPagoLabel">Motivo del rechazo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrarModalRechazoPago();">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal_rechazo_id" value="">
+                <textarea id="modal_rechazo_texto" class="form-control" rows="5" placeholder="Describe el motivo del rechazo"></textarea>
+                <div id="modal_rechazo_mensaje" style="margin-top:10px;font-size:12px;color:#666;"></div>
+            </div>
+            <div class="modal-footer" id="modal_rechazo_footer_editar">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarModalRechazoPago();">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btn_guardar_rechazo_modal">Guardar</button>
+            </div>
+            <div class="modal-footer" id="modal_rechazo_footer_ver" style="display:none;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarModalRechazoPago();">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <?php 
 require "clases/script.filtro.php";
 ?>
