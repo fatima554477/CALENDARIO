@@ -1,9 +1,4 @@
 <?php
-$eventoPermisos   = $altaeventos->var_altaeventos();
-$vendedorEvento   = isset($eventoPermisos['NOMBRE_VENDEDOR_id']) ? $eventoPermisos['NOMBRE_VENDEDOR_id'] : '';
-$usuarioActual    = isset($_SESSION['idem']) ? $_SESSION['idem'] : '';
-
-$tienePermisoPersonalV  = ($conexion->variablespermisos('', 'PERSONALAUTORIZAV2', 'ver') === 'si');
 $puedeVerAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'ver') === 'si');
 $puedeGuardarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'guardar') === 'si');
 $puedeModificarAdmin2 = ($conexion->variablespermisos('', 'PERSO2', 'modificar') === 'si');
@@ -13,20 +8,14 @@ $puedeModificarVYO2 = ($conexion->variablespermisos('', 'PERSOvyo2', 'modificar'
 $puedeVerDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'ver') === 'si');
 $puedeGuardarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'guardar') === 'si');
 $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'modificar') === 'si');
-$puedeAutorizar = (
-    ($usuarioActual !== '' && $usuarioActual == $vendedorEvento)
-    
-    || $tienePermisoPersonalV2
-);
 ?>
-
 
 <div id="content">   
 			<hr/>
 			<strong>  <p class="mb-0 text-uppercase">
 <img src="includes/contraer31.png" id="mostrar18" style="cursor:pointer;"/>
 <img src="includes/contraer41.png" id="ocultar18" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;PERSONAL QUE ASISTE AL EVENTO</p>
-<div class="progress" style="width: 25%;">
+<div  id="mensajePERSONAL22"><div class="progress" style="width: 25%;">
 
 									<div class="progress-bar" role="progressbar" style="width: <?php echo $ROWCONTACTOSBODE; ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><?php echo $ROWCONTACTOSBODE; ?>%</div>
 									
@@ -34,8 +23,7 @@ $puedeAutorizar = (
 								</strong>
 	        <div id="target18" style="display:block;"  class="content2">
         <div class="card">
-		 <div class="card-body" id='actualizabonos2'>
-      
+      <div  id='actualizabonos2'>
             
 
       
@@ -134,12 +122,12 @@ $puedeAutorizar = (
     </tr>
 
     <tr>
-    <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE INICIO DE COORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
+    <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE INICIO DE CORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
     <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_INICIO1; ?>" name="FECHA_INICIO1"></td>
 
     </tr>
     <tr>
-    <th style="background:#f7edf8; text-align:left" scope="col">FECHA FINAL DE COORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
+    <th style="background:#f7edf8; text-align:left" scope="col">FECHA FINAL DE CORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
     <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_FINAL1; ?>" name="FECHA_FINAL1"></td>
 
     </tr>
@@ -203,7 +191,11 @@ $puedeAutorizar = (
  </td>
          </tr>
 		
-
+         <tr>
+         <th style="background:#eff9eb; text-align:left" scope="col">ÚLTIMO DÍA PARA COMPROBAR VIATICOS:</th>
+         <td  style="background:#eff9eb"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $ULTIMO_DIA1; ?>" name="ULTIMO_DIA1"></td>
+     
+         </tr>
     
     <tr>
 <th style="background:#f7edf8; text-align:left" scope="col">MOTIVO DEL BONO:<br><a style="color:red;font:7px">obligatorio</a></th>
@@ -261,7 +253,7 @@ $puedeAutorizar = (
  
             <form name="form_emai_personal2" id="form_emai_personal2">
 
-            <table>  
+              
           <tr>
                   
           <td><textarea placeholder="ESCRIBE AQUÍ TUS CORREOS SEPARADOS POR PUNTO Y COMA EJEMPLO: NOMBRE@CORREO.ES;NOMBRE@CORREO.ES"  style="width:500px;px;" name="PERSONAL2_ENVIAR_IMAIL" id="PERSONAL2_ENVIAR_IMAIL" class="form-control" aria-label="With textarea"><?php echo $PERSONAL2_ENVIAR_IMAIL; ?></textarea></td><br></br>
@@ -283,15 +275,11 @@ $puedeAutorizar = (
           <tbody= 'font-style:italic;'>
           <table class="table table-striped table-bordered" style="width:100%"  id='reset_personal2' name='reset_personal2'>
           <tr style="text-align:center">
-               <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR VYO<BR>VER EVENTOS</th>
-			   <?php if($puedeVerVYO2){ ?>
-			   <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>PAGO BONO</th>
-              <?php } ?>	
-<?php if($puedeVerDIRECCION2){ ?>			  
-                <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR DIRECCIÓN<br>PAGO BONO</th>
-<?php } ?>			   
+               <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR VYO</th>
+			   <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>PAGO BONO</th> 
+               <th width="15%"style="background:#c9e8e8">AUTORIZA<br>DIRECCIÓN</th> 
 		   <?php if($puedeVerAdmin2){ ?>
-              <th width="15%"style="background:#c9e8e8">AUTORIZA<br>AUDITORÍA<br>PAGO BONO</th> 
+               <th width="15%"style="background:#c9e8e8">AUDITORÍA</th>
 			   <?php } ?> 			   
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
@@ -299,8 +287,8 @@ $puedeAutorizar = (
                <th width="20%"style="background:#c9e8e8">TELEFONO DE OFICINA</th>
                <th width="20%"style="background:#c9e8e8">EMAIL</th>
 			  
-               <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DE COORDINACIÓN</th>
-               <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DE COORDINACIÓN</th>
+               <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DE CORDINACIÓN</th>
+               <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DE CORDINACIÓN</th>
 			    	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
                <th width="20%"style="background:#c9e8e8">NÚMERO <br>DE DÍAS</th>
                <th width="20%"style="background:#c9e8e8">MONTO <br>DE BONO</th>
@@ -308,7 +296,7 @@ $puedeAutorizar = (
                <th width="20%"style="background:#c9e8e8">VIATICOS</th>
                <th width="20%"style="background:#c9e8e8">TOTAL</th>
 			   
-       
+               <th width="20%"style="background:#c9e8e8">ULTIMO DÍA PARA <br>COMPROBAR VIATICOS:</th>
                <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
 			
 			                  <th width="20%"style="background:#c9e8e8">FECHA DE PROGRAMACIÓN<br> DE PAGO</th>
@@ -345,22 +333,13 @@ while($row = mysqli_fetch_array($querycontras))
 ?>
           <tr style="background:#f5f9fc;text-align:center">
 		  
-<td style="text-align:center">
+          <td style="text-align:center" >
+		  
+<input type="checkbox" style="width:40PX;" class="form-check-input" id="pasarapersonal2<?php echo $row["id"]; ?>" name="pasarapersonal2<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>"  onclick="pasara1_personal2(<?php echo $row["id"]; ?>)"  	<?php if($row["autoriza"]=='si'){
+	echo "checked";
+} ?>/>		  
 
-<input type="checkbox"
-       style="width:40PX;"
-       class="form-check-input"
-       id="pasarapersonal2<?php echo $row["id"]; ?>"
-       name="pasarapersonal2<?php echo $row["id"]; ?>"
-       value="<?php echo $row["id"]; ?>"
-       onclick="pasara1_personal2(<?php echo $row["id"]; ?>)"
-       
-       <?php if($row["autoriza"]=='si'){ echo "checked"; } ?>
-       
-       <?php if(!$puedeAutorizar){ echo "disabled"; } ?>
-/>
-
-</td>
+		  </td>
 		  
 		  		                 <?php if($puedeVerVYO2){ ?>
 <td style="text-align:center">
@@ -405,7 +384,7 @@ while($row = mysqli_fetch_array($querycontras))
           <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
           <td ><?php echo $row["VIATICOS_PERSONAL2"]; ?></td>
           <td ><?php echo $row["TOTAL1"]; ?></td>
-     
+          <td ><?php echo $row["ULTIMO_DIA"]; ?></td>
           <td ><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
 		       <td ><?php echo $row["FECHA_PPAGO1"]; ?></td>
                <td ><?php echo $row["FORMA_PAGO1"]; ?></td>
@@ -422,41 +401,40 @@ while($row = mysqli_fetch_array($querycontras))
           </tr>
           <?php
 		       if(!isset($row["admin"]) || $row["admin"] != 'si'){
-          $NUMERO_DIAS1223 += $row["NUMERO_DIAS1"];
-          $MONTO_BONO1223 += $row["MONTO_BONO1"];
-          $PER2SUNTOTAL2 += $row["MONTO_BONO_TOTAL1"];
+          $NUMERO_DIAS12 += $row["NUMERO_DIAS1"];
+          $MONTO_BONO12 += $row["MONTO_BONO1"];
+          $PER2SUNTOTAL += $row["MONTO_BONO_TOTAL1"];
           $PER2VIAT += $row["VIATICOS_PERSONAL2"];
           $PER2TOTAL += $row["TOTAL1"];
           }
           }
           ?>
-                 	<?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si' ){
+		                  	<?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si' ){
 			$columnasPreviasTotalesPersonal2 = 8
 				+ ($puedeVerVYO2 ? 1 : 0)
 				+ ($puedeVerDIRECCION2 ? 1 : 0)
 				+ ($puedeVerAdmin2 ? 1 : 0);
 			$columnasRestantesTotalesPersonal2 = 8;
 			?>
+          
           <tr>
-          <td colspan='<?php echo $columnasPreviasTotalesPersonal2; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
+           <td colspan='<?php echo $columnasPreviasTotalesPersonal2; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
           <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS1223); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO1223,2,'.',','); ?></td>
 		  
           <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL2,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2VIAT,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td>
-		  <td colspan='<?php echo $columnasRestantesTotalesPersonal2; ?>'></td>
-		  </tr><?php } ?>
-         </form> 
+		  <td colspan='<?php echo $columnasRestantesTotalesPersonal2; ?>'></td></tr><?php } ?>
+           </form> 
           </table>  
-		    
              </tbody>
 
 
 
 </div>
-</div> 
 </div>
-
-
-
+</div>   
+</div>
+</div>
+</div>  
