@@ -1,7 +1,7 @@
 
 
 <style>
-/* Loader con animación */
+/* Loaderpago con animación */
 .loader {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #6a0dad; /* Morado elegante */
@@ -37,10 +37,10 @@
 
 
 
-	function pasarpagado2(pasarpagado_id){
+	function pasarpagado(pasarpagado_id){
 
 
-	var checkBox = document.getElementById("pasarpagado1a"+pasarpagado_id);
+	var checkBox = document.getElementById("pasarpagado1a2"+pasarpagado_id);
 	var pasarpagado_text = "";
 	if (checkBox.checked == true){
 	pasarpagado_text = "si";
@@ -52,19 +52,19 @@
 		method:'POST',
 		data:{pasarpagado_id:pasarpagado_id,pasarpagado_text:pasarpagado_text},
 		beforeSend:function(){
-		$('#pasarpagado2').html('cargando');
+		$('#pasarpagado').html('cargando');
 	},
 		success:function(data){
 		var result = data.split('^');			
-		$('#pasarpagado2').html("<span 'ACTUALIZADO'</span>").fadeIn().delay(500).fadeOut();
+		$('#pasarpagado').html("<span 'ACTUALIZADO'</span>").fadeIn().delay(500).fadeOut();
 		load3(1);
 
 		
 		if(pasarpagado_text=='si'){
-		$('#color_pagado1a'+pasarpagado_id).css('background-color', '#ceffcc');
+		$('#color_pagado1a2'+pasarpagado_id).css('background-color', '#ceffcc');
 		}
 		if(pasarpagado_text=='no'){
-		$('#color_pagado1a'+pasarpagado_id).css('background-color', '#e9d8ee');
+		$('#color_pagado1a2'+pasarpagado_id).css('background-color', '#e9d8ee');
 		}		
 		
 	}
@@ -223,7 +223,7 @@ function STATUS_AUDITORIA3(id){
     type: 'POST',
     data: { AUDITORIA3_id: id, AUDITORIA3_text: valorNuevo },
     beforeSend: function(){
-      $('#pasarpagado2').html('cargando...');
+      $('#pasarpagado').html('cargando...');
     },
     success: function(resp){
       // Éxito → fijar nuevo previo
@@ -236,7 +236,7 @@ function STATUS_AUDITORIA3(id){
            .attr('title','Autorizado (bloqueado)');
       }
 
-      $('#pasarpagado2').html("<span>ACTUALIZADO</span>").fadeIn().delay(500).fadeOut();
+      $('#pasarpagado').html("<span>ACTUALIZADO</span>").fadeIn().delay(500).fadeOut();
       showNotify("Autorización actualizada ✅", true);
 	  	
     },
@@ -294,7 +294,7 @@ function STATUS_SINXML(id){
     type: 'POST',
     data: { SINXML_id: id, SINXML_text: valorNuevo2 },
     beforeSend: function(){
-      $('#pasarpagado2').html('cargando...');
+      $('#pasarpagado').html('cargando...');
     },
     success: function(resp){
       // Éxito → fijar nuevo prev2io
@@ -307,7 +307,7 @@ function STATUS_SINXML(id){
            .attr('title','Autorizado (bloqueado)');
       }
 
-      $('#pasarpagado2').html("<span>ACTUALIZADO</span>").fadeIn().delay(500).fadeOut();
+      $('#pasarpagado').html("<span>ACTUALIZADO</span>").fadeIn().delay(500).fadeOut();
       showNotify2("Autorización actualizada ✅", true);
 	  	
     },
@@ -350,11 +350,11 @@ function showNotify2(msg, ok){
 		method:'POST',
 		data:{RESPONSABLE_EVENTO_id:RESPONSABLE_EVENTO_id,RESPONSABLE_text:RESPONSABLE_text},
 		beforeSend:function(){
-		$('#pasarpagado2').html('cargando');
+		$('#pasarpagado').html('cargando');
 	},
 		success:function(data){
 		var result = data.split('^');				
-		$('#pasarpagado2').html("<span id='ACTUALIZADO' >"+result[0]+"</span>");
+		$('#pasarpagado').html("<span id='ACTUALIZADO' >"+result[0]+"</span>");
 		
 		
 		if(result[1]=='si'){
@@ -393,7 +393,7 @@ function showNotify2(msg, ok){
 	},
 		success:function(data){
 		var result = data.split('^');				
-		$('#pasarpagado2').html("<span id='ACTUALIZADO' >"+result[0]+"</span>");
+		$('#pasarpagado').html("<span id='ACTUALIZADO' >"+result[0]+"</span>");
 		
 		load3(1);
 
@@ -434,11 +434,11 @@ function showNotify2(msg, ok){
 		method:'POST',
 		data:{AUDITORIA2_id:AUDITORIA2_id,AUDITORIA2_text:AUDITORIA2_text},
 		beforeSend:function(){
-		$('#pasarpagado2').html('cargando');
+		$('#pasarpagado').html('cargando');
 	},
 		success:function(data){
 		var result = data.split('^');				
-		$('#pasarpagado2').html("Cargando...").fadeIn().delay(500).fadeOut();
+		$('#pasarpagado').html("Cargando...").fadeIn().delay(500).fadeOut();
 		load3(1);
 
 		if(result[1]=='si'){
@@ -453,19 +453,7 @@ function showNotify2(msg, ok){
 }
 
 
-function obtenerPaginaActualFiltro(){
 
-	var paginaActual = parseInt($('.pagination li.active a').first().text(), 10);
-
-	if(isNaN(paginaActual) || paginaActual <= 0){
-
-		paginaActual = 1;
-
-	}
-
-	return paginaActual;
-
-}
 
 
 function STATUS_RECHAZADO(RECHAZADO_id){
@@ -495,7 +483,7 @@ function STATUS_RECHAZADO(RECHAZADO_id){
 
 		beforeSend:function(){
 
-			$('#pasarpagado2').html('cargando');
+			$('#pasarpagado').html('cargando');
 
 		},
 
@@ -503,7 +491,7 @@ function STATUS_RECHAZADO(RECHAZADO_id){
 
 			var result = data.split('^');
 
-			$('#pasarpagado2').html("Cargando...").fadeIn().delay(500).fadeOut();
+			$('#pasarpagado').html("Cargando...").fadeIn().delay(500).fadeOut();
 
 			
             if(result[1]=='si') $('#color_RECHAZADO'+RECHAZADO_id).css('background-color', '#ceffcc');
@@ -674,11 +662,11 @@ function STATUS_FINANZAS(FINANZAS_id){
 		method:'POST',
 		data:{FINANZAS_id:FINANZAS_id,FINANZAS_text:FINANZAS_text},
 		beforeSend:function(){
-		$('#pasarpagado2').html('cargando');
+		$('#pasarpagado').html('cargando');
 	},
 		success:function(data){
 		var result = data.split('^');				
-		$('#pasarpagado2').html("Cargando...").fadeIn().delay(500).fadeOut();
+		$('#pasarpagado').html("Cargando...").fadeIn().delay(500).fadeOut();
 		load3(1);
 		
 		if(result[1]=='si'){
@@ -707,11 +695,11 @@ function STATUS_FINANZAS(FINANZAS_id){
 		method:'POST',
 		data:{VENTAS_id:VENTAS_id,VENTAS_text:VENTAS_text},
 		beforeSend:function(){
-		$('#pasarpagado2').html('cargando');
+		$('#pasarpagado').html('cargando');
 	},
 	success:function(data){
 		var result = data.split('^');				
-		$('#pasarpagado2').html("Cargando...").fadeIn().delay(500).fadeOut();
+		$('#pasarpagado').html("Cargando...").fadeIn().delay(500).fadeOut();
 		
 		
 		if(result[1]=='si'){
@@ -738,7 +726,19 @@ function STATUS_FINANZAS(FINANZAS_id){
 
 }
 
-	/*filtro */
+function obtenerPaginaActualFiltro(){
+
+	var paginaActual = parseInt($('.pagination li.active a').first().text(), 10);
+
+	if(isNaN(paginaActual) || paginaActual <= 0){
+
+		paginaActual = 1;
+
+	}
+
+	return paginaActual;
+
+}	/*filtro */
 
 /* iniciaB1*/
         $(function() {

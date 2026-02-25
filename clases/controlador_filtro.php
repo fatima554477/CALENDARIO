@@ -1454,7 +1454,7 @@ echo implode(' ', $atributosVentas);
         echo '#e9d8ee'; // lila claro para pendiente
     }
     ?>" 
-    id="color_pagado1a<?php echo $row["02SUBETUFACTURAid"]; ?>">
+    id="color_pagado1a2<?php echo $row["02SUBETUFACTURAid"]; ?>">
 
     <input type="checkbox" style="width:30PX;" class="form-check-input"
            id="STATUS_AUDITORIA1<?php echo $row["02SUBETUFACTURAid"]; ?>"
@@ -1520,13 +1520,13 @@ echo implode(' ', $atributosVentas);
 
 <td style="text-align:center; background:
     <?php echo ($row["STATUS_DE_PAGO"] == 'PAGADO') ? '#ceffcc' : '#e9d8ee'; ?>;" 
-    id="color_pagado1a<?php echo $row["02SUBETUFACTURAid"]; ?>">
+    id="color_pagado1a2<?php echo $row["02SUBETUFACTURAid"]; ?>">
 
     <input type="checkbox"
         style="width:30px;"
         class="form-check-input"
-        id="pasarpagado1a<?php echo $row["02SUBETUFACTURAid"]; ?>"
-        name="pasarpagado1a<?php echo $row["02SUBETUFACTURAid"]; ?>"
+        id="pasarpagado1a2<?php echo $row["02SUBETUFACTURAid"]; ?>"
+        name="pasarpagado1a2<?php echo $row["02SUBETUFACTURAid"]; ?>"
         value="<?php echo $row["02SUBETUFACTURAid"]; ?>"
         <?php
             $permisoVerFINANZAS       = $database->variablespermisos('', 'FINANZAS', 'ver') == 'si';
@@ -1534,11 +1534,11 @@ echo implode(' ', $atributosVentas);
 
             if ($row["STATUS_DE_PAGO"] == 'PAGADO') {
                 echo $permisoModificarFINANZAS
-                    ? 'checked onclick="pasarpagado2('.$row["02SUBETUFACTURAid"].')"'
+                    ? 'checked onclick="pasarpagado('.$row["02SUBETUFACTURAid"].')"'
                     : 'checked disabled style="cursor:not-allowed;" title="Ya está pagado"';
             } else {
                 if($permisoVerFINANZAS){
-                    echo 'onclick="pasarpagado2('.$row["02SUBETUFACTURAid"].')"';
+                    echo 'onclick="pasarpagado('.$row["02SUBETUFACTURAid"].')"';
                 } else {
                     // Sin permiso → bloqueado y con aviso
                     echo 'disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
