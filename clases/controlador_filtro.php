@@ -320,7 +320,9 @@ $per_page=intval($_POST["per_page"]);
 <th style="background:#c9e8e8">DIRECCIÓN </th><!-antes finanzas y tesoreria->
 <th style="background:#c9e8e8;text-align:center">FINANZAS Y <br>TESORERÍA <br>(PAGADO)</th><!-antes pagado->
 <th style="background:#c9e8e8">AUDITORÍA</th>
-<?php /*inicia copiar y pegar iniciaA3*/ ?>
+<?php if ($database->variablespermisos('', 'rechazo_pagocalePP', 'ver') == 'si') { ?>
+<th style="background:#c9e8e8">RECHAZADO</th>
+<?php } ?>
 
 <!--<hr/><H1>HTML FILTRO .PHP A3</H1><BR/>--><?php 
 if($database->plantilla_filtro($nombreTabla,"ADJUNTAR_FACTURA_XML",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FACTURA XML</th>
@@ -647,7 +649,9 @@ if($database->plantilla_filtro($nombreTabla,"total",$altaeventos,$DEPARTAMENTO)=
 <td style="background:#c9e8e8"></td>
 <td style="background:#c9e8e8"></td>
 <td style="background:#c9e8e8"></td>
-<?php /*inicia copiar y pegar iniciaA4*/ ?>
+<?php if ($database->variablespermisos('', 'rechazo_pagocalePP', 'ver') == 'si') { ?>
+<td style="background:#c9e8e8"></td>
+<?php } ?>
 
 <!--<hr/><H1>HTML FILTRO E INPUT .PHP A4</H1><BR/>--> 
 <?php  
@@ -1395,7 +1399,6 @@ else {
 
 
 
-
 <td style="text-align:center; background:#ceffcc">
 
 <input type="checkbox" style="width:30PX;" checked="checked" disabled = "disabled" class="form-check-input" id="STATUS_RESPONSABLE_EVENTO<?php echo $row["02SUBETUFACTURAid"]; ?>"  name="STATUS_RESPONSABLE_EVENTO<?php echo $row["02SUBETUFACTURAid"]; ?>" value="<?php echo $row["02SUBETUFACTURAid"]; ?>" onclick="STATUS_RESPONSABLE_EVENTO(<?php echo $row["02SUBETUFACTURAid"]; ?>)" <?php if($row["STATUS_RESPONSABLE_EVENTO"]=='si'){
@@ -1583,6 +1586,101 @@ echo implode(' ', $atributosVentas);
 
 </td>
 
+<?php if ($database->variablespermisos('', 'rechazo_pagocalePP', 'ver') == 'si') { ?>
+
+<td style="text-align:center; background:
+
+    <?php $statusRechazado = isset($row["STATUS_RECHAZADO"]) ? $row["STATUS_RECHAZADO"] : 'no'; echo ($statusRechazado == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;"
+
+    id="color_RECHAZADO<?php echo $row["02SUBETUFACTURAid"]; ?>">
+
+
+
+    <?php
+
+         $motivoRechazo = $database->obtener_motivo_rechazo($row["02SUBETUFACTURAid"]);
+        $statusVentasAutorizado = isset($row["STATUS_VENTAS"]) && $row["STATUS_VENTAS"] == 'si';
+        $mostrarAgregarRechazo = ($statusRechazado == 'si' && $motivoRechazo == '');
+        $mostrarVerRechazo = ($statusRechazado == 'si' && $motivoRechazo != '');
+
+      
+        $permisoguardarRechazo = $database->variablespermisos('', 'rechazo_pagocalePP', 'guardar') == 'si';
+        $permisomodificarRechazo = $database->variablespermisos('', 'rechazo_pagocalePP', 'modificar') == 'si';
+
+    ?>
+
+    <input type="hidden" id="motivo_rechazo_<?php echo $row["02SUBETUFACTURAid"]; ?>" value="<?php echo htmlspecialchars($motivoRechazo, ENT_QUOTES, 'UTF-8'); ?>" />
+
+
+
+    <input type="checkbox"
+
+        style="width:30px; cursor:pointer;"
+
+        class="form-check-input"
+
+        id="STATUS_RECHAZADO<?php echo $row["02SUBETUFACTURAid"]; ?>"
+
+        name="STATUS_RECHAZADO<?php echo $row["02SUBETUFACTURAid"]; ?>"
+
+        value="<?php echo $row["02SUBETUFACTURAid"]; ?>"
+
+        <?php
+
+   if ($statusVentasAutorizado) {
+            echo 'disabled style="cursor:not-allowed;" title="No se puede rechazar: autorizado por ventas"';
+        } elseif ($statusRechazado == 'si') {
+            if($permisomodificarRechazo){
+                echo 'checked onclick="STATUS_RECHAZADO('.$row["02SUBETUFACTURAid"].')" title="Pago rechazado"';
+            } else {
+                echo 'checked disabled style="cursor:not-allowed;" title="Pago rechazado"';
+            }
+        } else {
+            if($permisoguardarRechazo || $permisomodificarRechazo){
+                echo 'onclick="STATUS_RECHAZADO('.$row["02SUBETUFACTURAid"].')"';
+            } else {
+                echo 'disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
+            }
+        }
+
+        ?>
+
+    />
+
+
+
+        <?php if($permisoguardarRechazo || $permisomodificarRechazo){ ?>
+
+   <button type="button" title="agregar!"
+
+            id="agregar_rechazo_<?php echo $row['02SUBETUFACTURAid']; ?>"
+
+            data-rechazo-id="<?php echo $row['02SUBETUFACTURAid']; ?>"
+
+                style="border:none;background:transparent;cursor:pointer;color:#007bff;font-size:14px;<?php echo $mostrarAgregarRechazo ? '' : 'display:none;'; ?>"
+
+            onclick="abrirFormularioRechazo(<?php echo $row['02SUBETUFACTURAid']; ?>)">agregar <br>motivo</button>
+
+    
+
+<?php } ?>
+
+
+    <button type="button" title="Ver motivo"
+      id="ver_rechazo_<?php echo $row['02SUBETUFACTURAid']; ?>"
+
+        data-rechazo-id="<?php echo $row['02SUBETUFACTURAid']; ?>"
+
+       style="border:none;background:transparent;cursor:pointer;color:#28a745;font-size:16px;<?php echo $mostrarVerRechazo ? '' : 'display:none;'; ?>"
+
+        onclick="verMotivoRechazo(<?php echo $row['02SUBETUFACTURAid']; ?>)">ver</button>
+
+
+    <?php $colspan += 1; ?>
+
+</td>
+
+<?php } ?>
 
 <?php /*inicia copiar y pegar iniciaA5*/ ?>
 <!--<hr/><H1>FOREACH FILTRO .PHP A5</H1><BR/>-->
