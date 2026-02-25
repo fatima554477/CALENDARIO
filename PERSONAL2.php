@@ -203,11 +203,7 @@ $puedeAutorizar = (
  </td>
          </tr>
 		
-         <tr>
-         <th style="background:#eff9eb; text-align:left" scope="col">ÚLTIMO DÍA PARA COMPROBAR VIATICOS:</th>
-         <td  style="background:#eff9eb"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $ULTIMO_DIA1; ?>" name="ULTIMO_DIA1"></td>
-     
-         </tr>
+
     
     <tr>
 <th style="background:#f7edf8; text-align:left" scope="col">MOTIVO DEL BONO:<br><a style="color:red;font:7px">obligatorio</a></th>
@@ -265,7 +261,7 @@ $puedeAutorizar = (
  
             <form name="form_emai_personal2" id="form_emai_personal2">
 
-              
+            <table>  
           <tr>
                   
           <td><textarea placeholder="ESCRIBE AQUÍ TUS CORREOS SEPARADOS POR PUNTO Y COMA EJEMPLO: NOMBRE@CORREO.ES;NOMBRE@CORREO.ES"  style="width:500px;px;" name="PERSONAL2_ENVIAR_IMAIL" id="PERSONAL2_ENVIAR_IMAIL" class="form-control" aria-label="With textarea"><?php echo $PERSONAL2_ENVIAR_IMAIL; ?></textarea></td><br></br>
@@ -312,7 +308,7 @@ $puedeAutorizar = (
                <th width="20%"style="background:#c9e8e8">VIATICOS</th>
                <th width="20%"style="background:#c9e8e8">TOTAL</th>
 			   
-               <th width="20%"style="background:#c9e8e8">ULTIMO DÍA PARA <br>COMPROBAR VIATICOS:</th>
+       
                <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
 			
 			                  <th width="20%"style="background:#c9e8e8">FECHA DE PROGRAMACIÓN<br> DE PAGO</th>
@@ -409,7 +405,7 @@ while($row = mysqli_fetch_array($querycontras))
           <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
           <td ><?php echo $row["VIATICOS_PERSONAL2"]; ?></td>
           <td ><?php echo $row["TOTAL1"]; ?></td>
-          <td ><?php echo $row["ULTIMO_DIA1"]; ?></td>
+     
           <td ><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
 		       <td ><?php echo $row["FECHA_PPAGO1"]; ?></td>
                <td ><?php echo $row["FORMA_PAGO1"]; ?></td>
@@ -426,9 +422,9 @@ while($row = mysqli_fetch_array($querycontras))
           </tr>
           <?php
 		       if(!isset($row["admin"]) || $row["admin"] != 'si'){
-          $NUMERO_DIAS12 += $row["NUMERO_DIAS1"];
-          $MONTO_BONO12 += $row["MONTO_BONO1"];
-          $PER2SUNTOTAL += $row["MONTO_BONO_TOTAL1"];
+          $NUMERO_DIAS1223 += $row["NUMERO_DIAS1"];
+          $MONTO_BONO1223 += $row["MONTO_BONO1"];
+          $PER2SUNTOTAL2 += $row["MONTO_BONO_TOTAL1"];
           $PER2VIAT += $row["VIATICOS_PERSONAL2"];
           $PER2TOTAL += $row["TOTAL1"];
           }
@@ -443,10 +439,10 @@ while($row = mysqli_fetch_array($querycontras))
 			?>
           <tr>
           <td colspan='<?php echo $columnasPreviasTotalesPersonal2; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
-          <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS12); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO12,2,'.',','); ?></td>
+          <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS1223); ?></td>
+          <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO1223,2,'.',','); ?></td>
 		  
-          <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL,2,'.',','); ?></td>
+          <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL2,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2VIAT,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td>
 		  <td colspan='<?php echo $columnasRestantesTotalesPersonal2; ?>'></td>
@@ -461,6 +457,6 @@ while($row = mysqli_fetch_array($querycontras))
 </div>
 </div> 
 </div>
-</div>
-</div>
+
+
 
