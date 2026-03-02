@@ -275,11 +275,17 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
           <tbody= 'font-style:italic;'>
           <table class="table table-striped table-bordered" style="width:100%"  id='reset_personal2' name='reset_personal2'>
           <tr style="text-align:center">
-               <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR VYO</th>
+		   
+               <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>VER EVENTOS</th> 
+			  
+			   <?php if($puedeVerVYO2){ ?>
 			   <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>PAGO BONO</th> 
-               <th width="15%"style="background:#c9e8e8">AUTORIZA<br>DIRECCIÓN</th> 
+			     <?php } ?>
+<?php if($puedeVerDIRECCION2){ ?>				 
+               <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR DIRECCIÓN<br>PAGO BONO</th>
+ <?php } ?>			   
 		   <?php if($puedeVerAdmin2){ ?>
-               <th width="15%"style="background:#c9e8e8">AUDITORÍA</th>
+               <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR AUDITORÍA<br>PAGO BONO</th>
 			   <?php } ?> 			   
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
@@ -384,7 +390,7 @@ while($row = mysqli_fetch_array($querycontras))
           <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
           <td ><?php echo $row["VIATICOS_PERSONAL2"]; ?></td>
           <td ><?php echo $row["TOTAL1"]; ?></td>
-          <td ><?php echo $row["ULTIMO_DIA"]; ?></td>
+          <td ><?php echo $row["ULTIMO_DIA1"]; ?></td>
           <td ><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
 		       <td ><?php echo $row["FECHA_PPAGO1"]; ?></td>
                <td ><?php echo $row["FORMA_PAGO1"]; ?></td>
@@ -400,13 +406,13 @@ while($row = mysqli_fetch_array($querycontras))
 </td>  <?php } ?>
           </tr>
           <?php
-		       if(!isset($row["admin"]) || $row["admin"] != 'si'){
+		   
           $NUMERO_DIAS12 += $row["NUMERO_DIAS1"];
           $MONTO_BONO12 += $row["MONTO_BONO1"];
           $PER2SUNTOTAL += $row["MONTO_BONO_TOTAL1"];
           $PER2VIAT += $row["VIATICOS_PERSONAL2"];
           $PER2TOTAL += $row["TOTAL1"];
-          }
+          
           }
           ?>
 		                  	<?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si' ){
@@ -419,10 +425,10 @@ while($row = mysqli_fetch_array($querycontras))
           
           <tr>
            <td colspan='<?php echo $columnasPreviasTotalesPersonal2; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
-          <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS1223); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO1223,2,'.',','); ?></td>
+          <td style="text-align:center;"><?php echo number_format($NUMERO_DIAS12); ?></td>
+          <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO12,2,'.',','); ?></td>
 		  
-          <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL2,2,'.',','); ?></td>
+          <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2VIAT,2,'.',','); ?></td>
           <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td>
 		  <td colspan='<?php echo $columnasRestantesTotalesPersonal2; ?>'></td></tr><?php } ?>

@@ -464,13 +464,13 @@ while($row = mysqli_fetch_array($querycontras))
 </td>  <?php } ?>
           </tr>
           <?php
-     if(!isset($row["admin"]) || $row["admin"] != 'si'){
+     
               $PERSUNTOTAL1 += $row["MONTO_BONO_TOTAL"];
               $PERVIAT1 += $row["VIATICOS_PERSONAL"];
               $PERTOTAL1 += $row["TOTAL"];
               $MONTO_BONO1 += $row["MONTO_BONO"];
               $NUMERO_DIAS1 += $row["NUMERO_DIAS"];
-          }
+          
           }
           ?>
          	<?php if($conexion->variablespermisos('','TOTALES_PERSOADMIN','ver')=='si' ){
