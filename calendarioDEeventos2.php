@@ -14,8 +14,11 @@ ini_set("display_errors", 1);
         session_start(); 
     }
 isset($_SESSION["logeado"])?'':header("location: index.php?salir=1");
+if(!isset($_SESSION["logeado"])) {
+    exit;
+}
 
-require "includes/error_reporting.php";
+require_once "includes/error_reporting.php";
 
 $idevento = isset($_GET['idevento'])?$_GET['idevento']:'no';
 if($idevento!='no'){
@@ -23,8 +26,8 @@ $_SESSION['idevento'] = $idevento;
 }
 
 
-		require "calendariodeeventos2/controladorAE.php";
-        require "calendariodeeventos2/variablesE.php";
+		require_once "calendariodeeventos2/controladorAE.php";
+        require_once "calendariodeeventos2/variablesE.php";
 		
 		
 		
@@ -39,7 +42,7 @@ $_SESSION['idevento'] = $idevento;
 	  <link href="assets/css/pace.min.css" rel="stylesheet" />
 	  <script src="assets/js/pace.min.js"></script>
 
-    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="calendariodeeventos/typeahead.js"></script>
 	<style>
 	
@@ -409,27 +412,24 @@ if($conexion->variablespermisos('','COBROS_CLIENTE','ver')=='si'){
   <!--end wrapper-->
 
     <!-- JS Files-->
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <script src="assets/bootstrap/js/jquery.min.js"></script>
-    <script src="//code.angularjs.org/snapshot/angular.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/jspdf.umd.min.js"></script> 
-    <script src="js/html2canvas.min.js"></script> 
-    <script src="js/convertir.js"></script>                
-    <script src="html2pdf.bundle.min.js"></script>
-    <script src="colaboradores/script.js"></script> 
-    <script src="assets/js/jquery.min.js"></script>
+    <script defer src="https://code.angularjs.org/snapshot/angular.min.js"></script>
+    <script defer src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script defer src="js/jspdf.umd.min.js"></script> 
+    <script defer src="js/html2canvas.min.js"></script> 
+    <script defer src="js/convertir.js"></script>                
+    <script defer src="html2pdf.bundle.min.js"></script>
+    <script defer src="colaboradores/script.js"></script> 
 	<?php require "includes/convertirma.php"; ?>
 	<?php require "calendariodeeventos2/scriptAE.php"; ?>
-    <script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
-    <script src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script defer src="assets/plugins/simplebar/js/simplebar.min.js"></script>
+    <script defer src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
+    <script defer src="assets/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <!--plugins-->
-    <script src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+    <script defer src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
 
     <!-- Main JS-->
-    <script src="assets/js/main.js"></script>
+    <script defer src="assets/js/main.js"></script>
 
 
   </body>
