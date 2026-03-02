@@ -173,29 +173,9 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
 
     </tr>
 
-         <tr style="background:#f7edf8; text-align:left"> 
-         <th  scope="row"> <label for="validationCustom03" class="form-label">VIATICOS:</label></th>
-         <td>
 
-         <div class="input-group mb-3"> <span class="input-group-text">$</span><input type="text"  style="width:450px;height:40px;"  class="form-control" id="VIATICOS_PERSONAL2" required="" value="<?php echo number_format($VIATICOS_PERSONAL2,2,'.',','); ?>" onkeyup="comasainput('VIATICOS_PERSONAL2')" name="VIATICOS_PERSONAL2" placeholder="">
- </div>
- </td>
-         </tr>
-    <tr style="background:#eff9eb; text-align:left"> 
-         <th  scope="row"> <label for="validationCustom03" class="form-label">TOTAL BONO Y VIATICOS:</label></th>
-         <td>
-  <div class="input-group">
-         <div class="input-group mb-3"> <span class="input-group-text">$</span><input type="text"  style="width:450px;height:40px;"  class="form-control" id="TOTAL1" required="" value="<?php echo number_format($TOTAL1,2,'.',','); ?>" onkeyup="comasainput('TOTAL1')" name="TOTAL1" placeholder="">
- <button type="button" class="btn btn-sm btn-primary" onclick="totalfechas8()" >ACTUALIZAR</button>
-  </div></div>
- </td>
-         </tr>
 		
-         <tr>
-         <th style="background:#eff9eb; text-align:left" scope="col">ÚLTIMO DÍA PARA COMPROBAR VIATICOS:</th>
-         <td  style="background:#eff9eb"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $ULTIMO_DIA1; ?>" name="ULTIMO_DIA1"></td>
-     
-         </tr>
+
     
     <tr>
 <th style="background:#f7edf8; text-align:left" scope="col">MOTIVO DEL BONO:<br><a style="color:red;font:7px">obligatorio</a></th>
@@ -299,10 +279,7 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
                <th width="20%"style="background:#c9e8e8">NÚMERO <br>DE DÍAS</th>
                <th width="20%"style="background:#c9e8e8">MONTO <br>DE BONO</th>
                <th width="20%"style="background:#c9e8e8">TOTAL <br>DE BONO</th>
-               <th width="20%"style="background:#c9e8e8">VIATICOS</th>
-               <th width="20%"style="background:#c9e8e8">TOTAL</th>
-			   
-               <th width="20%"style="background:#c9e8e8">ULTIMO DÍA PARA <br>COMPROBAR VIATICOS:</th>
+
                <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
 			
 			                  <th width="20%"style="background:#c9e8e8">FECHA DE PROGRAMACIÓN<br> DE PAGO</th>
@@ -388,9 +365,7 @@ while($row = mysqli_fetch_array($querycontras))
           <td ><?php echo $row["NUMERO_DIAS1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
-          <td ><?php echo $row["VIATICOS_PERSONAL2"]; ?></td>
-          <td ><?php echo $row["TOTAL1"]; ?></td>
-          <td ><?php echo $row["ULTIMO_DIA1"]; ?></td>
+  
           <td ><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
 		       <td ><?php echo $row["FECHA_PPAGO1"]; ?></td>
                <td ><?php echo $row["FORMA_PAGO1"]; ?></td>

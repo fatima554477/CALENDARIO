@@ -199,23 +199,7 @@ $puedeAutorizar = (
 
     </tr>
 
- 	 <tr style="background:#f7edf8; text-align:left"> 
-         <th  scope="row"> <label for="validationCustom03" class="form-label">VIATICOS:</label></th>
-         <td>
 
-         <div class="input-group mb-3"> <span class="input-group-text">$</span><input type="text"  style="width:450px;height:40px;"  class="form-control" id="VIATICOS_PERSONAL" required="" value="<?php echo number_format($VIATICOS_PERSONAL,2,'.',','); ?>" onkeyup="comasainput('VIATICOS_PERSONAL')" name="VIATICOS_PERSONAL" placeholder="">
- </div>
- </td>
-         </tr>
-    <tr style="background:#eff9eb; text-align:left"> 
-         <th  scope="row"> <label for="validationCustom03" class="form-label">TOTAL BONO Y VIATICOS:</label></th>
-         <td>
-  <div class="input-group">
-         <div class="input-group mb-3"> <span class="input-group-text">$</span><input type="text"  style="width:450px;height:40px;"  class="form-control" id="TOTAL" required="" value="<?php echo number_format($TOTAL,2,'.',','); ?>" onkeyup="comasainput('TOTAL')" name="TOTAL" placeholder="">
- <button type="button" class="btn btn-sm btn-primary" onclick="totalfechas7()" >ACTUALIZAR</button>
-  </div></div>
- </td>
-         </tr>
 
 		 
 		
@@ -328,8 +312,7 @@ $puedeAutorizar = (
 			   		   
                <th width="20%"style="background:#c9e8e8">MONTO <br>DE BONO</th>
                <th width="20%"style="background:#c9e8e8">TOTAL <br>DE BONO</th>
-               <th width="20%"style="background:#c9e8e8">VIATICOS</th>
-               <th width="20%"style="background:#c9e8e8">TOTAL</th>			  
+  		  
         
                <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
 			   
@@ -442,8 +425,7 @@ while($row = mysqli_fetch_array($querycontras))
           <td ><?php echo $row["NUMERO_DIAS"]; ?></td>
           <td ><?php echo $row["MONTO_BONO"]; ?></td>
           <td ><?php echo $row["MONTO_BONO_TOTAL"]; ?></td>
-          <td ><?php echo $row["VIATICOS_PERSONAL"]; ?></td>
-          <td ><?php echo $row["TOTAL"]; ?></td>
+   
 		 
       
                <td ><?php echo $row["OBSERVACIONES_PERSONAL"]; ?></td>
