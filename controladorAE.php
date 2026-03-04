@@ -1006,16 +1006,16 @@ $IPpersonal2 = isset($_POST["IPpersonal2"])?$_POST["IPpersonal2"]:"";
 
 	
 	if($IPpersonal2 != "" && $ADJUNTO_COMPROBANTE1 == ""){
-		$adjuntoActual = $altaeventos->listado_personal33($IPpersonal2);
-		$rowAdjunto2 = mysqli_fetch_array($adjuntoActual, MYSQLI_ASSOC);
+		$adjuntoActual2 = $altaeventos->listado_personal33($IPpersonal2);
+		$rowAdjunto2 = mysqli_fetch_array($adjuntoActual2, MYSQLI_ASSOC);
 		if($rowAdjunto2 && isset($rowAdjunto2["ADJUNTO_COMPROBANTE"])){
 			$ADJUNTO_COMPROBANTE1 = $rowAdjunto2["ADJUNTO_COMPROBANTE"];
 		}
 	}
 
 	if($IPpersonal2 != "" && (!isset($_SESSION['idevento']) || $_SESSION['idevento'] == '')){
-		$datosPersonal = $altaeventos->listado_personal33($IPpersonal2);
-		$rowPersonal2 = mysqli_fetch_array($datosPersonal, MYSQLI_ASSOC);
+		$datosPersonal2 = $altaeventos->listado_personal33($IPpersonal2);
+		$rowPersonal2 = mysqli_fetch_array($datosPersonal2, MYSQLI_ASSOC);
 		if($rowPersonal2 && isset($rowPersonal2['idRelacion']) && $rowPersonal2['idRelacion'] != ''){
 			$_SESSION['idevento'] = $rowPersonal2['idRelacion'];
 		}

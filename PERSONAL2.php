@@ -273,8 +273,8 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
                <th width="20%"style="background:#c9e8e8">TELEFONO DE OFICINA</th>
                <th width="20%"style="background:#c9e8e8">EMAIL</th>
 			  
-               <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DE CORDINACIÓN</th>
-               <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DE CORDINACIÓN</th>
+               <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DE COORDINACIÓN</th>
+               <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DE COORDINACIÓN</th>
 			    	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
                <th width="20%"style="background:#c9e8e8">NÚMERO <br>DE DÍAS</th>
                <th width="20%"style="background:#c9e8e8">MONTO <br>DE BONO</th>

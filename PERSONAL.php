@@ -18,6 +18,7 @@ $puedeModificarVYO = ($conexion->variablespermisos('', 'PERSOvyo', 'modificar') 
 $puedeVerDIRECCION = ($conexion->variablespermisos('', 'PERSOdire', 'ver') === 'si');
 $puedeGuardarDIRECCION = ($conexion->variablespermisos('', 'PERSOdire', 'guardar') === 'si');
 $puedeModificarDIRECCION = ($conexion->variablespermisos('', 'PERSOdire', 'modificar') === 'si');
+$puedeVerBonoPersonal = ($conexion->variablespermisos('', 'PERSONALver', 'ver') === 'si');
 
 // Puede autorizar si:
 // - Es el vendedor del evento
@@ -70,28 +71,26 @@ $puedeAutorizar = (
     <th style="text-align:left" scope="col">PERSONAL QUE ADMINISTRA EL EVENTO</th>
     <td>
         <?php
-        $encabezadoA = '<select class="form-select mb-3" aria-label="Default select example" 
-                        id="NOMBRE_PERSONAL" required name="NOMBRE_PERSONAL" 
-                        onchange="getemployee();">
-                       <option value="nada" selected>SELECIONA UNA OPCIÓN</option>';
+$encabezadoA = '<select class="form-select mb-3" aria-label="Default select example" 
+                id="NOMBRE_PERSONAL" required name="NOMBRE_PERSONAL" 
+                onchange="getemployee();">
+               <option value="nada" selected>SELECIONA UNA OPCIÓN</option>';
 
-        $queryper = $altaeventos->lista_colaboradoreventos2();
-        $fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
-        $num = 0;
-        $option29 = '';
-        
-        while($row = mysqli_fetch_array($queryper)) {
-            $num = ($num == 8) ? 0 : $num + 1;
-				$select='';
-	        if($select = "selected");
-			
-			
-            $option21 .= '<option style="background: #'.$fondos[$num].'" 
-                          value="'.$row['idR'].'^^'.$row['NOMBRE_1'].'^^'.$row['NOMBRE_2'].'^^'.$row['APELLIDO_PATERNO'].'^^'.$row['APELLIDO_MATERNO'].'">
-                          '.htmlspecialchars($row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO']).'</option>';
-        }
-        
-        echo $encabezadoA.$option21.'</select>';
+$queryper = $altaeventos->lista_colaboradoreventos2();
+$fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
+$num = 0;
+$option21 = ''; // ← INICIALIZAR AQUÍ
+
+while($row = mysqli_fetch_array($queryper)) {
+    $num = ($num == 8) ? 0 : $num + 1;
+    // ← ELIMINAR las líneas de $select que no hacen nada
+
+    $option21 .= '<option style="background: #'.$fondos[$num].'" 
+                  value="'.$row['idR'].'^^'.$row['NOMBRE_1'].'^^'.$row['NOMBRE_2'].'^^'.$row['APELLIDO_PATERNO'].'^^'.$row['APELLIDO_MATERNO'].'">
+                  '.htmlspecialchars($row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO']).'</option>';
+}
+
+echo $encabezadoA.$option21.'</select>';
         ?>
     </td>
 </tr>
@@ -156,7 +155,7 @@ $puedeAutorizar = (
 
     </tr>
 	
-				   	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
+				   	<?php if($puedeVerBonoPersonal){ ?>
     <tr>
 	
     <th style="background:#eff9eb; text-align:left" scope="col">NÚMERO DE DIAS:</th>
@@ -175,7 +174,7 @@ $puedeAutorizar = (
 
 	
 	
-  <tr style="background:#f7edf8; text-align:left"> 
+ <tr style="background:#f7edf8; text-align:left"> 
          <th  scope="row"> <label for="validationCustom03" class="form-label">MONTO DEL BONO:</label></th>
          <td>
 
@@ -183,15 +182,16 @@ $puedeAutorizar = (
  </div>
  </td>
          </tr>
-
-          <tr style="background:#eff9eb; text-align:left"> 
+ <tr style="background:#eff9eb; text-align:left"> 
          <th  scope="row"> <label for="validationCustom03" class="form-label">TOTAL DEL BONO:</label></th>
          <td>
 
          <div class="input-group mb-3"> <span class="input-group-text">$</span><input type="text"  style="width:450px;height:40px;"  class="form-control" id="MONTO_BONO_TOTAL" required="" value="<?php echo number_format($MONTO_BONO_TOTAL,2,'.',','); ?>" onkeyup="comasainput('MONTO_BONO_TOTAL')" name="MONTO_BONO_TOTAL" placeholder="">
  </div>
  </td>
-         </tr>  
+         </tr> 	
+
+ 
 
     <tr>
     <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE PROGRAMACIÓN PAGO DE BONO:</th>
@@ -307,12 +307,12 @@ $puedeAutorizar = (
 	
                <th width="20%"style="background:#c9e8e8">FECHA DE INICIO<br> DEL EVENTO</th>
                <th width="20%"style="background:#c9e8e8">FECHA FINAL <br>DEL EVENTO</th>
-			   	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
+			   	<?php if($puedeVerBonoPersonal){ ?>
                <th width="20%"style="background:#c9e8e8">NÚMERO <br>DE DÍAS</th>
 			   		   
                <th width="20%"style="background:#c9e8e8">MONTO <br>DE BONO</th>
                <th width="20%"style="background:#c9e8e8">TOTAL <br>DE BONO</th>
-  		  
+        		  
         
                <th width="20%"style="background:#c9e8e8">MOTIVO DEL BONO</th>
 			   
@@ -421,11 +421,11 @@ while($row = mysqli_fetch_array($querycontras))
 		  
            <td ><?php echo $row["FECHA_INICIO"]; ?></td>
           <td ><?php echo $row["FECHA_FINAL"]; ?></td>
-		   	<?php if($conexion->variablespermisos('','PERSONALver','ver')=='si' ){ ?>
+		   	<?php if($puedeVerBonoPersonal){ ?>
           <td ><?php echo $row["NUMERO_DIAS"]; ?></td>
           <td ><?php echo $row["MONTO_BONO"]; ?></td>
           <td ><?php echo $row["MONTO_BONO_TOTAL"]; ?></td>
-   
+  
 		 
       
                <td ><?php echo $row["OBSERVACIONES_PERSONAL"]; ?></td>
@@ -448,29 +448,30 @@ while($row = mysqli_fetch_array($querycontras))
           <?php
      
               $PERSUNTOTAL1 += $row["MONTO_BONO_TOTAL"];
-              $PERVIAT1 += $row["VIATICOS_PERSONAL"];
-              $PERTOTAL1 += $row["TOTAL"];
+             
+          
               $MONTO_BONO1 += $row["MONTO_BONO"];
               $NUMERO_DIAS1 += $row["NUMERO_DIAS"];
           
           }
           ?>
-         	<?php if($conexion->variablespermisos('','TOTALES_PERSOADMIN','ver')=='si' ){
-			$columnasPreviasTotalesPersonal = 9
-				+ ($puedeVerVYO ? 1 : 0)
-				+ ($puedeVerDIRECCION ? 1 : 0)
-				+ ($puedeVerAdmin ? 1 : 0);
-			$columnasRestantesTotalesPersonal = 8;
-			?>
-          <tr>
-          <td colspan='<?php echo $columnasPreviasTotalesPersonal; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
-          <td style="text-align:center;"> <?php echo number_format($NUMERO_DIAS1); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO1,2,'.',','); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($PERSUNTOTAL1,2,'.',','); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($PERVIAT1,2,'.',','); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($PERTOTAL1,2,'.',','); ?></td>
-		  <td colspan='<?php echo $columnasRestantesTotalesPersonal; ?>'></td>
-		  </tr><?php } ?>
+<?php if($conexion->variablespermisos('','TOTALES_PERSOADMIN','ver')=='si' ){
+    $columnasPreviasTotalesPersonal = 9
+        + ($puedeVerVYO ? 1 : 0)
+        + ($puedeVerDIRECCION ? 1 : 0)
+        + ($puedeVerAdmin ? 1 : 0);
+    $columnasRestantesTotalesPersonal = 8;
+    if($puedeVerBonoPersonal){ ?>
+        <tr>
+            <td colspan='<?php echo $columnasPreviasTotalesPersonal; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td>
+            <td style="text-align:center;"> <?php echo number_format($NUMERO_DIAS1); ?></td>
+            <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO1,2,'.',','); ?></td>
+            <td style="text-align:center;">$ <?php echo number_format($PERSUNTOTAL1,2,'.',','); ?></td>
+            <td colspan='<?php echo $columnasRestantesTotalesPersonal; ?>'></td>
+        </tr>
+    <?php } // fin puedeVerBonoPersonal
+} // fin TOTALES_PERSOADMIN
+?>
 		     </form>
 
 			</table> 
