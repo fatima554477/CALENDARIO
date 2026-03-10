@@ -157,6 +157,40 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 ?>
 
 <script>
+function parseNumeroSeguroP2(valor) {
+    if (valor === null || valor === undefined) return 0;
+    var limpio = String(valor).replace(/[^0-9,.-]/g, '').trim();
+    if (!limpio) return 0;
+    if (limpio.indexOf(',') !== -1 && limpio.indexOf('.') === -1) {
+        limpio = limpio.replace(',', '.');
+    } else {
+        limpio = limpio.replace(/,/g, '');
+    }
+    var numero = parseFloat(limpio);
+    return isNaN(numero) ? 0 : numero;
+}
+function calcularDiasEntreFechasP2(inicio, fin) {
+    if (!inicio || !fin) return 0;
+    var i = new Date(inicio + 'T00:00:00');
+    var f = new Date(fin + 'T00:00:00');
+    if (isNaN(i.getTime()) || isNaN(f.getTime()) || f < i) return 0;
+    return Math.floor((f - i) / (1000 * 60 * 60 * 24)) + 1;
+}
+function actualizarTotalPersonal2(forzarRecalculo) {
+    var diasInput = $('#listado_personal2form input[name="NUMERO_DIAS1"]');
+    var montoInput = $('#listado_personal2form input[name="MONTO_BONO1"]');
+    var totalInput = $('#listado_personal2form input[name="MONTO_BONO_TOTAL1"]');
+
+    var dias = parseNumeroSeguroP2(diasInput.val());
+    var monto = parseNumeroSeguroP2(montoInput.val());
+    var totalActual = parseNumeroSeguroP2(totalInput.val());
+
+    if (!forzarRecalculo && totalActual > 0 && (dias === 0 || monto === 0)) {
+        return;
+    }
+
+    totalInput.val((dias * monto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+}
 function upload_file_P2(e, name) {
     e.preventDefault();
     upload_files_P2(e.dataTransfer.files, name);
@@ -201,18 +235,26 @@ function ajax_file_upload_P2(file_obj, nombre) {
 }
 
 $(function(){
-    // Calcular al abrir el modal
-    var dias  = parseFloat(($('input[name="NUMERO_DIAS1"]').val()||'0').replace(/,/g,'')) || 0;
-    var monto = parseFloat(($('input[name="MONTO_BONO1"]').val()||'0').replace(/,/g,'')) || 0;
-    $('input[name="MONTO_BONO_TOTAL1"]').val((dias * monto).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+    actualizarTotalPersonal2(false);
+
+    // Sumar fechas para número de días automáticamente.
+    $(document)
+        .off('change.vp2fechas', '#listado_personal2form input[name="FECHA_INICIO1"], #listado_personal2form input[name="FECHA_FINAL1"]')
+        .on('change.vp2fechas', '#listado_personal2form input[name="FECHA_INICIO1"], #listado_personal2form input[name="FECHA_FINAL1"]', function(){
+            var inicio = $('#listado_personal2form input[name="FECHA_INICIO1"]').val();
+            var fin = $('#listado_personal2form input[name="FECHA_FINAL1"]').val();
+            var diasCalculados = calcularDiasEntreFechasP2(inicio, fin);
+            if (diasCalculados > 0) {
+                $('#listado_personal2form input[name="NUMERO_DIAS1"]').val(diasCalculados);
+            }
+            actualizarTotalPersonal2(true);
+        });
 
     // Recalcular al escribir
     $(document)
         .off('input.vp2', '#listado_personal2form input[name="NUMERO_DIAS1"], #listado_personal2form input[name="MONTO_BONO1"]')
         .on('input.vp2',  '#listado_personal2form input[name="NUMERO_DIAS1"], #listado_personal2form input[name="MONTO_BONO1"]', function(){
-            var d = parseFloat(($('#listado_personal2form input[name="NUMERO_DIAS1"]').val()||'0').replace(/,/g,'')) || 0;
-            var m = parseFloat(($('#listado_personal2form input[name="MONTO_BONO1"]').val()||'0').replace(/,/g,'')) || 0;
-            $('input[name="MONTO_BONO_TOTAL1"]').val((d*m).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+            actualizarTotalPersonal2(true);
         });
 
     // Guardar

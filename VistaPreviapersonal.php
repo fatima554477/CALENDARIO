@@ -76,7 +76,7 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 
 			 </tr>
 			 
-			 			 			 			 			 			 			 <tr>
+			 <tr>
 			 <td width="30%"><label>TOTAL DEL BONO</label></td>
 			 <td width="70%"><input type="text" name="MONTO_BONO_TOTAL" id="MONTO_BONO_TOTAL" value="'.$row["MONTO_BONO_TOTAL"].'"></td>
 
@@ -172,6 +172,41 @@ $queryVISTAPREV = $altaeventos->listado_personal2($identioficador);
 ?>
 
 <script>
+function parseNumeroSeguro(valor) {
+    if (valor === null || valor === undefined) return 0;
+    var limpio = String(valor).replace(/[^0-9,.-]/g, '').trim();
+    if (!limpio) return 0;
+    // Si tiene coma y no punto, asumimos formato decimal con coma.
+    if (limpio.indexOf(',') !== -1 && limpio.indexOf('.') === -1) {
+        limpio = limpio.replace(',', '.');
+    } else {
+        limpio = limpio.replace(/,/g, '');
+    }
+    var numero = parseFloat(limpio);
+    return isNaN(numero) ? 0 : numero;
+}
+function calcularDiasEntreFechas(inicio, fin) {
+    if (!inicio || !fin) return 0;
+    var i = new Date(inicio + 'T00:00:00');
+    var f = new Date(fin + 'T00:00:00');
+    if (isNaN(i.getTime()) || isNaN(f.getTime()) || f < i) return 0;
+    return Math.floor((f - i) / (1000 * 60 * 60 * 24)) + 1;
+}
+function actualizarTotalPersonal(forzarRecalculo) {
+    var diasInput = $('#listado_personalform input[name="NUMERO_DIAS"]');
+    var montoInput = $('#listado_personalform input[name="MONTO_BONO"]');
+    var totalInput = $('#listado_personalform input[name="MONTO_BONO_TOTAL"]');
+
+    var dias = parseNumeroSeguro(diasInput.val());
+    var monto = parseNumeroSeguro(montoInput.val());
+    var totalActual = parseNumeroSeguro(totalInput.val());
+
+    if (!forzarRecalculo && totalActual > 0 && (dias === 0 || monto === 0)) {
+        return;
+    }
+
+    totalInput.val((dias * monto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+}
 function upload_file(e, name) {
     e.preventDefault();
     upload_files_vp(e.dataTransfer.files, name);
@@ -216,18 +251,26 @@ function ajax_file_upload_vp(file_obj, nombre) {
 }
 
 $(function(){
-    // Calcular al abrir el modal
-    var dias  = parseFloat(($('input[name="NUMERO_DIAS"]').val()||'0').replace(/,/g,'')) || 0;
-    var monto = parseFloat(($('input[name="MONTO_BONO"]').val()||'0').replace(/,/g,'')) || 0;
-    $('input[name="MONTO_BONO_TOTAL"]').val((dias * monto).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+    // Mantener el total guardado si existe, pero recalcular cuando sí hay datos suficientes.
+    actualizarTotalPersonal(false);
+
+    $(document)
+        .off('change.vp1fechas', '#listado_personalform input[name="FECHA_INICIO"], #listado_personalform input[name="FECHA_FINAL"]')
+        .on('change.vp1fechas', '#listado_personalform input[name="FECHA_INICIO"], #listado_personalform input[name="FECHA_FINAL"]', function(){
+            var inicio = $('#listado_personalform input[name="FECHA_INICIO"]').val();
+            var fin = $('#listado_personalform input[name="FECHA_FINAL"]').val();
+            var diasCalculados = calcularDiasEntreFechas(inicio, fin);
+            if (diasCalculados > 0) {
+                $('#listado_personalform input[name="NUMERO_DIAS"]').val(diasCalculados);
+            }
+            actualizarTotalPersonal(true);
+        });
 
     // Recalcular al escribir
     $(document)
         .off('input.vp1', '#listado_personalform input[name="NUMERO_DIAS"], #listado_personalform input[name="MONTO_BONO"]')
         .on('input.vp1',  '#listado_personalform input[name="NUMERO_DIAS"], #listado_personalform input[name="MONTO_BONO"]', function(){
-            var d = parseFloat(($('#listado_personalform input[name="NUMERO_DIAS"]').val()||'0').replace(/,/g,'')) || 0;
-            var m = parseFloat(($('#listado_personalform input[name="MONTO_BONO"]').val()||'0').replace(/,/g,'')) || 0;
-            $('input[name="MONTO_BONO_TOTAL"]').val((d*m).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+            actualizarTotalPersonal(true);
         });
 
     // Guardar
