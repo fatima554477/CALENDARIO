@@ -1277,6 +1277,42 @@ if($pasara1_personal2ADMIN_id!='' and ($pasapersonal2ADMIN_text=='si' or $pasape
 echo $altaeventos->actualizapersonal2ADMIN ($pasara1_personal2ADMIN_id , $pasapersonal2ADMIN_text  );
 }
 
+
+
+///////////////////////////////RECHAZO BONO////////////////////////
+$STATUS_RECHAZOBONO_id= isset($_POST["STATUS_RECHAZOBONO_id"])?$_POST["STATUS_RECHAZOBONO_id"]:"";
+$STATUS_RECHAZOBONO_text= isset($_POST["STATUS_RECHAZOBONO_text"])?$_POST["STATUS_RECHAZOBONO_text"]:"";
+
+if($STATUS_RECHAZOBONO_id!='' and ($STATUS_RECHAZOBONO_text=='si' or $STATUS_RECHAZOBONO_text=='no') ){
+echo $altaeventos->actualizaSTATUS_RECHAZOBONO($STATUS_RECHAZOBONO_id , $STATUS_RECHAZOBONO_text);
+}
+
+
+///////////////////////////////RECHAZO BONO PERSONAL2////////////////////////
+$STATUS_BONORECHAZO_id= isset($_POST["STATUS_BONORECHAZO_id"])?$_POST["STATUS_BONORECHAZO_id"]:"";
+$STATUS_BONORECHAZO_text= isset($_POST["STATUS_BONORECHAZO_text"])?$_POST["STATUS_BONORECHAZO_text"]:"";
+
+if($STATUS_BONORECHAZO_id!='' and ($STATUS_BONORECHAZO_text=='si' or $STATUS_BONORECHAZO_text=='no') ){
+echo $altaeventos->actualizaSTATUS_BONORECHAZO($STATUS_BONORECHAZO_id , $STATUS_BONORECHAZO_text);
+}
+
+$RECHAZO_MOTIVO_PERSONAL_id = isset($_POST["RECHAZO_MOTIVO_PERSONAL_id"])?$_POST["RECHAZO_MOTIVO_PERSONAL_id"]:"";
+$RECHAZO_MOTIVO_PERSONAL_tipo = isset($_POST["RECHAZO_MOTIVO_PERSONAL_tipo"])?$_POST["RECHAZO_MOTIVO_PERSONAL_tipo"]:"";
+$RECHAZO_MOTIVO_PERSONAL_text = isset($_POST["RECHAZO_MOTIVO_PERSONAL_text"])?$_POST["RECHAZO_MOTIVO_PERSONAL_text"]:"";
+
+if($RECHAZO_MOTIVO_PERSONAL_id!='' and $RECHAZO_MOTIVO_PERSONAL_text!=''){
+echo $altaeventos->guardar_motivo_rechazo_personal($RECHAZO_MOTIVO_PERSONAL_id, $RECHAZO_MOTIVO_PERSONAL_tipo, $RECHAZO_MOTIVO_PERSONAL_text);
+}
+
+$RECHAZO_MOTIVO_PERSONAL_VER_id = isset($_POST["RECHAZO_MOTIVO_PERSONAL_VER_id"])?$_POST["RECHAZO_MOTIVO_PERSONAL_VER_id"]:"";
+$RECHAZO_MOTIVO_PERSONAL_VER_tipo = isset($_POST["RECHAZO_MOTIVO_PERSONAL_VER_tipo"])?$_POST["RECHAZO_MOTIVO_PERSONAL_VER_tipo"]:"";
+
+if($RECHAZO_MOTIVO_PERSONAL_VER_id!=''){
+echo $altaeventos->obtener_motivo_rechazo_personal($RECHAZO_MOTIVO_PERSONAL_VER_id, $RECHAZO_MOTIVO_PERSONAL_VER_tipo);
+}
+
+
+
 ///////////////////////////////VYO2////////////////////////
 $pasara1_personal2VYO_id= isset($_POST["pasara1_personal2VYO_id"])?$_POST["pasara1_personal2VYO_id"]:"";
 $pasapersonal2VYO_text= isset($_POST["pasapersonal2VYO_text"])?$_POST["pasapersonal2VYO_text"]:"";

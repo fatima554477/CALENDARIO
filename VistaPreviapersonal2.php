@@ -84,24 +84,7 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 
 			 
 				 
-			 		 <tr>
-			 <td width="30%"><label> VIATICOS</label></td>
-			 <td width="70%"><input type="text" name="VIATICOS_PERSONAL2" value="'.$row["VIATICOS_PERSONAL2"].'"></td>
-			 </tr>
-			 
-			 
-			 
-			 
-			 
-		 <tr>
-			 <td width="30%"><label>TOTAL BONO Y VIATICOS</label></td>
-			 <td width="70%"><input type="text" name="TOTAL1" value="'.$row["TOTAL1"].'" readonly></td>
-			 </tr>
-			 
-			 <tr>
-			 <td width="30%"><label>ÚLTIMO DÍA PARA COMPRAR VIATICOS</label></td>
-			 <td width="70%"><input type="date" name="ULTIMO_DIA1" value="'.$row["ULTIMO_DIA1"].'"></td>
-			 </tr>
+
 			 
 			 
 			 
@@ -174,154 +157,77 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
 ?>
 
 <script>
-
-
-var fileobj;
-	function upload_file(e,name) {
-	    e.preventDefault();
-	    upload_files(e.dataTransfer.files, name);
-	}
-
-	function upload_files(files, name) {
-	    if(!files || files.length === 0) {
-	        return;
-	    }
-	    Array.from(files).forEach(function(file){
-	        ajax_file_upload1(file, name);
-	    });
-	}
-	 
-	function file_explorer(name) {
-	    document.getElementsByName(name)[0].click();
-	    document.getElementsByName(name)[0].onchange = function() {
-	        upload_files(document.getElementsByName(name)[0].files, name);
-	    };
-	}
-
-	function normalizarAdjuntos(valor) {
-	    return valor
-	        .split(',')
-	        .map(function(item){ return item.trim(); })
-	        .filter(function(item){ return item !== '' && item !== '2'; });
-	}
-
-	function renderAdjuntos(nombre, adjuntos) {
-	    if(adjuntos.length === 0) {
-	        return '';
-	    }
-	    var html = '<ul class="list-unstyled mb-0">';
-	    adjuntos.forEach(function(archivo){
-	        html += '<li><a target="_blank" href="includes/archivos/' + archivo + '">Visualizar!</a></li>';
-	    });
-	    html += '</ul>';
-	    return html;
-	}
-
-	function actualizarAdjuntos(nombre, nuevoAdjunto) {
-	    var actuales = normalizarAdjuntos($('#'+nombre).val());
-	    if(nuevoAdjunto && actuales.indexOf(nuevoAdjunto) === -1) {
-	        actuales.push(nuevoAdjunto);
-	    }
-	    $('#'+nombre).val(actuales.join(','));
-	    $('#2'+nombre).html(renderAdjuntos(nombre, actuales));
-	}
-
-	function ajax_file_upload1(file_obj,nombre) {
-	    if(file_obj != undefined) {
-	        var form_data = new FormData();                  
-	        form_data.append(nombre, file_obj);
-	        form_data.append("IPpersonal2",  $("#IPpersonal2").val());
-	        $.ajax({
-	            type: 'POST',
-	            url: 'calendariodeeventos2/controladorAE.php',
-				  dataType: "html",
-	            contentType: false,
-	            processData: false,
-	            data: form_data,
- beforeSend: function() {
-$('#2'+nombre).html('<p style="color:green;">Cargando archivo!</p>');
-    },				
-	            success:function(response) {
-
-if($.trim(response) == 2 ){
-
-$('#2'+nombre).html('<p style="color:red;">Error, archivo diferente a PDF, JPG o GIF.</p>');
-$('#'+nombre).val("");
-}else{
-var nuevoAdjunto = $.trim(response);
-actualizarAdjuntos(nombre, nuevoAdjunto);
+function upload_file_P2(e, name) {
+    e.preventDefault();
+    upload_files_P2(e.dataTransfer.files, name);
+}
+function upload_files_P2(files, name) {
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach(function(file){ ajax_file_upload_P2(file, name); });
+}
+function file_explorer_P2(name) {
+    document.getElementsByName(name)[0].click();
+    document.getElementsByName(name)[0].onchange = function() {
+        upload_files_P2(document.getElementsByName(name)[0].files, name);
+    };
+}
+function normalizarAdjuntos_P2(valor) {
+    return valor.split(',').map(function(i){ return i.trim(); }).filter(function(i){ return i !== '' && i !== '2'; });
+}
+function actualizarAdjuntos_P2(nombre, nuevoAdjunto) {
+    var actuales = normalizarAdjuntos_P2($('#' + nombre).val());
+    if (nuevoAdjunto && actuales.indexOf(nuevoAdjunto) === -1) actuales.push(nuevoAdjunto);
+    $('#' + nombre).val(actuales.join(','));
+    var html = '<ul class="list-unstyled mb-0">';
+    actuales.forEach(function(a){ html += '<li><a target="_blank" href="includes/archivos/'+a+'">Visualizar!</a></li>'; });
+    $('#2' + nombre).html(actuales.length ? html + '</ul>' : '');
+}
+function ajax_file_upload_P2(file_obj, nombre) {
+    if (!file_obj) return;
+    var form_data = new FormData();
+    form_data.append(nombre, file_obj);
+    form_data.append("IPpersonal2", $("#IPpersonal2").val());
+    $.ajax({
+        type:'POST', url:'calendariodeeventos2/controladorAE.php',
+        dataType:"html", contentType:false, processData:false, data:form_data,
+        beforeSend:function(){ $('#2'+nombre).html('<p style="color:green;">Cargando archivo!</p>'); },
+        success:function(response){
+            if($.trim(response)==2){
+                $('#2'+nombre).html('<p style="color:red;">Error, archivo diferente a PDF, JPG o GIF.</p>');
+                $('#'+nombre).val("");
+            } else { actualizarAdjuntos_P2(nombre, $.trim(response)); }
+        }
+    });
 }
 
-	            }
-	        });
-	    }
-}
+$(function(){
+    // Calcular al abrir el modal
+    var dias  = parseFloat(($('input[name="NUMERO_DIAS1"]').val()||'0').replace(/,/g,'')) || 0;
+    var monto = parseFloat(($('input[name="MONTO_BONO1"]').val()||'0').replace(/,/g,'')) || 0;
+    $('input[name="MONTO_BONO_TOTAL1"]').val((dias * monto).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
 
-	function convertirANumero2(valor) {
-		if(typeof valor === 'number') {
-			return isNaN(valor) ? 0 : valor;
-		}
-		if(!valor) {
-			return 0;
-		}
-		var numero = parseFloat(String(valor).replace(',', '.'));
-		return isNaN(numero) ? 0 : numero;
-	}
+    // Recalcular al escribir
+    $(document)
+        .off('input.vp2', '#listado_personal2form input[name="NUMERO_DIAS1"], #listado_personal2form input[name="MONTO_BONO1"]')
+        .on('input.vp2',  '#listado_personal2form input[name="NUMERO_DIAS1"], #listado_personal2form input[name="MONTO_BONO1"]', function(){
+            var d = parseFloat(($('#listado_personal2form input[name="NUMERO_DIAS1"]').val()||'0').replace(/,/g,'')) || 0;
+            var m = parseFloat(($('#listado_personal2form input[name="MONTO_BONO1"]').val()||'0').replace(/,/g,'')) || 0;
+            $('input[name="MONTO_BONO_TOTAL1"]').val((d*m).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+        });
 
-	function formatearNumero2(valor) {
-		if(Math.round(valor) === valor) {
-			return String(valor);
-		}
-		return valor.toFixed(2);
-	}
-
-	function recalcularTotalesPersonal2() {
-		var numeroDias = convertirANumero($('input[name="NUMERO_DIAS1"]').val());
-		var montoBono = convertirANumero($('input[name="MONTO_BONO1"]').val());
-		var viaticos = convertirANumero($('input[name="VIATICOS_PERSONAL2"]').val());
-		var totalBono = numeroDias * montoBono;
-		var totalBonoYViaticos = totalBono + viaticos;
-
-		$('input[name="MONTO_BONO_TOTAL1"]').val(formatearNumero2(totalBono));
-		$('input[name="TOTAL1"]').val(formatearNumero2(totalBonoYViaticos));
-	}
-
-
-
-
-
-
-	$(document).ready(function(){
-
-	$('input[name="NUMERO_DIAS1"], input[name="MONTO_BONO1"], input[name="VIATICOS_PERSONAL2"]').on('input', function(){
-		recalcularTotalesPersonal2();
-	});
-
-	recalcularTotalesPersonal2();
-
-$("#clickpersonal2").click(function(){
-	
-   $.ajax({  
-    url:"calendariodeeventos2/controladorAE.php",
-    method:"POST",  
-    data:$('#listado_personal2form').serialize(),
-
-    beforeSend:function(){  
-    $('#mensajePERSONAL2').html('cargando'); 
-    }, 	
-	
-    success:function(data){
-		
-		$("#reset_personal2").load(location.href + " #reset_personal2");
-    $('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>"); 
-
-			$('#dataModal').modal('hide');
-
-    }  
-   });
-   
+    // Guardar
+    $("#clickpersonal2").off('click.vp2').on('click.vp2', function(){
+        $.ajax({
+            url:"calendariodeeventos2/controladorAE.php", method:"POST",
+            data:$('#listado_personal2form').serialize(),
+            beforeSend:function(){ $('#mensajePERSONAL2').html('Cargando...'); },
+            success:function(data){
+                $("#reset_personal2").load(location.href + " #reset_personal2");
+                $('#mensajePERSONAL2').html("<span id='ACTUALIZADO'>"+data+"</span>");
+                setTimeout(function(){ $('#mensajePERSONAL2').html(''); }, 2000);
+                $('#dataModal').modal('hide');
+            }
+        });
+    });
 });
-
-		});
-		
-	</script>
+</script>

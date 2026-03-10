@@ -8,6 +8,12 @@ $puedeModificarVYO2 = ($conexion->variablespermisos('', 'PERSOvyo2', 'modificar'
 $puedeVerDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'ver') === 'si');
 $puedeGuardarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'guardar') === 'si');
 $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'modificar') === 'si');
+$puedeVerRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 'ver') === 'si');
+
+$puedeGuardarRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 'guardar') === 'si');
+
+$puedeModificarRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 'modificar') === 'si');
+
 ?>
 
 <div id="content">   
@@ -137,9 +143,9 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
     <th style="background:#eff9eb; text-align:left" scope="col">NÚMERO DE DIAS:</th>
 <td style="background:#eff9eb">
   <div class="input-group">
-    <input type="text" class="form-control" id="validationCustom03"
+    <input type="text" class="form-control" id="NUMERO_DIAS1"
            required value="<?php echo $NUMERO_DIAS1; ?>" name="NUMERO_DIAS1">
-<button type="button" class="btn btn-sm btn-primary" onclick="totalfechas8()" >ACTUALIZAR</button>
+
   </div>
 
 </td>
@@ -266,7 +272,12 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
  <?php } ?>			   
 		   <?php if($puedeVerAdmin2){ ?>
                <th width="15%"style="background:#c9e8e8">AUTORIZACIÓN <br>POR AUDITORÍA<br>PAGO BONO</th>
-			   <?php } ?> 			   
+			   <?php } ?> 
+  <?php if($puedeVerRechazoBono2){ ?>
+
+  <th width="15%"style="background:#c9e8e8">RECHAZAR<br>PAGO BONO</th>
+
+  <?php } ?>			   
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
                <th width="20%"style="background:#c9e8e8">PUESTO</th>
@@ -294,6 +305,13 @@ $puedeModificarDIRECCION2 = ($conexion->variablespermisos('', 'PERSOdire2', 'mod
 $urlADJUNTO_COMPROBANTE ='';
 while($row = mysqli_fetch_array($querycontras))
 {	
+$filaRechazoBono2 = ((isset($row["STATUS_BONORECHAZO"]) && $row["STATUS_BONORECHAZO"]=='si') || (isset($row["STATUS_RECHAZOBONO"]) && $row["STATUS_RECHAZOBONO"]=='si'));
+$montoBonoTotalAjustado2 = $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO_TOTAL1"];
+
+	$motivoRechazoPersonal2 = $altaeventos->obtener_motivo_rechazo_personal($row["id"], 'personal2');
+	$mostrarAgregarRechazoPersonal2 = ($filaRechazoBono2 && $motivoRechazoPersonal2 == '');
+	$mostrarVerRechazoPersonal2 = ($filaRechazoBono2 && $motivoRechazoPersonal2 != '');
+
 	$adjuntosComprobante = array_filter(array_map('trim', explode(',', $row["ADJUNTO_COMPROBANTE"])));
 	if($row["ADJUNTO_COMPROBANTE"]=="" or $row["ADJUNTO_COMPROBANTE"]=='2' or empty($adjuntosComprobante)){
 		$urlADJUNTO_COMPROBANTE = '';
@@ -314,7 +332,8 @@ while($row = mysqli_fetch_array($querycontras))
 	}
 
 ?>
-          <tr style="background:#f5f9fc;text-align:center">
+              <tr style="background:<?php echo $filaRechazoBono2 ? '#ff3c22' : '#f5f9fc'; ?>;text-align:center">
+
 		  
           <td style="text-align:center" >
 		  
@@ -338,6 +357,18 @@ while($row = mysqli_fetch_array($querycontras))
 		  		  	  <?php if($puedeVerAdmin2){ ?>
           <td style="text-align:center" >
                <input type="checkbox" style="width:40PX;" class="form-check-input" name="admin[]" id="admin<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2ADMIN(<?php echo $row["id"]; ?>)" <?php if(isset($row["admin"]) && $row["admin"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarAdmin2 || ((isset($row["admin"]) && $row["admin"]=='si') && !$puedeModificarAdmin2)) { echo "disabled"; } ?>/> </td>
+		  <?php } ?>
+		  
+		  <?php if($puedeVerRechazoBono2){ ?>
+	   <td style="text-align:center" >
+            <input type="checkbox" style="width:40PX;" class="form-check-input" id="STATUS_BONORECHAZO<?php echo $row["id"]; ?>" name="STATUS_BONORECHAZO<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="STATUS_BONORECHAZO(<?php echo $row["id"]; ?>)" <?php if((isset($row["STATUS_BONORECHAZO"]) && $row["STATUS_BONORECHAZO"]=='si') || (isset($row["STATUS_RECHAZOBONO"]) && $row["STATUS_RECHAZOBONO"]=='si')){ echo "checked"; } ?> <?php if(!$puedeGuardarRechazoBono2 || (((isset($row["STATUS_BONORECHAZO"]) && $row["STATUS_BONORECHAZO"]=='si') || (isset($row["STATUS_RECHAZOBONO"]) && $row["STATUS_RECHAZOBONO"]=='si')) && !$puedeModificarRechazoBono2)) { echo "disabled"; } ?>/>
+
+		   <input type="hidden" id="motivo_rechazo_personal2_<?php echo $row["id"]; ?>" value="<?php echo htmlspecialchars($motivoRechazoPersonal2, ENT_QUOTES, 'UTF-8'); ?>" />
+		   <button type="button" title="Agregar motivo" id="agregar_rechazo_personal2_<?php echo $row['id']; ?>" style="border:none;background:transparent;cursor:pointer;color:#007bff;font-size:13px;<?php echo $mostrarAgregarRechazoPersonal2 ? '' : 'display:none;'; ?>" onclick="abrirFormularioRechazoPersonal(<?php echo $row['id']; ?>, 'personal2')">agregar<br>motivo</button>
+		   <button type="button" title="Ver motivo" id="ver_rechazo_personal2_<?php echo $row['id']; ?>" style="border:none;background:transparent;cursor:pointer;color:#28a745;font-size:13px;<?php echo $mostrarVerRechazoPersonal2 ? '' : 'display:none;'; ?>" onclick="verMotivoRechazoPersonal(<?php echo $row['id']; ?>, 'personal2')">ver</button>
+           </td>
+		    
+
 		  <?php } ?>
           <td style="text-align:center" >
           <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td> 
@@ -364,7 +395,8 @@ while($row = mysqli_fetch_array($querycontras))
 		   	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
           <td ><?php echo $row["NUMERO_DIAS1"]; ?></td>
           <td ><?php echo $row["MONTO_BONO1"]; ?></td>
-          <td ><?php echo $row["MONTO_BONO_TOTAL1"]; ?></td>
+           <td ><?php echo number_format($montoBonoTotalAjustado2,2,'.',','); ?></td>
+
   
           <td ><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
 		       <td ><?php echo $row["FECHA_PPAGO1"]; ?></td>
@@ -381,17 +413,17 @@ while($row = mysqli_fetch_array($querycontras))
 </td>  <?php } ?>
           </tr>
           <?php
-		   
-          $NUMERO_DIAS12 += $row["NUMERO_DIAS1"];
-          $MONTO_BONO12 += $row["MONTO_BONO1"];
-          $PER2SUNTOTAL += $row["MONTO_BONO_TOTAL1"];
-          $PER2VIAT += $row["VIATICOS_PERSONAL2"];
-          $PER2TOTAL += $row["TOTAL1"];
+		   $MONTO_BONO12  += $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO1"];
+$NUMERO_DIAS12 += $filaRechazoBono2 ? 0 : (int)$row["NUMERO_DIAS1"];
+
+                 $PER2SUNTOTAL += $montoBonoTotalAjustado2;
+
+
           
           }
           ?>
 		                  	<?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si' ){
-			$columnasPreviasTotalesPersonal2 = 8
+			$columnasPreviasTotalesPersonal2 = 9
 				+ ($puedeVerVYO2 ? 1 : 0)
 				+ ($puedeVerDIRECCION2 ? 1 : 0)
 				+ ($puedeVerAdmin2 ? 1 : 0);
@@ -404,8 +436,7 @@ while($row = mysqli_fetch_array($querycontras))
           <td style="text-align:center;">$ <?php echo number_format($MONTO_BONO12,2,'.',','); ?></td>
 		  
           <td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL,2,'.',','); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($PER2VIAT,2,'.',','); ?></td>
-          <td style="text-align:center;">$ <?php echo number_format($PER2TOTAL,2,'.',','); ?></td>
+
 		  <td colspan='<?php echo $columnasRestantesTotalesPersonal2; ?>'></td></tr><?php } ?>
            </form> 
           </table>  
