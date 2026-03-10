@@ -115,7 +115,7 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
                  <td width="30%"><label>DOCUMENTO:</label></td>
              <td width="70%"><div class="col-md-6"> 
 
-<div id="drop_file_zone" ondrop="upload_file(event, \'ADJUNTO_COMPROBANTE\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTE" type="text" onkeydown="return false" onclick="file_explorer(\'ADJUNTO_COMPROBANTE\');" style="width:250px;" value="'.$valorADJUNTO_COMPROBANTE.'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTE" id="nono" multiple/> <div id="2ADJUNTO_COMPROBANTE"> "'.$urlADJUNTO_COMPROBANTE.'" </div> </div> 
+<div id="drop_file_zone_p2" ondrop="upload_file_P2(event, \'ADJUNTO_COMPROBANTE\');" ondragover="return false" style="width:300px;"> <p>Suelta aquí o busca tu archivo</p> <p> <input class="form-control form-control-sm" id="ADJUNTO_COMPROBANTE" type="text" onkeydown="return false" onclick="file_explorer_P2(\'ADJUNTO_COMPROBANTE\');" style="width:250px;" value="'.$valorADJUNTO_COMPROBANTE.'" required /> </p> <input type="file" name="ADJUNTO_COMPROBANTE" id="nono_p2" multiple/> <div id="2ADJUNTO_COMPROBANTE"> "'.$urlADJUNTO_COMPROBANTE.'" </div> </div> 
 
 
 </td>
