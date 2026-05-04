@@ -33,7 +33,7 @@
 $encabezado = '';
 
 
-/*$queryper = $conexion->lista_plantillaventavehi();*/
+
 
 if($conexion->variablespermisos('','vervehiculo','ver')=='si'){
 $queryper = $conexion->lista_plantillaventavehi_todos();
@@ -65,6 +65,7 @@ echo $encabezado.$option20.'</select>';
 
  </td>                        
          </tr>
+
 		 
 		 
          <tr style="background:#d4f1d3"> 
@@ -77,7 +78,6 @@ echo $encabezado.$option20.'</select>';
 
          <td id="fotos_vehiculo">
 
- <!--<input type="file" class="form-control" id="validationCustom03" required=""   value="<?php echo $VEHICULOSEVE_FOTO; ?>"  name="VEHICULOSEVE_FOTO"  placeholder="">-->
 <?php
 $fotos_vehiculos = $_SESSION['fotos_vehiculos'];
 if($_SESSION['fotos_vehiculos']!=''){
@@ -107,6 +107,44 @@ echo $conexion->descargararchivo($fotos_vehiculos);
  <input type="text" class="form-control" id="" required=""   value="<?php echo $PLACASV; ?>"  name="PLACASV"  placeholder="" readonly="readonly">
 
  </td> </tr>
+ 
+ 		  <tr style="background:#ebf8fa"> 
+
+<th scope="row"> <label  for="validationCustom03" class="form-label">NOMBRE DEL QUE SOLICITA:</label></th>
+<td><input type="text" class="form-control" id="validationCustom03" required=""  value="<?php echo $_SESSION["NOMBREUSUARIO"]; ?>" name="nombreingresov" placeholder="NOMBRE DEL EJECUTIVO QUE INGRESO" readonly="readonly"></td>
+</tr>
+		 
+                 <tr style="background:#ebf8fa">
+    <th style="text-align:left" scope="col">NOMBRE DEL QUE MANEJA EL VEHÍCULO:</th>
+       <td>
+<?php
+$encabezadoA = '';
+$queryper = $conexion->colaborador_generico_bueno();
+$encabezadoA = '<select class="form-select mb-3" aria-label="Default select example" id="nombreocupov" required="" name="nombreocupov"  placeholder="SELECIONA UNA OPCIÓN">
+<option> SELECIONA UNA OPCIÓN</option>';
+
+
+$fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
+$num = 0;
+
+while($row = mysqli_fetch_array($queryper))
+{
+
+if($num==8){$num=0;}else{$num++;}
+
+$select='';
+if($_SESSION['idem']==$row['idRelacion']){
+$select='selected';
+}
+
+$option2 .= '<option style="background: #'.$fondos[$num].'" '.$select.' 
+value="'.$row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO'].'">'.$row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO'].
+'</option>';
+}
+echo $encabezadoA.$option2.'</select>';		
+?></td>
+
+    </tr>
  
           <tr style="background:#ebf8fa"> 
          <th scope="row"> <label for="validationCustom03" class="form-label">FECHA DE ENTREGA:<br><a style="color:red;font:7px">obligatorio</a></label></th>
@@ -160,7 +198,7 @@ echo $conexion->descargararchivo($fotos_vehiculos);
                                                                                                 
          <tr style="background:#d4f1d3">     
          <th scope="row"> <label for="validationCustom03" class="form-label">FECHA DE SOLICITUD:</label></th>
-         <td><input type="text" class="form-control" id="validationCustom03" required=""   value="<?php echo date('Y-m-d'); ?>"  name="VEHICULOSEVE_SOLICITUD"  placeholder="" readonly="readonly"></td>
+         <td><input type="text" class="form-control" id="validationCustom03" required=""   value="<?php echo date('d-m-Y'); ?>"  name="VEHICULOSEVE_SOLICITUD"  placeholder="" readonly="readonly"></td>
          </tr>
         
 		   <tr style="background:#d4f1d3"> 
@@ -246,15 +284,7 @@ echo $conexion->descargararchivo($fotos_vehiculos);
            
 
  <button  style="float:right"  class="btn btn-sm btn-outline-success px-5"  type="button" id="GUARDAR_VEHICULOSEVE" name="GUARDAR_VEHICULOSEVE">GUARDAR</button> <div style="
- position: absolute;
-    top: 75%; 
-    right: 50%;
-    transform: translate(50%,-50%);
-    text-transform: uppercase;
-    font-family: verdana;
-    font-size: 2em;
-    font-weight: 500;
-    color: #f5f5f5;
+
     text-shadow: 1px 1px 1px #919191,
         1px 2px 1px #919191,
         1px 3px 1px #919191,
@@ -303,6 +333,10 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <th width="20%"style="background:#c9e8e8">VEHÍCULO</th>
 <th width="20%"style="background:#c9e8e8">CANTIDAD</th>
 <th width="20%"style="background:#c9e8e8">FOTO</th>
+<th width="20%"style="background:#c9e8e8">COLOR</th>
+<th width="20%"style="background:#c9e8e8">PLACAS</th>
+<th width="20%"style="background:#c9e8e8">NOMBRE DEL QUE SOLICITA</th>
+<th width="20%"style="background:#c9e8e8">NOMBRE DEL QUE MANEJA EL VEHÍCULO</th>
 <th width="20%"style="background:#c9e8e8">FECHA DE ENTREGA</th>
 <th width="20%"style="background:#c9e8e8">LUGAR DE ENTREGA</th>
 <th width="20%"style="background:#c9e8e8">HORA DE ENTREGA</th>
@@ -334,18 +368,35 @@ while($row = mysqli_fetch_array($querycontras))
 <td ><?php echo $altaeventos->nombre_vehiculo($row["VEHICULOSEVE_VEHICULO"]);?></td>
 <td ><?php echo $row["VEHICULOSEVE_CANTIDAD"]; ?></td>
 <td ><?php echo $urlVEHICULOSEVE_FOTO; ?></td>
-<td ><?php echo $row["VEHICULOSEVE_ENTREGA"]; ?></td>
+<td ><?php echo $row["COLORV"]; ?></td>
+<td ><?php echo $row["PLACASV"]; ?></td>
+
+<td ><?php echo $row["nombreingresov"]; ?></td>
+<td ><?php echo $row["nombreocupov"]; ?></td>
+<td>
+    <?php 
+        echo date("d/m/Y", strtotime($row["VEHICULOSEVE_ENTREGA"])); 
+    ?>
+</td>
 <td ><?php echo $row["VEHICULOSEVE_LUGAR"]; ?></td>
 <td ><?php echo $row["VEHICULOSEVE_HORA"]; ?></td>
-<td ><?php echo $row["VEHICULOSEVE_DEVOLU"]; ?></td>
+<td>
+    <?php 
+        echo date("d/m/Y", strtotime($row["VEHICULOSEVE_DEVOLU"]));    
+    ?>
+</td>
 <td ><?php echo $row["VEHICULOSEVE_LUDEVO"]; ?></td>
 <td ><?php echo $row["VEHICULOSEVE_HORADEVO"]; ?></td>
-<td ><?php echo $row["VEHICULOSEVE_SOLICITUD"]; ?></td>
+<td>
+    <?php 
+        echo date("d/m/Y", strtotime($row["VEHICULOSEVE_SOLICITUD"])); 
+    ?>
+</td>
 <td ><?php echo $row["VEHICULOSEVE_DIAS"]; ?></td>
 <td ><?php echo number_format($row["VEHICULOSEVE_COSTO"],2,'.',','); ?></td>
 <td ><?php echo number_format($row["VEHICULOSEVE_SUB"],2,'.',','); ?></td>
 <td ><?php echo number_format($row["VEHICULOSEVE_IVA"],2,'.',','); ?></td>
-<td ><?php echo number_format($row["PRECIOPESOS_SOFTWARE"],2,'.',','); ?></td>
+<td ><?php echo number_format($row["PRECIOPESOS_SOFTWARE"],2,'.',','); ?></td>  
 <td ><?php echo $row["VEHICULOSEVE_OBSERVA"]; ?></td>
 <?php if($conexion->variablespermisos('','VEHIEVE','modificar')=='si' and $var_bloquea_fecha=='no'){ ?>
 <td><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_VEHICULOSEVE" /></td><?php } ?>
@@ -359,7 +410,9 @@ $GIVA += $row["VEHICULOSEVE_IVA"];
 $GTOTAL += $row["PRECIOPESOS_SOFTWARE"];
 }
 ?>
-<tr><td colspan='13' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
+<tr>
+
+<td colspan='17' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
 </table>
 </tbody>
 

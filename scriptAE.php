@@ -413,9 +413,12 @@ function pasara1_personal(pasara1_personal_id){
 		beforeSend:function(){
 		$('#mensajePERSONAL').html('cargando');
 	},
-		success:function(data){
+	success:function(data){
+		actualizarBotonesRechazoPersonal(STATUS_RECHAZOBONO_id, 'personal', STATUS_RECHAZOBONO_text);
 			
-	$("#reset_personal").load(location.href + " #reset_personal");			
+	$("#reset_personal").load(location.href + " #reset_personal");	
+	$("#reset_totales").load(location.href + " #reset_totales");	
+	
 			
 		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
@@ -441,9 +444,11 @@ function pasara1_personalAUT(pasara1_personalAUT_id){
 		beforeSend:function(){
 		$('#mensajePERSONAL').html('cargando');
 	},
-		success:function(data){
+	success:function(data){
+		actualizarBotonesRechazoPersonal(STATUS_RECHAZOBONO_id, 'personal', STATUS_RECHAZOBONO_text);
 			
-	$("#reset_personal").load(location.href + " #reset_personal");			
+	$("#reset_personal").load(location.href + " #reset_personal");	
+$("#reset_totales").load(location.href + " #reset_totales");	
 			
 		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
@@ -529,6 +534,186 @@ function pasara1_personalDIRECCION(pasara1_personalDIRECCION_id){
 	}
 	});
 
+}
+
+
+////////////////////////////////////////PARA RECHAZAR BONO/////////////////////////////////////
+function STATUS_RECHAZOBONO(STATUS_RECHAZOBONO_id){
+
+	var checkBox = document.getElementById("STATUS_RECHAZOBONO"+STATUS_RECHAZOBONO_id);
+	var STATUS_RECHAZOBONO_text = "";
+	if (checkBox.checked == true){
+	STATUS_RECHAZOBONO_text = "si";
+	}else{
+	STATUS_RECHAZOBONO_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{STATUS_RECHAZOBONO_id:STATUS_RECHAZOBONO_id,STATUS_RECHAZOBONO_text:STATUS_RECHAZOBONO_text},
+		beforeSend:function(){
+		$('#mensajePERSONAL').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_personal").load(location.href + " #reset_personal");	
+$("#reset_totales").load(location.href + " #reset_totales");		
+			
+		$('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
+
+
+
+function STATUS_BONORECHAZO(STATUS_BONORECHAZO_id){
+
+	var checkBox = document.getElementById("STATUS_BONORECHAZO"+STATUS_BONORECHAZO_id);
+	if(!checkBox){
+		return;
+	}
+	var STATUS_BONORECHAZO_text = "";
+	if (checkBox.checked == true){
+	STATUS_BONORECHAZO_text = "si";
+	}else{
+	STATUS_BONORECHAZO_text = "no";
+	}
+	var esPersonal2 = document.getElementById("reset_personal2") !== null;
+	var targetTabla = esPersonal2 ? "#reset_personal2" : "#reset_personal";
+	$("#reset_totales").load(location.href + " #reset_totales");	
+	var targetMensaje = esPersonal2 ? "#mensajePERSONAL2" : "#mensajePERSONAL";
+	var dataPost = esPersonal2
+		? {STATUS_BONORECHAZO_id:STATUS_BONORECHAZO_id,STATUS_BONORECHAZO_text:STATUS_BONORECHAZO_text}
+		: {STATUS_RECHAZOBONO_id:STATUS_BONORECHAZO_id,STATUS_RECHAZOBONO_text:STATUS_BONORECHAZO_text};
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:dataPost,
+		beforeSend:function(){
+		$(targetMensaje).html('cargando');
+	},
+	success:function(data){
+		actualizarBotonesRechazoPersonal(STATUS_BONORECHAZO_id, esPersonal2 ? 'personal2' : 'personal', STATUS_BONORECHAZO_text);
+			
+	$(targetTabla).load(location.href + " " + targetTabla);				
+			
+		$(targetMensaje).html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
+
+function asegurarModalRechazoPersonal(){
+	if($('#modalRechazoPersonal').length){
+		return;
+	}
+	$('body').append('<div id="modalRechazoPersonal" class="modal" tabindex="-1" role="dialog" style="display:none;background:rgba(0,0,0,0.45);"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalRechazoPersonalLabel">Motivo del rechazo</h5><button type="button" class="close" onclick="cerrarModalRechazoPersonal()" style="border:none;background:transparent;font-size:25px;line-height:1;">&times;</button></div><div class="modal-body"><input type="hidden" id="modal_rechazo_personal_id" /><input type="hidden" id="modal_rechazo_personal_tipo" /><textarea id="modal_rechazo_personal_texto" class="form-control" rows="4"></textarea><div id="modal_rechazo_personal_mensaje" style="margin-top:8px;color:#666;"></div></div><div class="modal-footer"><button type="button" id="btn_guardar_rechazo_personal_modal" class="btn btn-primary">Guardar</button><button type="button" class="btn btn-secondary" onclick="cerrarModalRechazoPersonal()">Cerrar</button></div></div></div></div>');
+}
+
+function abrirFormularioRechazoPersonal(idPersonal, tipoPersonal){
+	asegurarModalRechazoPersonal();
+	var motivoActual = $('#motivo_rechazo_'+tipoPersonal+'_'+idPersonal).val() || '';
+	$('#modal_rechazo_personal_id').val(idPersonal);
+	$('#modal_rechazo_personal_tipo').val(tipoPersonal);
+	configurarModalRechazoPersonal('editar', motivoActual, 'Captura el motivo y presiona Guardar.');
+
+	$('#btn_guardar_rechazo_personal_modal').off('click').on('click', function(){
+		guardarMotivoRechazoPersonalModal();
+	});
+}
+
+function guardarMotivoRechazoPersonalModal(){
+	var idPersonal = $('#modal_rechazo_personal_id').val();
+	var tipoPersonal = $('#modal_rechazo_personal_tipo').val();
+	var motivo = ($('#modal_rechazo_personal_texto').val() || '').trim();
+
+	if(motivo === ''){
+		$('#modal_rechazo_personal_mensaje').text('Debes capturar un motivo de rechazo.').css('color', '#b22222');
+		return;
+	}
+
+	$.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{RECHAZO_MOTIVO_PERSONAL_id:idPersonal,RECHAZO_MOTIVO_PERSONAL_tipo:tipoPersonal,RECHAZO_MOTIVO_PERSONAL_text:motivo},
+		success:function(resp){
+			if((resp || '').indexOf('ok') !== -1){
+				$('#motivo_rechazo_'+tipoPersonal+'_'+idPersonal).val(motivo);
+				actualizarBotonesRechazoPersonal(idPersonal, tipoPersonal);
+				$('#modal_rechazo_personal_mensaje').text('Motivo guardado correctamente.').css('color', '#228b22');
+				setTimeout(function(){ cerrarModalRechazoPersonal(); }, 400);
+			}else{
+				$('#modal_rechazo_personal_mensaje').text('No fue posible guardar el motivo.').css('color', '#b22222');
+			}
+		}
+	});
+}
+
+function verMotivoRechazoPersonal(idPersonal, tipoPersonal){
+	asegurarModalRechazoPersonal();
+	var motivoLocal = $('#motivo_rechazo_'+tipoPersonal+'_'+idPersonal).val() || '';
+	$('#modal_rechazo_personal_id').val(idPersonal);
+	$('#modal_rechazo_personal_tipo').val(tipoPersonal);
+
+	if(motivoLocal !== ''){
+		configurarModalRechazoPersonal('ver', motivoLocal, 'Consulta del motivo registrado.');
+		return;
+	}
+
+	$.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{RECHAZO_MOTIVO_PERSONAL_VER_id:idPersonal,RECHAZO_MOTIVO_PERSONAL_VER_tipo:tipoPersonal},
+		success:function(resp){
+			var motivo = (resp || '').trim();
+			if(motivo !== ''){
+				$('#motivo_rechazo_'+tipoPersonal+'_'+idPersonal).val(motivo);
+				configurarModalRechazoPersonal('ver', motivo, 'Consulta del motivo registrado.');
+			}else{
+				configurarModalRechazoPersonal('ver', 'No hay motivo de rechazo registrado.', 'Consulta del motivo registrado.');
+			}
+		}
+	});
+}
+
+function configurarModalRechazoPersonal(modo, texto, mensaje){
+	var esVer = (modo === 'ver');
+	$('#modalRechazoPersonalLabel').text(esVer ? 'Ver motivo del rechazo' : 'Agregar motivo del rechazo');
+	$('#modal_rechazo_personal_texto').val(texto || '').prop('readonly', esVer);
+	$('#modal_rechazo_personal_mensaje').text(mensaje || '').css('color', '#666');
+	$('#btn_guardar_rechazo_personal_modal').toggle(!esVer);
+	mostrarModalRechazoPersonal();
+}
+
+function actualizarBotonesRechazoPersonal(idPersonal, tipoPersonal, statusRechazo){
+	var statusActual = statusRechazo;
+	if(typeof statusActual === 'undefined'){
+		statusActual = (tipoPersonal === 'personal2')
+			? ($('#STATUS_BONORECHAZO'+idPersonal).is(':checked') ? 'si' : 'no')
+			: ($('#STATUS_RECHAZOBONO'+idPersonal).is(':checked') ? 'si' : 'no');
+	}
+	var motivo = ($('#motivo_rechazo_'+tipoPersonal+'_'+idPersonal).val() || '').trim();
+	var mostrarVer = (statusActual === 'si' && motivo !== '');
+	var mostrarAgregar = (statusActual === 'si' && motivo === '');
+	$('#agregar_rechazo_'+tipoPersonal+'_'+idPersonal).toggle(mostrarAgregar);
+	$('#ver_rechazo_'+tipoPersonal+'_'+idPersonal).toggle(mostrarVer);
+}
+
+function mostrarModalRechazoPersonal(){
+	if(typeof $('#modalRechazoPersonal').modal === 'function'){
+		$('#modalRechazoPersonal').modal('show');
+	} else {
+		$('#modalRechazoPersonal').show();
+	}
+}
+
+function cerrarModalRechazoPersonal(){
+	if(typeof $('#modalRechazoPersonal').modal === 'function'){
+		$('#modalRechazoPersonal').modal('hide');
+	} else {
+		$('#modalRechazoPersonal').hide();
+	}
 }
 
 ///////////////////////////////////////PARA DAR DE ALTA ADMIN2//////////////////////////////////
@@ -1299,48 +1484,68 @@ function OBTENER_fotoBOTI(){
         
 /*funcion para obtener fecha */
         function totalfechas7(){
-        var FECHA_FINAL = document.getElementsByName("FECHA_FINAL")[0].value;
-        var FECHA_INICIO = document.getElementsByName("FECHA_INICIO")[0].value;     
-        var cuenta_fechas7 = "cuenta_fechas7";
-        $.ajax({
-        url:'calendariodeeventos2/controladorAE.php',                        
-        method:'POST',
-        data:{FECHA_FINAL:FECHA_FINAL,FECHA_INICIO:FECHA_INICIO,cuenta_fechas7:cuenta_fechas7},
-        beforeSend:function(){
-        },
-        success:function(data){
-                          //$('#BOTIQUIN_DIAS').val(data);                                            
-                document.getElementsByName('NUMERO_DIAS')[0].value = data;		  
-                          $.getScript(total_cantidad_x_precio7());    
+        var fechaFinalInput = document.getElementsByName("FECHA_FINAL")[0];
+        var fechaInicioInput = document.getElementsByName("FECHA_INICIO")[0];
+        var numeroDiasInput = document.getElementsByName("NUMERO_DIAS")[0];
+
+        if(!fechaFinalInput || !fechaInicioInput || !numeroDiasInput){
+            return;
         }
+
+        var FECHA_FINAL = fechaFinalInput.value;
+        var FECHA_INICIO = fechaInicioInput.value;
+
+        if(FECHA_FINAL === '' || FECHA_INICIO === ''){
+            numeroDiasInput.value = '';
+            total_cantidad_x_precio7();
+            return;
+        }
+
+        var fechaInicio = new Date(FECHA_INICIO + 'T00:00:00');
+        var fechaFinal = new Date(FECHA_FINAL + 'T00:00:00');
+
+        if(isNaN(fechaInicio.getTime()) || isNaN(fechaFinal.getTime()) || fechaFinal < fechaInicio){
+            numeroDiasInput.value = 0;
+            total_cantidad_x_precio7();
+            return;
+        }
+
+        var msPorDia = 1000 * 60 * 60 * 24;
+        var numeroDias = Math.floor((fechaFinal - fechaInicio) / msPorDia) + 1;
+
+        numeroDiasInput.value = numeroDias;
+        total_cantidad_x_precio7();
+        }
+            function total_cantidad_x_precio7(){
+        var numeroDiasInput = document.getElementsByName("NUMERO_DIAS")[0];
+        var montoBonoInput = document.getElementsByName("MONTO_BONO")[0];
+        var montoTotalInput = document.getElementsByName("MONTO_BONO_TOTAL")[0];
+
+        if(!numeroDiasInput || !montoBonoInput || !montoTotalInput){
+            return;
+        }
+
+        var NUMERO_DIAS = parseFloat((numeroDiasInput.value || '0').toString().replace(/,/g, ''));
+        var MONTO_BONO = parseFloat((montoBonoInput.value || '0').toString().replace(/,/g, '').replace(/\$/g, ''));
+
+        if(isNaN(NUMERO_DIAS)){ NUMERO_DIAS = 0; }
+        if(isNaN(MONTO_BONO)){ MONTO_BONO = 0; }
+
+        var montoBonoTotal = NUMERO_DIAS * MONTO_BONO;
+        montoTotalInput.value = montoBonoTotal.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
         }
-            function total_cantidad_x_precio7(){                                      
-        var NUMERO_DIAS = document.getElementsByName("NUMERO_DIAS")[0].value;
-        var MONTO_BONO = document.getElementsByName("MONTO_BONO")[0].value;
-        var VIATICOS_PERSONAL = document.getElementsByName("VIATICOS_PERSONAL")[0].value;
-        var FECHA_FINAL = document.getElementsByName("FECHA_FINAL")[0].value;
-		
-        var cantidad_precioBONO = "cantidad_precioBONO";
-        $.ajax({
-        url:'calendariodeeventos2/controladorAE.php',
-        method:'POST',
-        data:{NUMERO_DIAS:NUMERO_DIAS,MONTO_BONO:MONTO_BONO,cantidad_precioBONO:cantidad_precioBONO,VIATICOS_PERSONAL:VIATICOS_PERSONAL,FECHA_FINAL:FECHA_FINAL},
-        beforeSend:function(){
-        },
-        success:function(data){
-                var result = data.split('^');
-                document.getElementsByName('TOTAL')[0].value = result[1];
-                document.getElementsByName('MONTO_BONO_TOTAL')[0].value = result[2];
-                document.getElementsByName('ULTIMO_DIA')[0].value = result[3];				
-        }
+
+
+              $("#actualizabonos").on('change', 'input[name="FECHA_INICIO"], input[name="FECHA_FINAL"]', function() {
+                                   totalfechas7();
         });
-        }                                               
 
-
-              $("#actualizabonos").click(function() {   
-                                   $.getScript(totalfechas7());                     
-        });                             
+              $("#actualizabonos").on('keyup change', 'input[name="MONTO_BONO"], input[name="NUMERO_DIAS"]', function() {
+                                   total_cantidad_x_precio7();
+        });                           
 
 
 
@@ -1360,51 +1565,69 @@ function OBTENER_fotoBOTI(){
         
 /*funcion para obtener fecha */
         function totalfechas8(){
-        var FECHA_FINAL1 = document.getElementsByName("FECHA_FINAL1")[0].value;
-        var FECHA_INICIO1 = document.getElementsByName("FECHA_INICIO1")[0].value;     
-        var cuenta_fechas8 = "cuenta_fechas8";
-        $.ajax({
-        url:'calendariodeeventos2/controladorAE.php',                        
-        method:'POST',
-        data:{FECHA_FINAL1:FECHA_FINAL1,FECHA_INICIO1:FECHA_INICIO1,cuenta_fechas8:cuenta_fechas8},
-        beforeSend:function(){
-        },
-        success:function(data){
-                          //$('#BOTIQUIN_DIAS').val(data);                                            
-                document.getElementsByName('NUMERO_DIAS1')[0].value = data;		  
-                          $.getScript(total_cantidad_x_precio8());    
+        var fechaFinalInput = document.getElementsByName("FECHA_FINAL1")[0];
+        var fechaInicioInput = document.getElementsByName("FECHA_INICIO1")[0];
+        var numeroDiasInput = document.getElementsByName("NUMERO_DIAS1")[0];
+
+        if(!fechaFinalInput || !fechaInicioInput || !numeroDiasInput){
+            return;
         }
-        });
+
+        var FECHA_FINAL1 = fechaFinalInput.value;
+        var FECHA_INICIO1 = fechaInicioInput.value;
+
+        if(FECHA_FINAL1 === '' || FECHA_INICIO1 === ''){
+            numeroDiasInput.value = '';
+            total_cantidad_x_precio8();
+            return;
         }
-		
+
+        var fechaInicio = new Date(FECHA_INICIO1 + 'T00:00:00');
+        var fechaFinal = new Date(FECHA_FINAL1 + 'T00:00:00');
+
+        if(isNaN(fechaInicio.getTime()) || isNaN(fechaFinal.getTime()) || fechaFinal < fechaInicio){
+            numeroDiasInput.value = 0;
+            total_cantidad_x_precio8();
+            return;
+        }
+
+        var msPorDia = 1000 * 60 * 60 * 24;
+        var numeroDias = Math.floor((fechaFinal - fechaInicio) / msPorDia) + 1;
+
+        numeroDiasInput.value = numeroDias;
+        total_cantidad_x_precio8();
+        }
+			
 	function total_cantidad_x_precio8(){
-        var NUMERO_DIAS1 = document.getElementsByName("NUMERO_DIAS1")[0].value;
-        var MONTO_BONO1 = document.getElementsByName("MONTO_BONO1")[0].value;
-        var VIATICOS_PERSONAL2 = document.getElementsByName("VIATICOS_PERSONAL2")[0].value;
-        var FECHA_FINAL1 = document.getElementsByName("FECHA_FINAL1")[0].value;
-        var cantidad_precioBONO1 = "cantidad_precioBONO1";
-        $.ajax({
-			url:'calendariodeeventos2/controladorAE.php',
-			method:'POST',
-			data:{
-				NUMERO_DIAS1:NUMERO_DIAS1,MONTO_BONO1:MONTO_BONO1,cantidad_precioBONO1:cantidad_precioBONO1,VIATICOS_PERSONAL2:VIATICOS_PERSONAL2,FECHA_FINAL1:FECHA_FINAL1
-				},
-			beforeSend:function(){
-			},
-			success:function(data){
-				var result = data.split('^');
-				document.getElementsByName('TOTAL1')[0].value = result[1];
-				document.getElementsByName('MONTO_BONO_TOTAL1')[0].value = result[2];
-				document.getElementsByName('ULTIMO_DIA1')[0].value = result[3];				
-			}
-        });
-	}                                               
+		var numeroDiasInput = document.getElementsByName("NUMERO_DIAS1")[0];
+		var montoBonoInput = document.getElementsByName("MONTO_BONO1")[0];
+		var montoTotalInput = document.getElementsByName("MONTO_BONO_TOTAL1")[0];
+
+		if(!numeroDiasInput || !montoBonoInput || !montoTotalInput){
+			return;
+		}
+
+		var NUMERO_DIAS1 = parseFloat((numeroDiasInput.value || '0').toString().replace(/,/g, ''));
+		var MONTO_BONO1 = parseFloat((montoBonoInput.value || '0').toString().replace(/,/g, '').replace(/\$/g, ''));
+
+		if(isNaN(NUMERO_DIAS1)){ NUMERO_DIAS1 = 0; }
+		if(isNaN(MONTO_BONO1)){ MONTO_BONO1 = 0; }
+
+		var montoBonoTotal1 = NUMERO_DIAS1 * MONTO_BONO1;
+		montoTotalInput.value = montoBonoTotal1.toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+		}                                               
 
 
-              $("#actualizabonos2").click(function() {   
-                                   $.getScript(totalfechas8());                     
-        });  
-		
+		$("#actualizabonos2").on('change', 'input[name="FECHA_INICIO1"], input[name="FECHA_FINAL1"]', function() {
+			totalfechas8();
+		});
+
+		$("#actualizabonos2").on('keyup change', 'input[name="MONTO_BONO1"], input[name="NUMERO_DIAS1"]', function() {
+			total_cantidad_x_precio8();
+		});
 
 
 
@@ -1849,7 +2072,6 @@ $('#mensajeALTAEVENTOS').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn(
 }
 });
 });
-
 
 
 
@@ -3976,10 +4198,13 @@ $("#guardaPERSONAL2").click(function () {
             $('#mensajePERSONAL2').html('cargando');
         },
 
-        success: function (data) {
+  success: function (data) {
 
             // 🔹 BORRAR FORMULARIO PERSONAL2
             document.getElementById('PERSONAL2form').reset();
+            $("input[name='NUMERO_DIAS1']").val('');
+            $('#MONTO_BONO1').val('');
+            $('#MONTO_BONO_TOTAL1').val('');
 
             // 🔹 Recargas existentes
             $("#reset_personal2").load(location.href + " #reset_personal2");
@@ -3988,7 +4213,7 @@ $("#guardaPERSONAL2").click(function () {
             $("#obtener_puesto2").load(location.href + " #obtener_puesto2");
             $("#obtener_cel2").load(location.href + " #obtener_cel2");
             $("#obtener_email2").load(location.href + " #obtener_email2");
-            $("#NUMERO_DIAS1").load(location.href + " #NUMERO_DIAS1");
+  
 
             $("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
             $("#reset_totales").load(location.href + " #reset_totales");
@@ -4501,31 +4726,104 @@ $('#mensajeTIKETS').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().del
 
 
 
-///////////////////////VEHICULOS DEL EVENTO////////////////////////////////////////////////
-$("#GUARDAR_VEHICULOSEVE").click(function(){
-const formData = new FormData($('#VEHICULOSEVEform')[0]);
+/////////////////////// VEHICULOS DEL EVENTO ///////////////////////
 
-$.ajax({
-    url:'calendariodeeventos2/controladorAE.php',
-    type: 'POST',
-    dataType: 'html',
-    data: formData,
-    cache: false,
-    contentType: false,
-    processData: false,
-	
-	 beforeSend:function(){  
-    $('#mensajeVEHICULOSEVE').html('cargando'); 
-    },    
-   success:function(data){
-		$("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");	
-		$("#reset_totales").load(location.href + " #reset_totales");
-		$("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE");	
-		$("#mensajeVEHICULOSEVE").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+/////////////////////// VEHICULOS DEL EVENTO ///////////////////////
 
-   }
-   
-})
+$(document).ready(function(){
+
+    function limpiarFormularioVehiculosEve() {
+
+        // GUARDAR VALOR FIJO
+        let nombreingresov_val = $('#nombreingresov').val();
+
+        // RESET GENERAL
+        if ($('#VEHICULOSEVEform').length) {
+            $('#VEHICULOSEVEform')[0].reset();
+        }
+
+
+
+        $('#VEHICULOSEVEform')
+            .find('select')
+            .prop('selectedIndex', 0);
+
+        // BORRAR FECHAS
+        $('input[name="VEHICULOSEVE_ENTREGA"]').val('');
+        $('input[name="VEHICULOSEVE_DEVOLU"]').val('');
+
+        // BORRAR DÍAS FORZADO
+        $('input[name="VEHICULOSEVE_DIAS"]').val('');
+        $('#VEHICULOSEVE_DIAS').val('');
+
+        // BORRAR ARCHIVOS
+        $('#VEHICULOSEVEform input[type="file"]').val('');
+
+        // RESTAURAR CAMPO FIJO
+        $('#nombreingresov').val(nombreingresov_val);
+
+        // BORRAR TOTAL SI EXISTE
+        $('#VEHICULOSEVE_TOTAL').val('');
+        $('input[name="VEHICULOSEVE_TOTAL"]').val('');
+    }
+
+    // BORRAR FORMULARIO AL INGRESAR
+    limpiarFormularioVehiculosEve();
+
+    // Cálculo automático al cambiar fechas
+    $(document).on('change', 'input[name="VEHICULOSEVE_ENTREGA"], input[name="VEHICULOSEVE_DEVOLU"]', function(){
+        totalfechas();
+    });
+
+    // Cálculo automático al cambiar cantidad, costo o días
+    $(document).on('keyup change', 'input[name="VEHICULOSEVE_CANTIDAD"], input[name="VEHICULOSEVE_COSTO"], input[name="VEHICULOSEVE_DIAS"]', function(){
+        total_cantidad_x_precio();
+    });
+
+    $("#GUARDAR_VEHICULOSEVE").click(function(e){
+        e.preventDefault();
+
+        const formData = new FormData($('#VEHICULOSEVEform')[0]);
+
+        $.ajax({
+            url: 'calendariodeeventos2/controladorAE.php',
+            type: 'POST',
+            dataType: 'html',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+
+            beforeSend:function(){  
+                $('#mensajeVEHICULOSEVE').html('cargando'); 
+            },
+
+            success:function(data){
+
+                $("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");	
+                $("#reset_totales").load(location.href + " #reset_totales");
+
+                $("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE", function(){
+                    limpiarFormularioVehiculosEve();
+                });
+
+                limpiarFormularioVehiculosEve();
+
+                $("#mensajeVEHICULOSEVE")
+                    .html("<span id='ACTUALIZADO'>" + data + "</span>")
+                    .fadeIn()
+                    .delay(2000)
+                    .fadeOut();
+            },
+
+            error:function(){
+                $('#mensajeVEHICULOSEVE')
+                    .html("<span style='color:red;'>Error al guardar la información.</span>")
+                    .fadeIn();
+            }
+        });
+    });
+
 });
 
 
