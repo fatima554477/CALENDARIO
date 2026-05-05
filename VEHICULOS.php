@@ -1,5 +1,3 @@
-
-
 <div id="content">     
 			<hr/>
 		<strong>	  <p class="mb-0 text-uppercase" ><img src="includes/contraer31.png" id="mostrar34" style="cursor:pointer;"/>
@@ -150,7 +148,7 @@ echo $encabezadoA.$option2.'</select>';
          <th scope="row"> <label for="validationCustom03" class="form-label">FECHA DE ENTREGA:<br><a style="color:red;font:7px">obligatorio</a></label></th>
 <td>
 
- <input type="date" class="form-control" id="tot" required=""   value="<?php echo $VEHICULOSEVE_ENTREGA; ?>"  name="VEHICULOSEVE_ENTREGA"  placeholder="">
+ <input type="date" class="form-control" id="VEHICULOSEVE_ENTREGA" required=""   value="<?php echo $VEHICULOSEVE_ENTREGA; ?>"  name="VEHICULOSEVE_ENTREGA"  placeholder="">
 
  </td> </tr> 
  
@@ -176,7 +174,7 @@ echo $encabezadoA.$option2.'</select>';
          <th scope="row"> <label for="validationCustom03" class="form-label">FECHA DE DEVOLUCIÓN:<br><a style="color:red;font:7px">obligatorio</a></label></th>
          <td>
 
- <input type="date" class="form-control" id="validationCustom03" required=""   value="<?php echo $VEHICULOSEVE_DEVOLU; ?>"  name="VEHICULOSEVE_DEVOLU"  placeholder="">
+ <input type="date" class="form-control" id="VEHICULOSEVE_DEVOLU" required=""   value="<?php echo $VEHICULOSEVE_DEVOLU; ?>"  name="VEHICULOSEVE_DEVOLU"  placeholder="">
 
  </td>
          </tr>
@@ -283,7 +281,7 @@ echo $encabezadoA.$option2.'</select>';
  <td>
            
 
- <button  style="float:right"  class="btn btn-sm btn-outline-success px-5"  type="button" id="GUARDAR_VEHICULOSEVE" name="GUARDAR_VEHICULOSEVE">GUARDAR</button> <div style="
+ <button  style="float:right"  class="btn btn-sm btn-outline-success px-5"  type="button" id="GUARDAR_VEHICULOSEVE" name="GUARDAR_VEHICULOSEVE">GUARDAR</button><br><small id="estado_disponibilidad_vehiculo" style="font-weight:bold;"></small> <div style="
 
     text-shadow: 1px 1px 1px #919191,
         1px 2px 1px #919191,
@@ -425,6 +423,59 @@ $GTOTAL += $row["PRECIOPESOS_SOFTWARE"];
 </div> 
 </div>
  
+<script>
+// ===== INICIO VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (AJAX) =====
+function validarDisponibilidadVehiculo(){
+    var vehiculo = $('#VEHICULOSEVE_VEHICULO').val();
+    var entrega = $('#VEHICULOSEVE_ENTREGA').val();
+    var devolu = $('#VEHICULOSEVE_DEVOLU').val();
+    var idActual = $('input[name="IpVEHICULOSEVE"]').val() || '';
+
+    if(vehiculo==='' || entrega==='' || devolu===''){
+        $('#estado_disponibilidad_vehiculo').html('');
+        $('#GUARDAR_VEHICULOSEVE').prop('disabled', false);
+        $('#VEHICULOSEVE_VEHICULO').css('border','');
+        return;
+    }
+
+    $.ajax({
+        url:'calendariodeeventos2/controladorAE.php',
+        method:'POST',
+        dataType:'json',
+        data:{
+            validar_disponibilidad_vehiculo:'validar_disponibilidad_vehiculo',
+            VEHICULOSEVE_VEHICULO:vehiculo,
+            VEHICULOSEVE_ENTREGA:entrega,
+            VEHICULOSEVE_DEVOLU:devolu,
+            IpVEHICULOSEVE:idActual
+        },
+        beforeSend:function(){
+            $('#estado_disponibilidad_vehiculo').css('color','#444').html('cargando');
+        },
+        success:function(resp){
+            if(resp && resp.ocupado){
+                $('#estado_disponibilidad_vehiculo').css('color','red').html('VEHÍCULO OCUPADO EN LAS FECHAS SELECCIONADAS');
+                $('#GUARDAR_VEHICULOSEVE').prop('disabled', true);
+                $('#VEHICULOSEVE_VEHICULO').css('border','2px solid red');
+            }else{
+                $('#estado_disponibilidad_vehiculo').css('color','green').html('VEHÍCULO DISPONIBLE');
+                $('#GUARDAR_VEHICULOSEVE').prop('disabled', false);
+                $('#VEHICULOSEVE_VEHICULO').css('border','2px solid #198754');
+            }
+        },
+        error:function(){
+            $('#estado_disponibilidad_vehiculo').css('color','red').html('NO SE PUDO VALIDAR DISPONIBILIDAD');
+            $('#GUARDAR_VEHICULOSEVE').prop('disabled', true);
+        }
+    });
+}
+
+$(document).on('change', '#VEHICULOSEVE_VEHICULO, #VEHICULOSEVE_ENTREGA, #VEHICULOSEVE_DEVOLU', function(){
+    validarDisponibilidadVehiculo();
+});
+// ===== FIN VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (AJAX) =====
+</script>
+
  <?php 
 
 $_SESSION['VEHICULOSEVE_VEHICULO'] = '';

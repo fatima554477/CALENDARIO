@@ -226,6 +226,24 @@ if($OBTENER_foto1=='OBTENER_foto1'){
 
 
 
+
+
+// ===== INICIO VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (ENDPOINT AJAX) =====
+$validar_disponibilidad_vehiculo = isset($_POST["validar_disponibilidad_vehiculo"])?$_POST["validar_disponibilidad_vehiculo"]:"";
+if($validar_disponibilidad_vehiculo=='validar_disponibilidad_vehiculo'){
+	$connVeh = $altaeventos->db();
+	$VEHICULOSEVE_VEHICULO = isset($_POST["VEHICULOSEVE_VEHICULO"])?(int)$_POST["VEHICULOSEVE_VEHICULO"]:0;
+	$VEHICULOSEVE_ENTREGA = isset($_POST["VEHICULOSEVE_ENTREGA"])?mysqli_real_escape_string($connVeh,$_POST["VEHICULOSEVE_ENTREGA"]):"";
+	$VEHICULOSEVE_DEVOLU = isset($_POST["VEHICULOSEVE_DEVOLU"])?mysqli_real_escape_string($connVeh,$_POST["VEHICULOSEVE_DEVOLU"]):"";
+	$IpVEHICULOSEVE = isset($_POST["IpVEHICULOSEVE"])?(int)$_POST["IpVEHICULOSEVE"]:0;
+
+	$ocupado = $altaeventos->vehiculo_ocupado_en_rango($VEHICULOSEVE_VEHICULO, $VEHICULOSEVE_ENTREGA, $VEHICULOSEVE_DEVOLU, $IpVEHICULOSEVE);
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode(array('ocupado'=>$ocupado));
+	exit;
+}
+// ===== FIN VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (ENDPOINT AJAX) =====
+
 ///////////////////////////////////////materiales////////////////////////////////////
 
 	$cuenta_fechas2= isset($_POST["cuenta_fechas2"])?$_POST["cuenta_fechas2"]:"";
@@ -2580,7 +2598,7 @@ if($HVEHICULOSEVE == 'HVEHICULOSEVE' or $enviarVEHICULOSEVE=='enviarVEHICULOSEVE
 	$VEHICULOSEVE_FOTO1 = $VEHICULOSEVE_FOTO;
 	//VEHICULOSEVE_FOTO
 }*/
-$VEHICULOSEVE_VEHICULO = isset($_POST["VEHICULOSEVE_VEHICULO"])?$_POST["VEHICULOSEVE_VEHICULO"]:"";
+$VEHICULOSEVE_VEHICULO = isset($_POST["VEHICULOSEVE_VEHICULO"])?(int)$_POST["VEHICULOSEVE_VEHICULO"]:"";
 $VEHICULOSEVE_CANTIDAD = isset($_POST["VEHICULOSEVE_CANTIDAD"])?$_POST["VEHICULOSEVE_CANTIDAD"]:"";
 $VEHICULOSEVE_ENTREGA = isset($_POST["VEHICULOSEVE_ENTREGA"])?$_POST["VEHICULOSEVE_ENTREGA"]:"";
 $VEHICULOSEVE_LUGAR = isset($_POST["VEHICULOSEVE_LUGAR"])?$_POST["VEHICULOSEVE_LUGAR"]:"";

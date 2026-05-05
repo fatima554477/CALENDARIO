@@ -2409,6 +2409,16 @@ public function actualizapersonal2DIRECCION($pasara1_personal2DIRECCION_id, $pas
 	$VEHICULOSEVE_SUB = str_replace(',','',$VEHICULOSEVE_SUB);
 	$VEHICULOSEVE_SUB = str_replace('$','',$VEHICULOSEVE_SUB);	
 
+	// ===== INICIO VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (BACKEND) =====
+	$idExcluir = 0;
+	if($enviarVEHICULOSEVE=='enviarVEHICULOSEVE'){
+		$idExcluir = (int)$IpVEHICULOSEVE;
+	}
+	if($this->vehiculo_ocupado_en_rango($VEHICULOSEVE_VEHICULO, $VEHICULOSEVE_ENTREGA, $VEHICULOSEVE_DEVOLU, $idExcluir)){
+		return 'VEHÍCULO OCUPADO EN LAS FECHAS SELECCIONADAS';
+	}
+	// ===== FIN VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (BACKEND) =====
+
 	 $var1 = "update 04vehiculoevento  set
 	 
 VEHICULOSEVE_VEHICULO = '".$VEHICULOSEVE_VEHICULO."' , VEHICULOSEVE_CANTIDAD = '".$VEHICULOSEVE_CANTIDAD."' , VEHICULOSEVE_FOTO = '".$VEHICULOSEVE_FOTO."' , VEHICULOSEVE_ENTREGA = '".$VEHICULOSEVE_ENTREGA."' , VEHICULOSEVE_LUGAR = '".$VEHICULOSEVE_LUGAR."' , VEHICULOSEVE_HORA = '".$VEHICULOSEVE_HORA."' , VEHICULOSEVE_DEVOLU = '".$VEHICULOSEVE_DEVOLU."' , VEHICULOSEVE_LUDEVO = '".$VEHICULOSEVE_LUDEVO."' , VEHICULOSEVE_HORADEVO = '".$VEHICULOSEVE_HORADEVO."' , VEHICULOSEVE_SOLICITUD = '".$VEHICULOSEVE_SOLICITUD."' , VEHICULOSEVE_DIAS = '".$VEHICULOSEVE_DIAS."' , VEHICULOSEVE_COSTO = '".$VEHICULOSEVE_COSTO."' , VEHICULOSEVE_IVA = '".$VEHICULOSEVE_IVA."' , VEHICULOSEVE_SUB = '".$VEHICULOSEVE_SUB."' ,PRECIOPESOS_SOFTWARE = '".$PRECIOPESOS_SOFTWARE."' , VEHICULOSEVE_OBSERVA = '".$VEHICULOSEVE_OBSERVA."' , COLORV = '".$COLORV."' , PLACASV = '".$PLACASV."' , nombreingresov = '".$nombreingresov."' , nombreocupov = '".$nombreocupov."' , HVEHICULOSEVE = '".$HVEHICULOSEVE."'
@@ -2447,6 +2457,39 @@ public function Listado_VEHICULOSEVE(){
 	return $arrayquery = mysqli_query($conn,$variablequery);
 }
 
+
+
+
+
+public function vehiculo_ocupado_en_rango($vehiculoId, $fechaInicio, $fechaFin, $idExcluir = 0){
+	$conn = $this->db();
+	$vehiculoId = (int)$vehiculoId;
+	$idExcluir = (int)$idExcluir;
+	if($vehiculoId <= 0 || $fechaInicio=='' || $fechaFin==''){
+		return false;
+	}
+
+	$sql = "SELECT id FROM 04vehiculoevento
+			WHERE VEHICULOSEVE_VEHICULO = ?
+			AND VEHICULOSEVE_ENTREGA <= ?
+			AND VEHICULOSEVE_DEVOLU >= ?";
+	if($idExcluir > 0){
+		$sql .= " AND id <> ?";
+	}
+	$sql .= " LIMIT 1";
+
+	$stmt = $conn->prepare($sql);
+	if($idExcluir > 0){
+		$stmt->bind_param('issi', $vehiculoId, $fechaFin, $fechaInicio, $idExcluir);
+	}else{
+		$stmt->bind_param('iss', $vehiculoId, $fechaFin, $fechaInicio);
+	}
+	$stmt->execute();
+	$stmt->store_result();
+	$ocupado = $stmt->num_rows > 0;
+	$stmt->close();
+	return $ocupado;
+}
 
 
 public function borra_VEHICULOSEVE($id){
