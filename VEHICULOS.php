@@ -55,10 +55,31 @@ if($num==8){$num=0;}else{$num++;}
 $select='';
 if($VEHICULOSEVE_VEHICULO==$row1['SUBMARCAV']){$select = "selected";};
 
-$option20 .= '<option style="background: #'.$fondos[$num].'" '.$select.' value="'.$row1['id'].'">'.$row1['SUBMARCAV'].'</option>';
+$fechasOcupadasVehiculo = $altaeventos->fechas_ocupadas_vehiculo($row1['id']);
+
+$textoFechasOcupadas = '';
+
+if(count($fechasOcupadasVehiculo)>0){
+
+    $textoFechasOcupadas = ' | OCUPADO: '.implode('; ', $fechasOcupadasVehiculo);
+
+}
+
+$textoOpcionVehiculo = htmlspecialchars($row1['SUBMARCAV'].$textoFechasOcupadas, ENT_QUOTES, 'UTF-8');
+
+$textoDataFechas = htmlspecialchars(implode('; ', $fechasOcupadasVehiculo), ENT_QUOTES, 'UTF-8');
+
+
+
+$option20 .= '<option style="background: #'.$fondos[$num].'" '.$select.' value="'.$row1['id'].'" data-fechas-ocupadas="'.$textoDataFechas.'">'.$textoOpcionVehiculo.'</option>';
+
 }
 echo $encabezado.$option20.'</select>';		
 ?>
+
+
+<small id="fechas_ocupadas_vehiculo_select" style="display:block;color:#b02a37;font-weight:bold;"></small>
+
 </span>
 
  </td>                        
@@ -469,11 +490,41 @@ function validarDisponibilidadVehiculo(){
         }
     });
 }
+function mostrarFechasOcupadasVehiculo(){
+
+    var fechasOcupadas = $('#VEHICULOSEVE_VEHICULO option:selected').data('fechas-ocupadas') || '';
+
+    if(fechasOcupadas !== ''){
+
+        $('#fechas_ocupadas_vehiculo_select').html('FECHAS OCUPADAS: ' + fechasOcupadas);
+
+    }else{
+
+        $('#fechas_ocupadas_vehiculo_select').html('');
+
+    }
+
+}
+
+
+
+$(document).on('change', '#VEHICULOSEVE_VEHICULO', function(){
+
+    mostrarFechasOcupadasVehiculo();
+
+});
+
+
 
 $(document).on('change', '#VEHICULOSEVE_VEHICULO, #VEHICULOSEVE_ENTREGA, #VEHICULOSEVE_DEVOLU', function(){
     validarDisponibilidadVehiculo();
 });
-// ===== FIN VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (AJAX) =====
+$(document).ready(function(){
+
+    mostrarFechasOcupadasVehiculo();
+
+});
+
 </script>
 
  <?php 

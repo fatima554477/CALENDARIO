@@ -2459,6 +2459,87 @@ public function Listado_VEHICULOSEVE(){
 
 
 
+public function fechas_ocupadas_vehiculo($vehiculoId, $idExcluir = 0){
+
+	$conn = $this->db();
+
+	$vehiculoId = (int)$vehiculoId;
+
+	$idExcluir = (int)$idExcluir;
+
+	$fechasOcupadas = array();
+
+	if($vehiculoId <= 0){
+
+		return $fechasOcupadas;
+
+	}
+
+
+
+	$sql = "SELECT VEHICULOSEVE_ENTREGA, VEHICULOSEVE_DEVOLU
+
+			FROM 04vehiculoevento
+
+			WHERE VEHICULOSEVE_VEHICULO = ?
+
+			AND VEHICULOSEVE_ENTREGA <> ''
+
+			AND VEHICULOSEVE_DEVOLU <> ''
+
+			AND VEHICULOSEVE_DEVOLU >= CURDATE()";
+
+	if($idExcluir > 0){
+
+		$sql .= " AND id <> ?";
+
+	}
+
+	$sql .= " ORDER BY VEHICULOSEVE_ENTREGA ASC";
+
+
+
+	$stmt = $conn->prepare($sql);
+
+	if($idExcluir > 0){
+
+		$stmt->bind_param('ii', $vehiculoId, $idExcluir);
+
+	}else{
+
+		$stmt->bind_param('i', $vehiculoId);
+
+	}
+
+	$stmt->execute();
+
+	$stmt->bind_result($fechaEntregaDb, $fechaDevolucionDb);
+
+	while($stmt->fetch()){
+
+		$fechaEntrega = date('d/m/Y', strtotime($fechaEntregaDb));
+
+		$fechaDevolucion = date('d/m/Y', strtotime($fechaDevolucionDb));
+
+		if($fechaEntrega == $fechaDevolucion){
+
+			$fechasOcupadas[] = $fechaEntrega;
+
+		}else{
+
+			$fechasOcupadas[] = $fechaEntrega.' al '.$fechaDevolucion;
+
+		}
+
+	}
+
+	$stmt->close();
+
+	return $fechasOcupadas;
+
+}
+
+
 
 
 public function vehiculo_ocupado_en_rango($vehiculoId, $fechaInicio, $fechaFin, $idExcluir = 0){
