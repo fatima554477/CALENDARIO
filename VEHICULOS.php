@@ -318,12 +318,17 @@ echo $encabezadoA.$option2.'</select>';
     <input type="hidden" value="HVEHICULOSEVE" name="HVEHICULOSEVE"/>     
  
         
- <td>
-           
-</td>
-      
+
 
  <td>
+ 		
+    <a href="CALENDARIO_VEHICULOS.php" target="_blank" 
+       class="btn btn-sm btn-outline-primary px-5" 
+       style="margin-left:700px;">
+       📅 CALENDARIO DE VEHÍCULOS
+    </a>
+
+      
            
 
  <button  style="float:right"  class="btn btn-sm btn-outline-success px-5"  type="button" id="GUARDAR_VEHICULOSEVE" name="GUARDAR_VEHICULOSEVE">GUARDAR</button><br><small id="estado_disponibilidad_vehiculo" style="font-weight:bold;"></small> <div style="
@@ -345,19 +350,32 @@ echo $encabezadoA.$option2.'</select>';
            
                    </table>
 
+
                   </form>
 				  
   
   
-			<form name="form_emai_vehiculos" id="form_emai_vehiculos">
-			<table>
-			<tr>
-			<?php if($conexion->variablespermisos('','VEHIEVE','email')=='si' and $var_bloquea_fecha=='no'){ ?>	
-			<td ><textarea  placeholder="ESCRIBE AQUÍ TUS CORREOS SEPARADOS POR PUNTO Y COMA EJEMPLO: NOMBRE@CORREO.ES;NOMBRE@CORREO.ES" style="width: 500px;" name="EMAIL_VEHICULOSEVE" id="EMAIL_VEHICULOSEVE" class="form-control" aria-label="With textarea"><?php echo $EMAIL_VEHICULOSEVE; ?></textarea>
-            <button class="btn btn-sm btn-outline-success px-5"  type="button" id="BUTTON_VEHICULOSEVE">ENVIAR POR EMAIL</button></td> <?php } ?>  
+<form name="form_emai_vehiculos" id="form_emai_vehiculos">
+<table>
+<tr>
+
+<!-- ✅ NUEVO BOTÓN CALENDARIO - va ANTES del botón de email -->
+
+<!-- FIN NUEVO BOTÓN -->
+
+<?php if($conexion->variablespermisos('','VEHIEVE','email')=='si' and $var_bloquea_fecha=='no'){ ?>	
+<td>
+    <textarea placeholder="ESCRIBE AQUÍ TUS CORREOS SEPARADOS POR PUNTO Y COMA EJEMPLO: NOMBRE@CORREO.ES;NOMBRE@CORREO.ES" 
+              style="width: 500px;" name="EMAIL_VEHICULOSEVE" id="EMAIL_VEHICULOSEVE" 
+              class="form-control" aria-label="With textarea"><?php echo $EMAIL_VEHICULOSEVE; ?></textarea>
+    <button class="btn btn-sm btn-outline-success px-5" type="button" id="BUTTON_VEHICULOSEVE">ENVIAR POR EMAIL</button>
+</td> 
+
+<?php } ?> 
+
+</tr>
 	
-			</tr>
-			</table>
+</table>
 
                         <?php
 $querycontras = $altaeventos->Listado_VEHICULOSEVE();
