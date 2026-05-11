@@ -41,7 +41,10 @@ $queryper = $conexion->lista_plantillaventavehi();
 
 
 
-$encabezado = '<select class="form-select mb-3" aria-label="Default select example" id="VEHICULOSEVE_VEHICULO" required="" name="VEHICULOSEVE_VEHICULO" onchange="OBTENER_VEHICULO()">
+$encabezado = '<select class="form-select mb-3" aria-label="Default select example" 
+    id="VEHICULOSEVE_VEHICULO" required="" name="VEHICULOSEVE_VEHICULO" 
+    onchange="OBTENER_VEHICULO()"
+    style="font-weight: 500; border: 2px solid #ced4da;">
 <option value="">SELECCIONA UNA OPCIÓN</option>';
 
 $fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
@@ -61,29 +64,50 @@ $textoFechasOcupadas = '';
 
 if(count($fechasOcupadasVehiculo)>0){
 
-    $textoFechasOcupadas = ' | OCUPADO: '.implode('; ', $fechasOcupadasVehiculo);
+   $textoFechasOcupadas = ' - OCUPADO:   '.implode('    ·    ', $fechasOcupadasVehiculo);
 
 }
 
 $textoOpcionVehiculo = htmlspecialchars($row1['SUBMARCAV'].$textoFechasOcupadas, ENT_QUOTES, 'UTF-8');
 
-$textoDataFechas = htmlspecialchars(implode('; ', $fechasOcupadasVehiculo), ENT_QUOTES, 'UTF-8');
+$textoDataFechas = htmlspecialchars(implode('||', $fechasOcupadasVehiculo), ENT_QUOTES, 'UTF-8');
 
 
 
-$option20 .= '<option style="background: #'.$fondos[$num].'" '.$select.' value="'.$row1['id'].'" data-fechas-ocupadas="'.$textoDataFechas.'">'.$textoOpcionVehiculo.'</option>';
+// Reemplázala por:
+$tieneOcupado = count($fechasOcupadasVehiculo) > 0;
+$estiloOpcion = $tieneOcupado 
+    ? 'background: #fde8e8; color: #8b0000; font-weight: bold;' 
+    : 'background: #'.$fondos[$num].'; color: #155724; font-weight: normal;';
+$prefijo = $tieneOcupado ? '🔴 ' : '🟢 ';
+
+$option20 .= '<option style="'.$estiloOpcion.'" '.$select.' value="'.$row1['id'].'" data-fechas-ocupadas="'.$textoDataFechas.'">'.$prefijo.$textoOpcionVehiculo.'</option>';
 
 }
 echo $encabezado.$option20.'</select>';		
 ?>
 
 
-<small id="fechas_ocupadas_vehiculo_select" style="display:block;color:#b02a37;font-weight:bold;"></small>
+<div id="fechas_ocupadas_vehiculo_select" style="display:block;margin-top:6px;line-height:2;"></div>
 
 </span>
 
  </td>                        
          </tr>
+		 <style>
+#VEHICULOSEVE_VEHICULO option[data-fechas-ocupadas=""] ,
+#VEHICULOSEVE_VEHICULO option:not([data-fechas-ocupadas]) {
+    background-color: #e8f5e9 !important;
+    color: #155724 !important;
+    font-weight: normal !important;
+}
+#VEHICULOSEVE_VEHICULO option[data-fechas-ocupadas]:not([data-fechas-ocupadas=""]) {
+    background-color: #fde8e8 !important;
+    color: #8b0000 !important;
+    font-weight: bold !important;
+    font-style: italic;
+}
+</style>
 
 		 
 		 
@@ -445,7 +469,7 @@ $GTOTAL += $row["PRECIOPESOS_SOFTWARE"];
 </div>
  
 <script>
-// ===== INICIO VALIDACIÓN DE DISPONIBILIDAD DE VEHÍCULOS (AJAX) =====
+
 function validarDisponibilidadVehiculo(){
     var vehiculo = $('#VEHICULOSEVE_VEHICULO').val();
     var entrega = $('#VEHICULOSEVE_ENTREGA').val();
@@ -490,6 +514,8 @@ function validarDisponibilidadVehiculo(){
         }
     });
 }
+
+
 function mostrarFechasOcupadasVehiculo(){
 
     var fechasOcupadas = $('#VEHICULOSEVE_VEHICULO option:selected').data('fechas-ocupadas') || '';
@@ -505,8 +531,6 @@ function mostrarFechasOcupadasVehiculo(){
     }
 
 }
-
-
 
 $(document).on('change', '#VEHICULOSEVE_VEHICULO', function(){
 
