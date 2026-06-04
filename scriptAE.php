@@ -4599,6 +4599,8 @@ $.ajax({
 });
 
 
+
+
 //SCRIPT PARA BORRAR FOTOGRAFIA BORRAR
 $(document).on('click', '.view_dataSBborrar2', function(){
 var borra_id_sb = $(this).attr('id');
@@ -4607,7 +4609,7 @@ $('#personal_detalles3').html();
 $('#dataModal3').modal('show');
 $('#btnYes').click(function() {
 $.ajax({
-url:'TICKETS/controladorPP.php',
+url:'comprobaciones/controladorPP.php',
 method:'POST',
 data:{borra_id_sb:borra_id_sb,borrasbdoc:borrasbdoc},
 beforeSend:function(){
@@ -4615,15 +4617,13 @@ $('#mensajepagoproveedores').html('cargando');
 },
 success:function(data){
 $('#dataModal3').modal('hide');
-$('#mensajepagoproveedores').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+$('#mensajepagoproveedores').html("<span id='ACTUALIZADO' >"+data+"</span>");
 $('#'+borra_id_sb).load(location.href + ' #'+borra_id_sb);
 $('#A'+borra_id_sb).load(location.href + ' #A'+borra_id_sb);
 }
 });
 });
 });
-
-
 
 //SCRIPT PARA BORRAR view_dataSBborrar
 $(document).on('click', '.view_dataSBborrarAVION', function(){

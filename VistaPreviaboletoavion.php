@@ -21,6 +21,11 @@ $output .= '<div id="actualizatabla"></div><form  id="Listadoticketsform">
    while($row = mysqli_fetch_array($queryVISTAPREV))
     {
 
+        $montoFactura = '$ ' . number_format((float)$row["MONTO_FACTURA"], 2, '.', ',');
+        $montoTotalCotizacionAdeudo = '$ ' . number_format((float)$row["MONTO_TOTAL_COTIZACION_ADEUDO"], 2, '.', ',');
+        $montoPropina = '$ ' . number_format((float)$row["MONTO_PROPINA"], 2, '.', ',');
+        $montoDepositar = '$ ' . number_format((float)$row["MONTO_DEPOSITAR"], 2, '.', ',');
+
 
 ?>
 </div>
@@ -99,22 +104,22 @@ $output .= '<div id="actualizatabla"></div><form  id="Listadoticketsform">
 
 <tr style="background: #c3f5d9">
 <td width="30%"><label>SUB TOTAL</label></td>
-<td width="70%"><input type="text" name="MONTO_FACTURA" value="'.$row["MONTO_FACTURA"].'"></td>
+<td width="70%"><input type="text" name="MONTO_FACTURA" value="'.$montoFactura.'"></td>
 </tr>
 
 <tr>
 <td width="30%"><label>IVA</label></td>
-<td width="70%"><input type="text" name="MONTO_TOTAL_COTIZACION_ADEUDO" value="'.$row["MONTO_TOTAL_COTIZACION_ADEUDO"].'"></td>
+<td width="70%"><input type="text" name="MONTO_TOTAL_COTIZACION_ADEUDO" value="'.$montoTotalCotizacionAdeudo.'"></td>
 </tr>
 
 <tr>
 <td width="30%"><label>TUA</label></td>
-<td width="70%"><input type="text" name="MONTO_PROPINA" value="'.$row["MONTO_PROPINA"].'"></td>
+<td width="70%"><input type="text" name="MONTO_PROPINA" value="'.$montoPropina.'"></td>
 </tr> 
 
-<tr>
+<tr  style="background: #c3f5d9">
 <td width="30%"><label>TOTAL</label></td>
-<td width="70%"><input type="text" name="MONTO_DEPOSITAR" value="'.$row["MONTO_DEPOSITAR"].'"></td>
+<td width="70%"><input type="text" name="MONTO_DEPOSITAR" value="'.$montoDepositar.'"></td>
 </tr> 
 
 <tr>

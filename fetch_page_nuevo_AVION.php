@@ -7,8 +7,8 @@
 
 <div id="content">     
 			<hr/>
-		<strong>	  <p class="mb-0 text-uppercase" ><img src="includes/contraer31.png" id="mostrar29" style="cursor:pointer;"/>
-<img src="includes/contraer41.png" id="ocultar29" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp; RESUMEN BOLETOS DE AVION</p></strong></div>
+		<strong>	  <p class="mb-0 text-uppercase" ><img src="includes/contraer31.png" onclick="loadAVION(1);" id="mostrar29" style="cursor:pointer;"/>
+<img src="includes/contraer41.png" id="ocultar29" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp; FILTRO BOLETOS DE AVION</p></strong></div>
 
 
 <div  id="mensajefiltro"></div>
