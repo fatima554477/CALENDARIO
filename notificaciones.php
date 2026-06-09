@@ -86,38 +86,39 @@
           $CIERRE_TOTAL  , $FECHA_FINAL_EVENTO
           */
 
-          $CIERRE_TOTAL11 = '';
+$CIERRE_TOTAL11 = ''; if($CIERRE_TOTAL==''){ $CIERRE_TOTAL11 = strtotime('+30 day', strtotime($FECHA_FINAL_EVENTO)); } else { $CIERRE_TOTAL11 = strtotime($CIERRE_TOTAL); 
+}
 
-          if($CIERRE_TOTAL==''){
-            $CIERRE_TOTAL11 = strtotime('+100 day', strtotime($FECHA_FINAL_EVENTO));
-          } else {
-            $CIERRE_TOTAL11 = strtotime('+1 day', strtotime($CIERRE_TOTAL)); 
-          }
+            $nuevafecha2 = ($CIERRE_TOTAL11 != '') ? date('Y-m-d', $CIERRE_TOTAL11) : '';
+            $var_bloquea_fecha = '';
 
-          $nuevafecha2 = date('Y-m-d', $CIERRE_TOTAL11);
-          $var_bloquea_fecha = '';
+if(strtotime($ymd) <= strtotime($nuevafecha2)){
+    $var_bloquea_fecha = 'no';
+    $totaldias = round((strtotime($nuevafecha2) - strtotime($ymd))/86400);
+    echo 'QUEDAN:&nbsp;'.$totaldias.
+         '&nbsp;DÍAS PARA EL CIERRE DE ESTE EVENTO. &nbsp;&nbsp;SE CERRARÁ EL DÍA '.
+         $dias[date('w',strtotime($nuevafecha2))].' '.
+         date('d',strtotime($nuevafecha2)).' DE '.
+         $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
+         date('Y',strtotime($nuevafecha2));
+} else {
+    $var_bloquea_fecha = 'si';
+    echo 'EVENTO CERRADO.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SE CERRÓ EL DÍA '.
+         $dias[date('w',strtotime($nuevafecha2))].' '.
+         date('d',strtotime($nuevafecha2)).' DE '.
+         $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
+         date('Y',strtotime($nuevafecha2));
 
-          if(strtotime($ymd) <= strtotime($nuevafecha2)){
-            $var_bloquea_fecha = 'no';
-            $totaldias = round((strtotime($nuevafecha2) - strtotime($ymd))/86400);
-            echo 'QUEDAN:&nbsp;'.$totaldias.
-                 '&nbsp;DÍAS PARA EL CIERRE DE ESTE EVENTO. &nbsp;&nbsp;SE CERRARÁ EL DÍA '.
-                 $dias[date('w',strtotime($nuevafecha2))].' '.
-                 date('d',strtotime($nuevafecha2)).' DE '.
-                 $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
-                 date('Y',strtotime($nuevafecha2));
-          } else {
-            $var_bloquea_fecha = 'si';
-            echo 'EVENTO CERRADO.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SE CERRÓ EL DÍA '.
-                 $dias[date('w',strtotime($nuevafecha2))].' '.
-                 date('d',strtotime($nuevafecha2)).' DE '.
-                 $meses[date('n',strtotime($nuevafecha2))-1].' DE '.
-                 date('Y',strtotime($nuevafecha2));
+    if($conexion->variablespermisos('','Abrir_cierre','ver')=='si'){
+        $var_bloquea_fecha = 'no';
+    }
+}
 
-            if($conexion->variablespermisos('','Abrir_cierre','ver')=='si'){
-              $var_bloquea_fecha = 'no';
+// ← NUEVA CONDICIÓN: CANCELADO siempre bloquea, sin importar fechas ni permisos
+if(isset($STATUS_EVENTO) && strtoupper(trim($STATUS_EVENTO)) == 'CANCELADO'){
+    $var_bloquea_fecha = 'si';
             }
-          }
+          
           ?>
         </span>
       </strong>
@@ -155,11 +156,15 @@
         </div>
       </li>
 
-      <li class="nav-item">
-        <div class="mode-icon">
-          <h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
-        </div>
-      </li>
+<li class="nav-item">
+    <div class="mode-icon">
+        <h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
+        <small style="color: #0d6efd; font-weight: 700; font-family: 'Georgia', serif; font-style: italic;"><?php echo $_SESSION["PERMISOSxusuario"]; ?>  <br>&nbsp;
+    <span style="letter-spacing:4px; color:black;
+
+">...................</span></small>
+    </div>
+</li>	
 
       <li class="nav-item dropdown dropdown-user-setting">
         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
@@ -173,8 +178,13 @@
               <div class="d-flex flex-row align-items-center gap-2">
                 <img src="<?php echo 'includes/archivos/'.$_SESSION["F_FOTO_ACTUAL"]; ?>" alt="" class="rounded-circle" width="54" height="54">
                 <div>
-                  <h6 class="mb-0 dropdown-user-name"><?php echo $_SESSION["NOMBREUSUARIO"]; ?></h6>
+<h6 class="mb-0 dropdown-user-name">
+    <?php echo $_SESSION["NOMBREUSUARIO"]; ?>
+    
+</h6>
+				  
                 </div>
+				
               </div>
             </a>
           </li>
