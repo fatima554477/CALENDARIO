@@ -17,31 +17,23 @@ if($identioficador != '')
     $row = mysqli_fetch_array($queryVISTAPREV);
 
 
-    $fechaSolicitud = trim($row["VEHICULOSEVE_SOLICITUD"] ?? '');
+     $fechaSolicitud = isset($row["VEHICULOSEVE_SOLICITUD"]) ? trim($row["VEHICULOSEVE_SOLICITUD"]) : '';
+
 
     $fechaSolicitudInput = '';
 
     if($fechaSolicitud !== ''){
 
-        $formatosFechaSolicitud = array('Y-m-d', 'd-m-Y', 'd/m/Y', 'Y/m/d');
+      if(preg_match('/^([0-9]{4})[-\\/]([0-9]{1,2})[-\\/]([0-9]{1,2})$/', $fechaSolicitud, $partesFechaSolicitud)){
 
-        foreach($formatosFechaSolicitud as $formatoFechaSolicitud){
+            $fechaSolicitudInput = sprintf('%04d-%02d-%02d', $partesFechaSolicitud[1], $partesFechaSolicitud[2], $partesFechaSolicitud[3]);
 
-            $fechaSolicitudObj = DateTime::createFromFormat($formatoFechaSolicitud, $fechaSolicitud);
+        } elseif(preg_match('/^([0-9]{1,2})[-\\/]([0-9]{1,2})[-\\/]([0-9]{4})$/', $fechaSolicitud, $partesFechaSolicitud)){
 
-            if($fechaSolicitudObj instanceof DateTime){
+            $fechaSolicitudInput = sprintf('%04d-%02d-%02d', $partesFechaSolicitud[3], $partesFechaSolicitud[2], $partesFechaSolicitud[1]);
 
-                $fechaSolicitudInput = $fechaSolicitudObj->format('Y-m-d');
+        } else {
 
-                break;
-
-            }
-
-        }
-
-
-
-        if($fechaSolicitudInput === ''){
 
             $fechaSolicitudTimestamp = strtotime($fechaSolicitud);
 
