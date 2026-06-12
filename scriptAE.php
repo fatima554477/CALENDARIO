@@ -4798,23 +4798,23 @@ $(document).ready(function(){
                 $('#mensajeVEHICULOSEVE').html('cargando'); 
             },
 
-            success:function(data){
+success:function(data){
+    $("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");	
+    $("#reset_totales").load(location.href + " #reset_totales");
+    $("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE", function(){
+        limpiarFormularioVehiculosEve();
+    });
+    limpiarFormularioVehiculosEve();
 
-                $("#reset_totales_egresos").load(location.href + " #reset_totales_egresos");	
-                $("#reset_totales").load(location.href + " #reset_totales");
+    // ✅ ACTUALIZAR fechas ocupadas en el select sin recargar página
+    actualizarFechasOcupadasSelect();
 
-                $("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE", function(){
-                    limpiarFormularioVehiculosEve();
-                });
-
-                limpiarFormularioVehiculosEve();
-
-                $("#mensajeVEHICULOSEVE")
-                    .html("<span id='ACTUALIZADO'>" + data + "</span>")
-                    .fadeIn()
-                    .delay(2000)
-                    .fadeOut();
-            },
+    $("#mensajeVEHICULOSEVE")
+        .html("<span id='ACTUALIZADO'>" + data + "</span>")
+        .fadeIn()
+        .delay(2000)
+        .fadeOut();
+},
 
             error:function(){
                 $('#mensajeVEHICULOSEVE')
@@ -4871,6 +4871,8 @@ $(document).on('click', '.view_dataVEHICULOSEVEborrar', function(){
 	   			$('#dataModal3').modal('hide');	   
 			$("#mensajeVEHICULOSEVE").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();			
 			$("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE");
+			
+			actualizarFechasOcupadasSelect();
 
    }
   });

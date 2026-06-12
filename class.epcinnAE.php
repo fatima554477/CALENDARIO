@@ -2,10 +2,9 @@
 /*
 clase EPC INNOVA
 CREADO : 10/mayo/2023
-TESTER: FATIMA ARELLANO
-PROGRAMER: SANDOR ACTUALIZACION: 1 MAY 2023
+
 FECHA sandor: 
-FECHA fatima: 01 JUNIO 2025     
+FECHA fatima: 01 JUNIO 2026     
 */
 	define('__ROOT3__', dirname(dirname(__FILE__)));
 	require __ROOT3__."/includes/class.epcinn.php";	

@@ -566,6 +566,35 @@ $(document).ready(function(){
     mostrarFechasOcupadasVehiculo();
 
 });
+function actualizarFechasOcupadasSelect(){
+    $.ajax({
+        url: 'calendariodeeventos2/controladorAE.php',
+        method: 'POST',
+        dataType: 'json',
+        data: { obtener_fechas_todos_vehiculos: 'si' },
+        success: function(resp){
+            if(!resp){ return; }
+            $('#VEHICULOSEVE_VEHICULO option').each(function(){
+                var idVehiculo = $(this).val();
+                if(idVehiculo === ''){ return; }
+                var fechas = resp[idVehiculo] || [];
+                var textoDataFechas = fechas.join('||');
+                $(this).attr('data-fechas-ocupadas', textoDataFechas);
+                var tieneOcupado = fechas.length > 0;
+                if(tieneOcupado){
+                    $(this).css({'background':'#fde8e8','color':'#8b0000'});
+                    var textoActual = $(this).text().replace('🔴 ','').replace('🟢 ','').split(' - OCUPADO:')[0];
+                    $(this).text('🔴 ' + textoActual + ' - OCUPADO: ' + fechas.join(' · '));
+                }else{
+                    $(this).css({'background':'#e8f5e9','color':'#155724'});
+                    var textoActual = $(this).text().replace('🔴 ','').replace('🟢 ','').split(' - OCUPADO:')[0];
+                    $(this).text('🟢 ' + textoActual);
+                }
+            });
+            mostrarFechasOcupadasVehiculo();
+        }
+    });
+}
 
 </script>
 
