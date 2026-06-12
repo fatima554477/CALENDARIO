@@ -16,6 +16,47 @@ if($identioficador != '')
     $queryVISTAPREV = $conexion->Listado_VEHICULOSEVE2($identioficador);
     $row = mysqli_fetch_array($queryVISTAPREV);
 
+
+    $fechaSolicitud = trim($row["VEHICULOSEVE_SOLICITUD"] ?? '');
+
+    $fechaSolicitudInput = '';
+
+    if($fechaSolicitud !== ''){
+
+        $formatosFechaSolicitud = array('Y-m-d', 'd-m-Y', 'd/m/Y', 'Y/m/d');
+
+        foreach($formatosFechaSolicitud as $formatoFechaSolicitud){
+
+            $fechaSolicitudObj = DateTime::createFromFormat($formatoFechaSolicitud, $fechaSolicitud);
+
+            if($fechaSolicitudObj instanceof DateTime){
+
+                $fechaSolicitudInput = $fechaSolicitudObj->format('Y-m-d');
+
+                break;
+
+            }
+
+        }
+
+
+
+        if($fechaSolicitudInput === ''){
+
+            $fechaSolicitudTimestamp = strtotime($fechaSolicitud);
+
+            if($fechaSolicitudTimestamp !== false){
+
+                $fechaSolicitudInput = date('Y-m-d', $fechaSolicitudTimestamp);
+
+            }
+
+        }
+
+    }
+
+
+
     $output .= '
 <style>
     .campo-bloqueado {
@@ -249,7 +290,8 @@ if($identioficador != '')
 <tr style="background:#d4f1d3">
     <td width="30%"><label>FECHA DE SOLICITUD</label></td>
     <td width="70%">
-        <input type="date" name="VEHICULOSEVE_SOLICITUD" value="'.$row["VEHICULOSEVE_SOLICITUD"].'" readonly class="campo-bloqueado">
+  <input type="date" name="VEHICULOSEVE_SOLICITUD" value="'.$fechaSolicitudInput.'" readonly class="campo-bloqueado">
+
     </td>
 </tr>
 
@@ -658,6 +700,14 @@ $(document).ready(function(){
             },
             success: function(data){
                 $("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE");
+				      if(typeof actualizarFechasOcupadasSelect === 'function'){
+
+                    actualizarFechasOcupadasSelect();
+
+                }
+
+                vistaprevActualizarFechasOcupadasSelect();
+
                 $("#mensajeVEHICULOSEVE").html("<span id='ACTUALIZADO'>"+data+"</span>");
                 $("#dataModal").modal("hide");
             }
