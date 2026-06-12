@@ -2,7 +2,6 @@
 /*
 clase EPC INNOVA
 CREADO : 10/mayo/2023
-
 FECHA sandor: 
 FECHA fatima: 01 JUNIO 2026     
 */
