@@ -105,7 +105,8 @@ if($identioficador != '')
 
         $selectV = ($row["VEHICULOSEVE_VEHICULO"] == $rowV['id']) ? 'selected' : '';
 
-        $fechasOcupadasVehiculo = $altaeventos->fechas_ocupadas_vehiculo_excluyendo($rowV['id'], $row["id"]);
+         $fechasOcupadasVehiculo = $altaeventos->fechas_ocupadas_vehiculo($rowV['id'], $row["id"]);
+
 
         $textoFechasOcupadas = '';
         if(count($fechasOcupadasVehiculo) > 0){
@@ -388,22 +389,62 @@ $(document).ready(function(){
             url: 'calendariodeeventos2/controladorAE.php',
             method: 'POST',
             data: {
-                OBTENER_VEHICULO: 'OBTENER_VEHICULO',
+                 OBTENER_VEHICULO1: 'OBTENER_VEHICULO1',
+
                 VEHICULOSEVE_VEHICULO: idVehiculo
             },
             success: function(data){
                 // Espera JSON: {"color":"...","placas":"...","foto":"...","costo":"..."}
-                try {
-                    var resp = (typeof data === 'string') ? JSON.parse(data) : data;
-                    $('#Listado_VEHICULOSEVEform [name="COLORV"]').val(resp.color  || '');
-                    $('#Listado_VEHICULOSEVEform [name="PLACASV"]').val(resp.placas || '');
-                    if(resp.costo !== undefined){
-                        $('#Listado_VEHICULOSEVEform [name="VEHICULOSEVE_COSTO"]').val(resp.costo);
-                    }
-                } catch(e) {
-                    // Si el controlador devuelve HTML puro para color/placas
-                    // ajusta aquí según tu controladorAE.php
-                }
+       $('#Listado_VEHICULOSEVEform [name="VEHICULOSEVE_COSTO"]').val(data);
+
+            }
+
+        });
+
+
+
+        $.ajax({
+
+            url: 'calendariodeeventos2/controladorAE.php',
+
+            method: 'POST',
+
+            data: {
+
+                OBTENER_color1: 'OBTENER_color1',
+
+                VEHICULOSEVE_VEHICULO: idVehiculo
+
+            },
+
+            success: function(data){
+
+                $('#Listado_VEHICULOSEVEform [name="COLORV"]').val(data);
+
+            }
+
+        });
+
+
+
+        $.ajax({
+
+            url: 'calendariodeeventos2/controladorAE.php',
+
+            method: 'POST',
+
+            data: {
+
+                OBTENER_placas1: 'OBTENER_placas1',
+
+                VEHICULOSEVE_VEHICULO: idVehiculo
+
+            },
+
+            success: function(data){
+
+                $('#Listado_VEHICULOSEVEform [name="PLACASV"]').val(data);
+
             }
         });
     });
