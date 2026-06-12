@@ -155,11 +155,14 @@ $EMAIL_MENSAJERIA = isset($_POST["EMAIL_MENSAJERIA"])?$_POST["EMAIL_MENSAJERIA"]
 $obtener_fechas_todos_vehiculos = isset($_POST["obtener_fechas_todos_vehiculos"])?$_POST["obtener_fechas_todos_vehiculos"]:"";
 if($obtener_fechas_todos_vehiculos == 'si'){
     $conn = $altaeventos->db();
+	   $IpVEHICULOSEVE = isset($_POST["IpVEHICULOSEVE"])?(int)$_POST["IpVEHICULOSEVE"]:0;
+
     $queryVehiculos = mysqli_query($conn, "SELECT id FROM 09vehiculos");
     $resultado = array();
     while($rowV = mysqli_fetch_array($queryVehiculos, MYSQLI_ASSOC)){
         $idV = $rowV['id'];
-        $resultado[$idV] = $altaeventos->fechas_ocupadas_vehiculo($idV);
+        $resultado[$idV] = $altaeventos->fechas_ocupadas_vehiculo($idV, $IpVEHICULOSEVE);
+
     }
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($resultado);

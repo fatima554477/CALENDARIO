@@ -256,7 +256,8 @@ if($identioficador != '')
 <tr style="background:#d4f1d3">
     <td width="30%"><label>DÍAS SOLICITADOS</label></td>
     <td width="70%">
-        <input type="text" name="VEHICULOSEVE_DIAS" value="'.$row["VEHICULOSEVE_DIAS"].'" class="campo-editable">
+            <input type="text" id="vistaprev_VEHICULOSEVE_DIAS" name="VEHICULOSEVE_DIAS" value="'.$row["VEHICULOSEVE_DIAS"].'" class="campo-editable">
+
     </td>
 </tr>
 
@@ -329,6 +330,183 @@ $(document).ready(function(){
         } else {
             $('#vistaprev_fechas_ocupadas_vehiculo_select').html('');
         }
+    }
+    function vistaprevTotalCantidadPrecio(){
+
+        var $form = $('#Listado_VEHICULOSEVEform');
+
+        var VEHICULOSEVE_DIAS = $form.find('[name="VEHICULOSEVE_DIAS"]').val();
+
+        var VEHICULOSEVE_COSTO = $form.find('[name="VEHICULOSEVE_COSTO"]').val();
+
+        var VEHICULOSEVE_CANTIDAD = $form.find('[name="VEHICULOSEVE_CANTIDAD"]').val();
+
+
+
+        $.ajax({
+
+            url: 'calendariodeeventos2/controladorAE.php',
+
+            method: 'POST',
+
+            data: {
+
+                VEHICULOSEVE_DIAS: VEHICULOSEVE_DIAS,
+
+                VEHICULOSEVE_COSTO: VEHICULOSEVE_COSTO,
+
+                VEHICULOSEVE_CANTIDAD: VEHICULOSEVE_CANTIDAD,
+
+                cantidad_precio: 'cantidad_precio'
+
+            },
+
+            success: function(data){
+
+                var result = data.split('^');
+
+                $form.find('[name="PRECIOPESOS_SOFTWARE"]').val(result[1]);
+
+                $form.find('[name="VEHICULOSEVE_IVA"]').val(result[2]);
+
+                $form.find('[name="VEHICULOSEVE_SUB"]').val(result[3]);
+
+            }
+
+        });
+
+    }
+
+
+
+    function vistaprevTotalFechas(){
+
+        var $form = $('#Listado_VEHICULOSEVEform');
+
+        var VEHICULOSEVE_DEVOLU = $form.find('[name="VEHICULOSEVE_DEVOLU"]').val();
+
+        var VEHICULOSEVE_ENTREGA = $form.find('[name="VEHICULOSEVE_ENTREGA"]').val();
+
+
+
+        if(VEHICULOSEVE_DEVOLU === '' || VEHICULOSEVE_ENTREGA === ''){
+
+            $form.find('[name="VEHICULOSEVE_DIAS"]').val('');
+
+            vistaprevTotalCantidadPrecio();
+
+            return;
+
+        }
+
+
+
+        $.ajax({
+
+            url: 'calendariodeeventos2/controladorAE.php',
+
+            method: 'POST',
+
+            data: {
+
+                VEHICULOSEVE_DEVOLU: VEHICULOSEVE_DEVOLU,
+
+                VEHICULOSEVE_ENTREGA: VEHICULOSEVE_ENTREGA,
+
+                cuenta_fechas: 'cuenta_fechas'
+
+            },
+
+            success: function(data){
+
+                $form.find('[name="VEHICULOSEVE_DIAS"]').val(data);
+
+                vistaprevTotalCantidadPrecio();
+
+            }
+
+        });
+
+    }
+
+
+
+    function vistaprevActualizarFechasOcupadasSelect(){
+
+        var idActual = $('#IpVEHICULOSEVE').val() || '';
+
+
+
+        $.ajax({
+
+            url: 'calendariodeeventos2/controladorAE.php',
+
+            method: 'POST',
+
+            dataType: 'json',
+
+            data: {
+
+                obtener_fechas_todos_vehiculos: 'si',
+
+                IpVEHICULOSEVE: idActual
+
+            },
+
+            success: function(resp){
+
+                if(!resp){ return; }
+
+
+
+                $('#vistaprev_VEHICULOSEVE_VEHICULO option').each(function(){
+
+                    var idVehiculo = $(this).val();
+
+                    if(idVehiculo === ''){ return; }
+
+
+
+                    var fechas = resp[idVehiculo] || [];
+
+                    var textoDataFechas = fechas.join('||');
+
+                    var textoActual = $(this).text().replace('🔴 ', '').replace('🟢 ', '').split(' - OCUPADO:')[0];
+
+
+
+                    $(this).attr('data-fechas-ocupadas', textoDataFechas);
+
+
+
+                    if(fechas.length > 0){
+
+                        $(this)
+
+                            .css({'background':'#fde8e8','color':'#8b0000','font-weight':'bold','font-style':'italic'})
+
+                            .text('🔴 ' + textoActual + ' - OCUPADO: ' + fechas.join(' · '));
+
+                    } else {
+
+                        $(this)
+
+                            .css({'background':'#e8f5e9','color':'#155724','font-weight':'normal','font-style':'normal'})
+
+                            .text('🟢 ' + textoActual);
+
+                    }
+
+                });
+
+
+
+                vistaprevMostrarFechasOcupadas();
+
+            }
+
+        });
+
     }
 
     // ── Validar disponibilidad vía AJAX (excluye el registro actual) ─────────
@@ -451,11 +629,22 @@ $(document).ready(function(){
 
     // ── Revalidar al cambiar fechas ───────────────────────────────────────────
     $(document).on('change', '#vistaprev_VEHICULOSEVE_ENTREGA, #vistaprev_VEHICULOSEVE_DEVOLU', function(){
+		 vistaprevTotalFechas();
+
         vistaprevValidarDisponibilidad();
     });
+	    $(document).on('keyup change', '#Listado_VEHICULOSEVEform [name="VEHICULOSEVE_CANTIDAD"], #Listado_VEHICULOSEVEform [name="VEHICULOSEVE_COSTO"], #Listado_VEHICULOSEVEform [name="VEHICULOSEVE_DIAS"]', function(){
+
+        vistaprevTotalCantidadPrecio();
+
+    });
+
+
+
 
     // ── Al cargar: mostrar fechas del vehículo ya seleccionado ───────────────
-    vistaprevMostrarFechasOcupadas();
+   vistaprevActualizarFechasOcupadasSelect();
+
 
     // ── Guardar ───────────────────────────────────────────────────────────────
     $("#clickVEHICULOSEVE").click(function(){
