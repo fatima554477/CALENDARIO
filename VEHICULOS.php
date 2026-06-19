@@ -1,3 +1,14 @@
+<?php
+
+$puedeVerAutorizadoVehiculo = ($conexion->variablespermisos('', 'AUTORIZADOVEHICULO', 'ver') === 'si');
+
+$puedeGuardarAutorizadoVehiculo = ($conexion->variablespermisos('', 'AUTORIZADOVEHICULO', 'guardar') === 'si');
+
+$puedeModificarAutorizadoVehiculo = ($conexion->variablespermisos('', 'AUTORIZADOVEHICULO', 'modificar') === 'si');
+
+?>
+
+
 <div id="content">     
 			<hr/>
 		<strong>	  <p class="mb-0 text-uppercase" ><img src="includes/contraer31.png" id="mostrar34" style="cursor:pointer;"/>
@@ -391,9 +402,11 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <table class="table table-striped table-bordered" style="width:100%" id='reset_VEHICULOSEVE' name='reset_VEHICULOSEVE'>
 <tr style='background:#f5f9fc;text-align:center'>
 <th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th> 
+ <?php if($puedeVerAutorizadoVehiculo){ ?>
 <th width="10%"style="background:#c9e8e8">AUTORIZADO</th>
- 
+<?php } ?>
 <th width="20%"style="background:#c9e8e8">VEHÍCULO</th>
+
 <th width="20%"style="background:#c9e8e8">CANTIDAD</th>
 <th width="20%"style="background:#c9e8e8">FOTO</th>
 <th width="20%"style="background:#c9e8e8">COLOR</th>
@@ -428,9 +441,12 @@ while($row = mysqli_fetch_array($querycontras))
 <tr style='background:#f5f9fc;text-align:center'>
 <td style="text-align:center" >
 <input type="checkbox" style="width:15%" class="form-check-input" name="VEHICULOSEVE[]" id="VEHICULOSEVE" value="<?php echo $row["id"]; ?>"/> </td>
+<?php if($puedeVerAutorizadoVehiculo){ ?>
 <td style="text-align:center" >
 
-<input type="checkbox" style="width:30PX;" class="form-check-input" id="AUTORIZADO_VEHICULOSEVE<?php echo $row["id"]; ?>" name="AUTORIZADO_VEHICULOSEVE<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="autoriza_vehiculo(<?php echo $row["id"]; ?>)" <?php if(isset($row["AUTORIZADO_VEHICULOSEVE"]) && $row["AUTORIZADO_VEHICULOSEVE"]=='si'){ echo "checked"; } ?>/> </td>
+<input type="checkbox" style="width:30PX;" class="form-check-input" id="AUTORIZADO_VEHICULOSEVE<?php echo $row["id"]; ?>" name="AUTORIZADO_VEHICULOSEVE<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="autoriza_vehiculo(<?php echo $row["id"]; ?>)" <?php if(isset($row["AUTORIZADO_VEHICULOSEVE"]) && $row["AUTORIZADO_VEHICULOSEVE"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarAutorizadoVehiculo || ((isset($row["AUTORIZADO_VEHICULOSEVE"]) && $row["AUTORIZADO_VEHICULOSEVE"]=='si') && !$puedeModificarAutorizadoVehiculo)) { echo "disabled"; } ?>/> </td>
+
+<?php } ?>
 
 <td ><?php echo $altaeventos->nombre_vehiculo($row["VEHICULOSEVE_VEHICULO"]);?></td>
 <td ><?php echo $row["VEHICULOSEVE_CANTIDAD"]; ?></td>
@@ -479,7 +495,10 @@ $GTOTAL += $row["PRECIOPESOS_SOFTWARE"];
 ?>
 <tr>
 
-<td colspan='18' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
+<?php $columnasPreviasTotalesVehiculo = 17 + ($puedeVerAutorizadoVehiculo ? 1 : 0); ?>
+
+<td colspan='<?php echo $columnasPreviasTotalesVehiculo; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
+
 
 </table>
 </tbody>
