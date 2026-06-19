@@ -390,7 +390,9 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <tbody= 'font-style:italic;'>
 <table class="table table-striped table-bordered" style="width:100%" id='reset_VEHICULOSEVE' name='reset_VEHICULOSEVE'>
 <tr style='background:#f5f9fc;text-align:center'>
-<th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th>  
+<th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th> 
+<th width="10%"style="background:#c9e8e8">AUTORIZADO</th>
+ 
 <th width="20%"style="background:#c9e8e8">VEHÍCULO</th>
 <th width="20%"style="background:#c9e8e8">CANTIDAD</th>
 <th width="20%"style="background:#c9e8e8">FOTO</th>
@@ -426,6 +428,10 @@ while($row = mysqli_fetch_array($querycontras))
 <tr style='background:#f5f9fc;text-align:center'>
 <td style="text-align:center" >
 <input type="checkbox" style="width:15%" class="form-check-input" name="VEHICULOSEVE[]" id="VEHICULOSEVE" value="<?php echo $row["id"]; ?>"/> </td>
+<td style="text-align:center" >
+
+<input type="checkbox" style="width:30PX;" class="form-check-input" id="AUTORIZADO_VEHICULOSEVE<?php echo $row["id"]; ?>" name="AUTORIZADO_VEHICULOSEVE<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="autoriza_vehiculo(<?php echo $row["id"]; ?>)" <?php if(isset($row["AUTORIZADO_VEHICULOSEVE"]) && $row["AUTORIZADO_VEHICULOSEVE"]=='si'){ echo "checked"; } ?>/> </td>
+
 <td ><?php echo $altaeventos->nombre_vehiculo($row["VEHICULOSEVE_VEHICULO"]);?></td>
 <td ><?php echo $row["VEHICULOSEVE_CANTIDAD"]; ?></td>
 <td ><?php echo $urlVEHICULOSEVE_FOTO; ?></td>
@@ -459,7 +465,7 @@ while($row = mysqli_fetch_array($querycontras))
 <td ><?php echo number_format($row["VEHICULOSEVE_IVA"],2,'.',','); ?></td>
 <td ><?php echo number_format($row["PRECIOPESOS_SOFTWARE"],2,'.',','); ?></td>  
 <td ><?php echo $row["VEHICULOSEVE_OBSERVA"]; ?></td>
-<?php if($conexion->variablespermisos('','VEHIEVE','modificar')=='si' and $var_bloquea_fecha=='no'){ ?>
+<?php if($conexion->variablespermisos('','VEHIEVE','modificar')=='si' and $var_bloquea_fecha=='no' and (!isset($row["AUTORIZADO_VEHICULOSEVE"]) or $row["AUTORIZADO_VEHICULOSEVE"]!='si')){ ?>
 <td><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_VEHICULOSEVE" /></td><?php } ?>
 <?php if($conexion->variablespermisos('','VEHIEVE','borrar')=='si' and $var_bloquea_fecha=='no'){ ?>
 <td><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataVEHICULOSEVEborrar" />
@@ -473,7 +479,8 @@ $GTOTAL += $row["PRECIOPESOS_SOFTWARE"];
 ?>
 <tr>
 
-<td colspan='17' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
+<td colspan='18' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
+
 </table>
 </tbody>
 

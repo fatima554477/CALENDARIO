@@ -987,6 +987,51 @@ function pasarpagadoavion(pasarpagadoavion_id){
 
 
 
+function autoriza_vehiculo(autoriza_vehiculo_id){
+
+	var checkBox = document.getElementById("AUTORIZADO_VEHICULOSEVE"+autoriza_vehiculo_id);
+
+	var autoriza_vehiculo_text = "";
+
+	if (checkBox.checked == true){
+
+	autoriza_vehiculo_text = "si";
+
+	}else{
+
+	autoriza_vehiculo_text = "no";
+
+	}
+
+	  $.ajax({
+
+		url:'calendariodeeventos2/controladorAE.php',
+
+		method:'POST',
+
+		data:{autoriza_vehiculo_id:autoriza_vehiculo_id,autoriza_vehiculo_text:autoriza_vehiculo_text},
+
+		beforeSend:function(){
+
+		$('#mensajeVEHICULOSEVE').html('cargando');
+
+	},
+
+		success:function(data){
+
+			
+
+	$("#reset_VEHICULOSEVE").load(location.href + " #reset_VEHICULOSEVE");			
+
+		$('#mensajeVEHICULOSEVE').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+
+	}
+
+	});
+
+}
+
+
 
 
 ///////////////////////PARA FECHAS Y MULTIOLICACION DE LOS MODULOS NUEVOS//////////////////

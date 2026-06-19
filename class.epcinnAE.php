@@ -2439,11 +2439,56 @@ VEHICULOSEVE_VEHICULO = '".$VEHICULOSEVE_VEHICULO."' , VEHICULOSEVE_CANTIDAD = '
 	
 }
 
+private function asegurar_columna_autorizado_vehiculo(){
+
+	$conn = $this->db();
+
+	$existe = mysqli_query($conn, "SHOW COLUMNS FROM 04vehiculoevento LIKE 'AUTORIZADO_VEHICULOSEVE'");
+
+	if($existe && mysqli_num_rows($existe) == 0){
+
+		mysqli_query($conn, "ALTER TABLE 04vehiculoevento ADD AUTORIZADO_VEHICULOSEVE VARCHAR(2) NOT NULL DEFAULT 'no'") or die('P156'.mysqli_error($conn));
+
+	}
+
+}
+
+
+
+public function actualiza_autorizado_vehiculo($autoriza_vehiculo_id, $autoriza_vehiculo_text){
+
+	$conn = $this->db();
+
+	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
+
+	if($session != ''){
+
+		$this->asegurar_columna_autorizado_vehiculo();
+
+		$idVehiculo = (int)$autoriza_vehiculo_id;
+
+		$valor = ($autoriza_vehiculo_text === 'si') ? 'si' : 'no';
+
+		$var1 = "UPDATE 04vehiculoevento SET AUTORIZADO_VEHICULOSEVE = '".$conn->real_escape_string($valor)."' WHERE id = ".$idVehiculo." LIMIT 1";
+
+		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+
+		return "Actualizado";
+
+	}else{
+
+		echo "TU SESIÓN HA TERMINADO";	
+
+	}
+
+}
 	
 public function Listado_VEHICULOSEVE(){
 	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
 	
 	$conn = $this->db();
+	$this->asegurar_columna_autorizado_vehiculo();
+
 	$variablequery = "select * from 04vehiculoevento WHERE idRelacion = '".$session."' order by id desc ";
 	return $arrayquery = mysqli_query($conn,$variablequery);
 }	

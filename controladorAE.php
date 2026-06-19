@@ -2600,19 +2600,25 @@ if($hCONTRATO == 'hCONTRATO' or $enviarCONTRATO=='enviarCONTRATO'){
 
 
 
+$autoriza_vehiculo_id= isset($_POST["autoriza_vehiculo_id"])?$_POST["autoriza_vehiculo_id"]:"";
+
+$autoriza_vehiculo_text= isset($_POST["autoriza_vehiculo_text"])?$_POST["autoriza_vehiculo_text"]:"";
+
+
+
+if($autoriza_vehiculo_id!='' and ($autoriza_vehiculo_text=='si' or $autoriza_vehiculo_text=='no') ){
+
+echo $altaeventos->actualiza_autorizado_vehiculo($autoriza_vehiculo_id , $autoriza_vehiculo_text);
+
+}
+
+
 
 
 
 if($HVEHICULOSEVE == 'HVEHICULOSEVE' or $enviarVEHICULOSEVE=='enviarVEHICULOSEVE'){
 	
- 	/*	if( $_FILES["VEHICULOSEVE_FOTO"] == true){
-	$VEHICULOSEVE_FOTO = $conexion->solocargar("VEHICULOSEVE_FOTO");
-	}if($VEHICULOSEVE_FOTO=='2' or $VEHICULOSEVE_FOTO=='' or $VEHICULOSEVE_FOTO=='1'){
-	$VEHICULOSEVE_FOTO1 = "";	
-	}else{
-	$VEHICULOSEVE_FOTO1 = $VEHICULOSEVE_FOTO;
-	//VEHICULOSEVE_FOTO
-}*/
+
 $VEHICULOSEVE_VEHICULO = isset($_POST["VEHICULOSEVE_VEHICULO"])?(int)$_POST["VEHICULOSEVE_VEHICULO"]:"";
 $VEHICULOSEVE_CANTIDAD = isset($_POST["VEHICULOSEVE_CANTIDAD"])?$_POST["VEHICULOSEVE_CANTIDAD"]:"";
 $VEHICULOSEVE_ENTREGA = isset($_POST["VEHICULOSEVE_ENTREGA"])?$_POST["VEHICULOSEVE_ENTREGA"]:"";
