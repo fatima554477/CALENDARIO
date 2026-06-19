@@ -401,6 +401,8 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <tbody= 'font-style:italic;'>
 <table class="table table-striped table-bordered" style="width:100%" id='reset_VEHICULOSEVE' name='reset_VEHICULOSEVE'>
 <tr style='background:#f5f9fc;text-align:center'>
+<th width="3%" style="background:#c9e8e8">☀</th>
+
 <th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th> 
  <?php if($puedeVerAutorizadoVehiculo){ ?>
 <th width="10%"style="background:#c9e8e8">AUTORIZADO</th>
@@ -440,6 +442,10 @@ while($row = mysqli_fetch_array($querycontras))
 
 <tr style='background:#f5f9fc;text-align:center'>
 <td style="text-align:center" >
+<input type="checkbox" style="width:14px;height:14px;cursor:pointer;" class="form-check-input iluminar-fila-vehiculo" data-id="<?php echo $row["id"]; ?>" title="Iluminar fila"/> </td>
+
+<td style="text-align:center" >
+
 <input type="checkbox" style="width:15%" class="form-check-input" name="VEHICULOSEVE[]" id="VEHICULOSEVE" value="<?php echo $row["id"]; ?>"/> </td>
 <?php if($puedeVerAutorizadoVehiculo){ ?>
 <td style="text-align:center" >
@@ -591,7 +597,60 @@ $(document).ready(function(){
 
     mostrarFechasOcupadasVehiculo();
 
+   restaurarFilasIluminadasVehiculo();
+
+
+
 });
+
+
+
+$(document).on('change', '.iluminar-fila-vehiculo', function(){
+
+    var fila = this.closest('tr');
+
+    var id = $(this).data('id');
+
+
+
+    if(this.checked){
+
+        fila.style.backgroundColor = '#fff3cd';
+
+        localStorage.setItem('iluminar_fila_vehiculo_' + id, 'checked');
+
+    }else{
+
+        fila.style.backgroundColor = '#f5f9fc';
+
+        localStorage.removeItem('iluminar_fila_vehiculo_' + id);
+
+    }
+
+});
+
+
+
+function restaurarFilasIluminadasVehiculo(){
+
+    $('.iluminar-fila-vehiculo').each(function(){
+
+        var id = $(this).data('id');
+
+
+
+        if(localStorage.getItem('iluminar_fila_vehiculo_' + id) === 'checked'){
+
+            this.checked = true;
+
+            this.closest('tr').style.backgroundColor = '#fff3cd';
+
+        }
+
+    });
+
+}
+
 function actualizarFechasOcupadasSelect(){
     $.ajax({
         url: 'calendariodeeventos2/controladorAE.php',
