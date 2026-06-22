@@ -489,8 +489,7 @@ echo $sql="SELECT $campos , 07COMPROBACION.id as 07COMPROBACIONid FROM $tables L
 		return $this->counter;
 	}
 	
-	
-	       /**
+	        /**
          * Obtiene los números de evento para los que un colaborador puede
          * autorizar operaciones de ventas.
          *
@@ -600,5 +599,13 @@ echo $sql="SELECT $campos , 07COMPROBACION.id as 07COMPROBACIONid FROM $tables L
 
                 return false;
         }
+	
+	
+	
+	
+	
+	
+	
+	
 }
 ?>

@@ -254,6 +254,13 @@ $per_page=intval($_POST["per_page"]);
 
 <th style="background:#c9e8e8">AUDITORÍA</th>
 <th style="background:#c9e8e8">CONTABILIDAD</th>
+<?php if ($database->variablespermisos('', 'rechazo_pagoCOMcale', 'ver') == 'si') { ?>
+<th style="background:#c9e8e8">RECHAZADO</th>
+<?php } ?>
+
+
+
+
 <?php 
 if($database->plantilla_filtro($nombreTabla,"FECHA_DE_LLENADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA DE LLENADO</th>
 <?php } ?>
@@ -597,7 +604,10 @@ if($database->plantilla_filtro($nombreTabla,"total",$altaeventos,$DEPARTAMENTO)=
 <td style="background:#c9e8e8"></td>
 <td style="background:#c9e8e8"></td>
 <td style="background:#c9e8e8"></td>
-<?php /*inicia copiar y pegar iniciaA4*/ ?>
+<?php if ($database->variablespermisos('', 'rechazo_pagoCOMcale', 'ver') == 'si') { ?>
+<td style="background:#c9e8e8"></td>
+<?php } ?>
+
 
 <!--<hr/><H1>HTML FILTRO E INPUT .PHP A4</H1><BR/>-->
 <?php  
@@ -1050,163 +1060,112 @@ else {
     $fondo_existe_xml = "";
     $fondo_existe_xml2 = "";
 }
+
+    /* =====================================================
+       PREFIJO _COM2 APLICADO A TODOS LOS IDs DE FILA
+       para evitar conflicto con el otro filtro en la página
+       ===================================================== */
+    $rowID = $row['07COMPROBACIONid'];
 ?>
 <tr <?php echo $fondo_existe_xml2; ?>>
 <td>
     <input type="checkbox" 
-           class="checkbox"
-           data-id="<?php echo $row['07COMPROBACIONid']; ?>" 
+           class="checkbox_COM2"
+           data-id="<?php echo $rowID; ?>" 
            style="transform: scale(1.1); cursor: pointer;" 
            onchange="
                const fila = this.closest('tr');
                const id = this.getAttribute('data-id');
                if (this.checked) {
-                    fila.style.filter = 'brightness(65%) sepia(100%) saturate(200%) hue-rotate(0deg)';
-                   localStorage.setItem('checkbox_' + id, 'checked');
+                   fila.style.filter = 'brightness(65%) sepia(100%) saturate(200%) hue-rotate(0deg)';
+                   localStorage.setItem('checkbox_COM2_' + id, 'checked');
                } else {
                    fila.style.filter = 'none';
-                   localStorage.removeItem('checkbox_' + id);
+                   localStorage.removeItem('checkbox_COM2_' + id);
                }">
 </td>
-    <td <?php echo $fondo_existe_xml; ?>>
-        <?php echo $row['07COMPROBACIONid']; $colspan += 1; ?>
-    </td>
+<td <?php echo $fondo_existe_xml; ?>><?php echo $rowID; $colspan += 1; ?></td>
 
-		<?php
+<?php
+/* ---- Documentos adjuntos (sin cambios en lógica) ---- */
+$ADJUNTAR_FACTURA_PDF=''; $ADJUNTAR_FACTURA_XML=''; $ADJUNTAR_COTIZACION=''; $CONPROBANTE_TRANSFERENCIA='';
+$ADJUNTAR_ARCHIVO_1=''; $COMPLEMENTOS_PAGO_PDF=''; $COMPLEMENTOS_PAGO_XML=''; $CANCELACIONES_PDF='';
+$CANCELACIONES_XML=''; $ADJUNTAR_FACTURA_DE_COMISION_PDF=''; $ADJUNTAR_FACTURA_DE_COMISION_XML='';
+$CALCULO_DE_COMISION=''; $COMPROBANTE_DE_DEVOLUCION=''; $NOTA_DE_CREDITO_COMPRA=''; $FOTO_ESTADO_PROVEE11='';
 
-
-$ADJUNTAR_FACTURA_PDF = '';$ADJUNTAR_FACTURA_XML='';$ADJUNTAR_COTIZACION='';$CONPROBANTE_TRANSFERENCIA='';$ADJUNTAR_ARCHIVO_1='';$COMPLEMENTOS_PAGO_PDF='';
-   $COMPLEMENTOS_PAGO_XML='';$CANCELACIONES_PDF='';$CANCELACIONES_XML='';$ADJUNTAR_FACTURA_DE_COMISION_PDF='';$ADJUNTAR_FACTURA_DE_COMISION_XML='';$CALCULO_DE_COMISION='';
-   $COMPROBANTE_DE_DEVOLUCION='';  $NOTA_DE_CREDITO_COMPRA='';$FOTO_ESTADO_PROVEE11='';$ADJUNTAR_ARCHIVO_1=''; 
-	$ADJUNTAR_FACTURA_PDF = '';$ADJUNTAR_FACTURA_XML='';$ADJUNTAR_COTIZACION='';$CONPROBANTE_TRANSFERENCIA='';$ADJUNTAR_ARCHIVO_1='';
-	$querycontrasDOCTOS = $database->Listado_subefacturaDOCTOS($row['07COMPROBACIONid']);
-	while($rowDOCTOS = mysqli_fetch_array($querycontrasDOCTOS))
-	{
-        
-		if($rowDOCTOS["ADJUNTAR_FACTURA_PDF"]!=''){
-			$ADJUNTAR_FACTURA_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_PDF"].'" target ="_blank">Ver!</a><br/>';
-		}
-		
-		if($rowDOCTOS["ADJUNTAR_FACTURA_XML"]!=''){
-			$ADJUNTAR_FACTURA_XML .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_XML"].'" target ="_blank">Ver!</a><br/>';
-		}
-		if($rowDOCTOS["ADJUNTAR_COTIZACION"]!=''){
-			$ADJUNTAR_COTIZACION .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_COTIZACION"].'" target ="_blank">Ver!</a><br/>';
-		}
-		if($rowDOCTOS["CONPROBANTE_TRANSFERENCIA"]!=''){
-			$CONPROBANTE_TRANSFERENCIA .= '<a href="includes/archivos/'.$rowDOCTOS["CONPROBANTE_TRANSFERENCIA"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["COMPLEMENTOS_PAGO_PDF"]!=''){
-			$COMPLEMENTOS_PAGO_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["COMPLEMENTOS_PAGO_PDF"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["COMPLEMENTOS_PAGO_XML"]!=''){
-			$COMPLEMENTOS_PAGO_XML .= '<a href="includes/archivos/'.$rowDOCTOS["COMPLEMENTOS_PAGO_XML"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["CANCELACIONES_PDF"]!=''){
-			$CANCELACIONES_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["CANCELACIONES_PDF"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["CANCELACIONES_XML"]!=''){
-			$CANCELACIONES_XML .= '<a href="includes/archivos/'.$rowDOCTOS["CANCELACIONES_XML"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_PDF"]!=''){
-			$ADJUNTAR_FACTURA_DE_COMISION_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_PDF"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_XML"]!=''){
-			$ADJUNTAR_FACTURA_DE_COMISION_XML .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_XML"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["CALCULO_DE_COMISION"]!=''){
-			$CALCULO_DE_COMISION .= '<a href="includes/archivos/'.$rowDOCTOS["CALCULO_DE_COMISION"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["COMPROBANTE_DE_DEVOLUCION"]!=''){
-			$COMPROBANTE_DE_DEVOLUCION .= '<a href="includes/archivos/'.$rowDOCTOS["COMPROBANTE_DE_DEVOLUCION"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["NOTA_DE_CREDITO_COMPRA"]!=''){
-			$NOTA_DE_CREDITO_COMPRA .= '<a href="includes/archivos/'.$rowDOCTOS["NOTA_DE_CREDITO_COMPRA"].'" target ="_blank">Ver!</a><br/>';
-		}
-      if($rowDOCTOS["FOTO_ESTADO_PROVEE11"]!=''){
-			$FOTO_ESTADO_PROVEE11 .= '<a href="includes/archivos/'.$rowDOCTOS["11"].'" target ="_blank">Ver!</a><br/>';
-		}
-	
-		if($rowDOCTOS["ADJUNTAR_ARCHIVO_1"]!=''){
-			$ADJUNTAR_ARCHIVO_1 .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_ARCHIVO_1"].'" target ="_blank">Ver!</a><br/>';
-		}
-
-
-
-	}
-	
-	?>
-
-
-
-<td style="text-align:center; background:#ceffcc">
-
-<input type="checkbox" style="width:30PX;" checked="checked" disabled = "disabled" class="form-check-input" id="STATUS_RESPONSABLE_EVENTO<?php echo $row["07COMPROBACIONid"]; ?>"  name="STATUS_RESPONSABLE_EVENTO<?php echo $row["07COMPROBACIONid"]; ?>" value="<?php echo $row["07COMPROBACIONid"]; ?>" onclick="STATUS_RESPONSABLE_EVENTO(<?php echo $row["07COMPROBACIONid"]; ?>)" <?php if($row["STATUS_RESPONSABLE_EVENTO"]=='si'){
-	echo "checked";
+$querycontrasDOCTOS = $database->Listado_subefacturaDOCTOS($rowID);
+while($rowDOCTOS = mysqli_fetch_array($querycontrasDOCTOS)) {
+    if($rowDOCTOS["ADJUNTAR_FACTURA_PDF"]!='') $ADJUNTAR_FACTURA_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_PDF"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["ADJUNTAR_FACTURA_XML"]!='') $ADJUNTAR_FACTURA_XML .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_XML"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["ADJUNTAR_COTIZACION"]!='') $ADJUNTAR_COTIZACION .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_COTIZACION"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["CONPROBANTE_TRANSFERENCIA"]!='') $CONPROBANTE_TRANSFERENCIA .= '<a href="includes/archivos/'.$rowDOCTOS["CONPROBANTE_TRANSFERENCIA"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["COMPLEMENTOS_PAGO_PDF"]!='') $COMPLEMENTOS_PAGO_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["COMPLEMENTOS_PAGO_PDF"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["COMPLEMENTOS_PAGO_XML"]!='') $COMPLEMENTOS_PAGO_XML .= '<a href="includes/archivos/'.$rowDOCTOS["COMPLEMENTOS_PAGO_XML"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["CANCELACIONES_PDF"]!='') $CANCELACIONES_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["CANCELACIONES_PDF"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["CANCELACIONES_XML"]!='') $CANCELACIONES_XML .= '<a href="includes/archivos/'.$rowDOCTOS["CANCELACIONES_XML"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_PDF"]!='') $ADJUNTAR_FACTURA_DE_COMISION_PDF .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_PDF"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_XML"]!='') $ADJUNTAR_FACTURA_DE_COMISION_XML .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_FACTURA_DE_COMISION_XML"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["CALCULO_DE_COMISION"]!='') $CALCULO_DE_COMISION .= '<a href="includes/archivos/'.$rowDOCTOS["CALCULO_DE_COMISION"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["COMPROBANTE_DE_DEVOLUCION"]!='') $COMPROBANTE_DE_DEVOLUCION .= '<a href="includes/archivos/'.$rowDOCTOS["COMPROBANTE_DE_DEVOLUCION"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["NOTA_DE_CREDITO_COMPRA"]!='') $NOTA_DE_CREDITO_COMPRA .= '<a href="includes/archivos/'.$rowDOCTOS["NOTA_DE_CREDITO_COMPRA"].'" target="_blank">Ver!</a><br/>';
+    if($rowDOCTOS["ADJUNTAR_ARCHIVO_1"]!='') $ADJUNTAR_ARCHIVO_1 .= '<a href="includes/archivos/'.$rowDOCTOS["ADJUNTAR_ARCHIVO_1"].'" target="_blank">Ver!</a><br/>';
 }
-$colspan += 1; ?>/>
+?>
+
+
+
+<!-- SOLICITANTE -->
+<td style="text-align:center; background:#ceffcc">
+<input type="checkbox" style="width:30PX;" checked="checked" disabled="disabled" class="form-check-input"
+    id="STATUS_RESPONSABLE_EVENTO_COM2_<?php echo $rowID; ?>"
+    name="STATUS_RESPONSABLE_EVENTO_COM2_<?php echo $rowID; ?>"
+    value="<?php echo $rowID; ?>"
+    onclick="STATUS_RESPONSABLE_EVENTO_COM2(<?php echo $rowID; ?>)"
+    <?php if($row["STATUS_RESPONSABLE_EVENTO"]=='si') echo "checked"; $colspan += 1; ?>/>
 </td>
 
-<td style="text-align:center; background:<?php echo ($row["STATUS_VENTAS"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;" 
-    id="color_VENTAS<?php echo $row["07COMPROBACIONid"]; ?>" >
-
+<!-- VENTAS Y OPERACIONES -->
+<td style="text-align:center; background:<?php echo ($row["STATUS_VENTAS"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;"
+    id="color_VENTAS_COM2_<?php echo $rowID; ?>">
     <input type="checkbox"
         style="width:30px;"
         class="form-check-input"
-        id="STATUS_VENTAS<?php echo $row["07COMPROBACIONid"]; ?>"
-        name="STATUS_VENTAS<?php echo $row["07COMPROBACIONid"]; ?>"
-        value="<?php echo $row["07COMPROBACIONid"]; ?>"
-        onclick="STATUS_VENTAS(<?php echo $row["07COMPROBACIONid"]; ?>)"
-       <?php
+        id="STATUS_VENTAS_COM2_<?php echo $rowID; ?>"
+        name="STATUS_VENTAS_COM2_<?php echo $rowID; ?>"
+        value="<?php echo $rowID; ?>"
+        onclick="STATUS_VENTAS_COM2(<?php echo $rowID; ?>)"
+        <?php
             $atributosVentas = [];
-            if ($row["STATUS_VENTAS"] == 'si') {
-                $atributosVentas[] = 'checked';
-            }
-
+            if ($row["STATUS_VENTAS"] == 'si') $atributosVentas[] = 'checked';
             $numeroEventoRegistro = isset($row["NUMERO_EVENTO"]) ? strtoupper(trim((string) $row["NUMERO_EVENTO"])) : '';
             $tienePermisoVenta = $numeroEventoRegistro !== '' && isset($eventosAutorizadosVentas[$numeroEventoRegistro]);
-
-            if (!$tienePermisoVenta) {
-                $atributosVentas[] = 'disabled';
-            }
-
+            if (!$tienePermisoVenta) $atributosVentas[] = 'disabled';
             echo implode(' ', $atributosVentas);
         ?>
     />
     <?php $colspan += 1; ?>
-
 </td>
 
-
-
-
-
-<td style="text-align:center; background:
-
-    <?php echo ($row["STATUS_FINANZAS"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;" 
-    id="color_FINANZAS<?php echo $row["07COMPROBACIONid"]; ?>">
-
-    <input type="checkbox" 
-        style="width:30px;" 
-        class="form-check-input" 
-        id="STATUS_FINANZAS<?php echo $row["07COMPROBACIONid"]; ?>"  
-        name="STATUS_FINANZAS<?php echo $row["07COMPROBACIONid"]; ?>" 
-        value="<?php echo $row["07COMPROBACIONid"]; ?>"
-       <?php
+<!-- DIRECCIÓN -->
+<td style="text-align:center; background:<?php echo ($row["STATUS_FINANZAS"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;"
+    id="color_FINANZAS_COM2_<?php echo $rowID; ?>">
+    <input type="checkbox"
+        style="width:30px;"
+        class="form-check-input"
+        id="STATUS_FINANZAS_COM2_<?php echo $rowID; ?>"
+        name="STATUS_FINANZAS_COM2_<?php echo $rowID; ?>"
+        value="<?php echo $rowID; ?>"
+        <?php
         $permisoVerFINANZAS       = $database->variablespermisos('', 'DIRECCIONCOM2', 'ver') == 'si';
         $permisoModificarFINANZAS = $database->variablespermisos('', 'DIRECCIONCOM2', 'modificar') == 'si';
-
         if ($row["STATUS_FINANZAS"] == 'si') {
-            // Ya autorizado → marcado y bloqueado salvo que exista permiso de modificación
             echo $permisoModificarFINANZAS
-                ? 'checked onclick="STATUS_FINANZAS('.$row["07COMPROBACIONid"].')"'
+                ? 'checked onclick="STATUS_FINANZAS_COM2('.$rowID.')"'
                 : 'checked disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
         } else {
-            // Validar permiso antes de habilitar
             if($permisoVerFINANZAS){
-                echo 'onclick="STATUS_FINANZAS('.$row["07COMPROBACIONid"].')"';
+                echo 'onclick="STATUS_FINANZAS_COM2('.$rowID.')"';
             } else {
-                // Sin permiso → deshabilitado y con aviso
                 echo 'disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
             }
         }
@@ -1215,76 +1174,123 @@ $colspan += 1; ?>/>
     <?php $colspan += 1; ?>
 </td>
 
-
-<td style="text-align:center; background:
-    <?php echo ($row["STATUS_AUDITORIA2"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;" 
-    id="color_AUDITORIA2<?php echo $row["07COMPROBACIONid"]; ?>">
-
+<!-- AUDITORÍA -->
+<td style="text-align:center; background:<?php echo ($row["STATUS_AUDITORIA2"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;"
+    id="color_AUDITORIA2_COM2_<?php echo $rowID; ?>">
     <input type="checkbox"
         style="width:30px; cursor:pointer;"
         class="form-check-input"
-        id="STATUS_AUDITORIA2<?php echo $row["07COMPROBACIONid"]; ?>"
-        name="STATUS_AUDITORIA2<?php echo $row["07COMPROBACIONid"]; ?>"
-        value="<?php echo $row["07COMPROBACIONid"]; ?>"
+        id="STATUS_AUDITORIA2_COM2_<?php echo $rowID; ?>"
+        name="STATUS_AUDITORIA2_COM2_<?php echo $rowID; ?>"
+        value="<?php echo $rowID; ?>"
         <?php
         $permisoVerAUDITORIA2       = $database->variablespermisos('', 'AUDITORIACOM2', 'ver') == 'si';
         $permisoModificarAUDITORIA2 = $database->variablespermisos('', 'AUDITORIACOM2', 'modificar') == 'si';
-
         if ($row["STATUS_AUDITORIA2"] == 'si') {
-            // Ya autorizado → marcado y bloqueado salvo permiso de modificación
             echo $permisoModificarAUDITORIA2
-                ? 'checked onclick="STATUS_AUDITORIA2('.$row["07COMPROBACIONid"].')"'
+                ? 'checked onclick="STATUS_AUDITORIA2_COM2('.$rowID.')"'
                 : 'checked disabled style="cursor:not-allowed;" title="Ya autorizado"';
         } else {
             if($permisoVerAUDITORIA2){
-                // Permitir acción → al marcar se llama a tu función y se bloquea el checkbox
-                echo 'onclick="STATUS_AUDITORIA2('.$row["07COMPROBACIONid"].'); this.disabled=true; this.style.cursor=\'not-allowed\';"';
+                echo 'onclick="STATUS_AUDITORIA2_COM2('.$rowID.'); this.disabled=true; this.style.cursor=\'not-allowed\';"';
             } else {
-                // Sin permiso → bloqueado
                 echo 'disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
             }
         }
         ?>
     />
     <?php $colspan += 1; ?>
-
 </td>
 
+<!-- CONTABILIDAD -->
+<td style="text-align:center; background:<?php echo ($row["STATUS_AUDITORIA3"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;"
+    id="color_AUDITORIA3_COM2_<?php echo $rowID; ?>">
+    <input type="checkbox"
+        style="width:30px; cursor:pointer;"
+        class="form-check-input"
+        id="STATUS_AUDITORIA3_COM2_<?php echo $rowID; ?>"
+        name="STATUS_AUDITORIA3_COM2_<?php echo $rowID; ?>"
+        value="<?php echo $rowID; ?>"
+        <?php
+        $permisoVerAUDITORIA3       = $database->variablespermisos('', 'CONTABILIDADCOM2', 'ver') == 'si';
+        $permisoModificarAUDITORIA3 = $database->variablespermisos('', 'CONTABILIDADCOM2', 'modificar') == 'si';
+        if ($row["STATUS_AUDITORIA3"] == 'si') {
+            echo $permisoModificarAUDITORIA3
+                ? 'checked onclick="STATUS_AUDITORIA3_COM2('.$rowID.')"'
+                : 'checked disabled style="cursor:not-allowed;" title="Ya autorizado"';
+        } else {
+            if($permisoVerAUDITORIA3){
+                echo 'onclick="STATUS_AUDITORIA3_COM2('.$rowID.'); this.disabled=true; this.style.cursor=\'not-allowed\';"';
+            } else {
+                echo 'disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
+            }
+        }
+        ?>
+    />
+    <?php $colspan += 1; ?>
+</td>
 
+<!-- RECHAZADO -->
+<?php if ($database->variablespermisos('', 'rechazo_pagoCOM2', 'ver') == 'si') { ?>
+<td style="text-align:center; background:<?php 
+    $statusRechazado = isset($row["STATUS_RECHAZADO"]) ? $row["STATUS_RECHAZADO"] : 'no';
+    echo ($statusRechazado == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;"
+    id="color_RECHAZADO_COM2_<?php echo $rowID; ?>">
 
-<td style="text-align:center; background:
-    <?php echo ($row["STATUS_AUDITORIA3"] == 'si') ? '#ceffcc' : '#e9d8ee'; ?>;" 
-    id="color_AUDITORIA2<?php echo $row["07COMPROBACIONid"]; ?>">
+    <?php
+    $motivoRechazo = $database->obtener_motivo_rechazo($rowID);
+    $statusVentasAutorizado = isset($row["STATUS_VENTAS"]) && $row["STATUS_VENTAS"] == 'si';
+    $mostrarAgregarRechazo = ($statusRechazado == 'si' && $motivoRechazo == '');
+    $mostrarVerRechazo = ($statusRechazado == 'si' && $motivoRechazo != '');
+    $permisoguardarRechazo   = $database->variablespermisos('', 'rechazo_pagoCOM2', 'guardar') == 'si';
+    $permisomodificarRechazo = $database->variablespermisos('', 'rechazo_pagoCOM2', 'modificar') == 'si';
+    ?>
+
+    <input type="hidden" id="motivo_rechazo_COM2_<?php echo $rowID; ?>" value="<?php echo htmlspecialchars($motivoRechazo, ENT_QUOTES, 'UTF-8'); ?>" />
 
     <input type="checkbox"
         style="width:30px; cursor:pointer;"
         class="form-check-input"
-        id="STATUS_AUDITORIA3<?php echo $row["07COMPROBACIONid"]; ?>"
-        name="STATUS_AUDITORIA3<?php echo $row["07COMPROBACIONid"]; ?>"
-        value="<?php echo $row["07COMPROBACIONid"]; ?>"
+        id="STATUS_RECHAZADO_COM2_<?php echo $rowID; ?>"
+        name="STATUS_RECHAZADO_COM2_<?php echo $rowID; ?>"
+        value="<?php echo $rowID; ?>"
         <?php
-        $permisoVerAUDITORIA3       = $database->variablespermisos('', 'CONTABILIDADCOM2', 'ver') == 'si';
-        $permisoModificarAUDITORIA3 = $database->variablespermisos('', 'CONTABILIDADCOM2', 'modificar') == 'si';
-
-        if ($row["STATUS_AUDITORIA3"] == 'si') {
-            // Ya autorizado → marcado y bloqueado salvo permiso de modificación
-            echo $permisoModificarAUDITORIA3
-                ? 'checked onclick="STATUS_AUDITORIA3('.$row["07COMPROBACIONid"].')"'
-                : 'checked disabled style="cursor:not-allowed;" title="Ya autorizado"';
-        } else {
-            if($permisoVerAUDITORIA3){
-                // Permitir acción → al marcar se llama a tu función y se bloquea el checkbox
-                echo 'onclick="STATUS_AUDITORIA3('.$row["07COMPROBACIONid"].'); this.disabled=true; this.style.cursor=\'not-allowed\';"';
+        if ($statusRechazado == 'si') {
+            if($permisomodificarRechazo){
+                echo 'checked onclick="STATUS_RECHAZADO_COM2('.$rowID.')" title="Pago rechazado"';
             } else {
-                // Sin permiso → bloqueado
+                echo 'checked disabled style="cursor:not-allowed;" title="Pago rechazado"';
+            }
+        } elseif ($statusVentasAutorizado) {
+            echo 'disabled style="cursor:not-allowed;" title="No se puede rechazar: autorizado por ventas"';
+        } else {
+            if($permisoguardarRechazo || $permisomodificarRechazo){
+                echo 'onclick="STATUS_RECHAZADO_COM2('.$rowID.')"';
+            } else {
                 echo 'disabled style="cursor:not-allowed;" title="Sin permiso para modificar"';
             }
         }
         ?>
     />
-    <?php $colspan += 1; ?>
 
+    <?php if($permisoguardarRechazo || $permisomodificarRechazo){ ?>
+    <button type="button" title="agregar!"
+        id="agregar_rechazo_COM2_<?php echo $rowID; ?>"
+        data-rechazo-id="<?php echo $rowID; ?>"
+        style="border:none;background:transparent;cursor:pointer;color:#007bff;font-size:14px;<?php echo $mostrarAgregarRechazo ? '' : 'display:none;'; ?>"
+        onclick="abrirFormularioRechazo_COM2(<?php echo $rowID; ?>)">agregar <br>motivo</button>
+    <?php } ?>
+
+    <button type="button" title="Ver motivo"
+        id="ver_rechazo_COM2_<?php echo $rowID; ?>"
+        data-rechazo-id="<?php echo $rowID; ?>"
+        style="border:none;background:transparent;cursor:pointer;color:#28a745;font-size:16px;<?php echo $mostrarVerRechazo ? '' : 'display:none;'; ?>"
+        onclick="verMotivoRechazo_COM2(<?php echo $rowID; ?>)">ver</button>
+
+    <?php $colspan += 1; ?>
 </td>
+<?php } ?>
+
 
 
 <?php /*inicia copiar y pegar iniciaA5*/ ?>
@@ -1632,45 +1638,40 @@ $colspan2 += 1;
     <td style="text-align:center"><?php echo $row['fechaTimbrado']; $colspan2 += 1;?></td>
 <?php } ?>
 
-<?php  if($database->plantilla_filtro($nombreTabla,"SUBTOTAL",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
+<?php if($database->plantilla_filtro($nombreTabla,"SUBTOTAL",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
     <td style="text-align:center">$<?php 
 
+    $subTotal123      = isset($row['subTotal'])      ? $row['subTotal']      : '';
+    $MONTO_FACTURA123 = isset($row['MONTO_FACTURA']) ? $row['MONTO_FACTURA'] : '';
 
-$subTotal123 = isset($row['subTotal'])?$row['subTotal']:'' ;
-$MONTO_FACTURA123 = isset($row['MONTO_FACTURA'])?$row['MONTO_FACTURA']:'' ;
+    if ($subTotal123 > 0) {
+        $MONTO_FACTURAxm  = number_format($subTotal123, 2, '.', ',');
+        $MONTO_FACTURAxm2 = ($subTotal123);
+    } else {
+        $MONTO_FACTURAxm  = number_format($MONTO_FACTURA123, 2, '.', ',');
+        $MONTO_FACTURAxm2 = ($MONTO_FACTURA123);
+    }
 
-if ($subTotal123 > 0) {
-    $MONTO_FACTURAxm = number_format($subTotal123, 2, '.', ',');
-    $MONTO_FACTURAxm2 = ($subTotal123);
-  
-} ELSE{
+    // ✅ Definir si está rechazado
+    $esRechazadoCOM2 = (isset($row['STATUS_RECHAZADO']) && $row['STATUS_RECHAZADO'] == 'si');
 
-    $MONTO_FACTURAxm = number_format($MONTO_FACTURA123, 2, '.', ',');
-    $MONTO_FACTURAxm2 = ($MONTO_FACTURA123);
-} 
+    if (!$esRechazadoCOM2 && !empty(trim($row['UUID']))) {
+        $subTotalP += $MONTO_FACTURAxm2;
+    }
 
-if (
-    !empty(trim($row['UUID'])) 
-) {
-    $subTotalP += $MONTO_FACTURAxm2;
-}
+    if (!$esRechazadoCOM2 && $row['STATUS_CHECKBOX'] === 'si') {
+        $subTotalP2 += $MONTO_FACTURAxm2;
+    }
 
-// Si STATUS_CHECKBOX = "si" y VIATICOSOPRO está en la lista
-if (
-    $row['STATUS_CHECKBOX'] === 'si'
-) {
-    $subTotalP2 += $MONTO_FACTURAxm2;
-}
+    $subTotal12 += $MONTO_FACTURAxm2;
+    echo $MONTO_FACTURAxm;
+    $totales2 = 'si';
 
-$subTotal12 +=$MONTO_FACTURAxm2;
-echo $MONTO_FACTURAxm;
-	
-	
-	$totales2 = 'si';
-	
-	
-	?></td>
+    ?></td>
 <?php } ?>
+
+
+
 
 
 <?php  if($database->plantilla_filtro($nombreTabla,"propina",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
@@ -1688,12 +1689,15 @@ echo $MONTO_FACTURAxm;
 <?php } ?> 
 
 
-<?php  if($database->plantilla_filtro($nombreTabla,"Descuento",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
+<?php if($database->plantilla_filtro($nombreTabla,"Descuento",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
     <td style="text-align:center"><?php 
-	echo number_format($row['Descuento'],2,'.',',');
-	$Descuento12 += $row['Descuento'];
-	$totales2 = 'si';
-	 ?></td>
+    echo number_format($row['Descuento'], 2, '.', ',');
+    // ✅ Solo acumular descuento si NO está rechazado
+    if (!isset($esRechazadoCOM2) || !$esRechazadoCOM2) {
+        $Descuento12 += $row['Descuento'];
+    }
+    $totales2 = 'si';
+    ?></td>
 <?php } ?>
 
 <?php  if($database->plantilla_filtro($nombreTabla,"TOTAL_IMPUESTOS_TRASLADADOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
@@ -1748,60 +1752,49 @@ $totales2 = 'si';
 	?></td>
 
 
- 
 <td style="text-align:center">
 <?php 
-    // Verificar si STATUS_CHECKBOX es "no" o null, y si UUID está vacío
-    if (($row['STATUS_CHECKBOX'] === 'no' || $row['STATUS_CHECKBOX'] === null) && strlen(trim($row['UUID'])) < 1) {
+    if (
+        !$esRechazadoCOM2 &&
+        ($row['STATUS_CHECKBOX'] === 'no' || $row['STATUS_CHECKBOX'] === null) && 
+        strlen(trim($row['UUID'])) < 1
+    ) {
         $valorCalculado = $porfalta2 * 1.46;
-        echo number_format($valorCalculado, 2, '.', ',');
+        echo number_format($valorCalculado, 2, '.', ',');    
         $PorfaltaDeFactura12 += $valorCalculado;
         $totales2 = 'si'; 
     }
 ?>
 
-</td>
-<?php if($database->variablespermisos('','PAGOS_BOTONQUITAR','ver')=='si'){ ?>		
-<td style="text-align:center; background:<?php 
-    // Verificar si hay UUID
+<!-- SIN 46% -->
+<?php if($database->variablespermisos('','sincuarenta','ver')=='si'){ ?>
+<td style="text-align:center; background:<?php
     if(strlen($row['UUID']) < 1) {
-        // Aplicar color según estado del checkbox solo si no hay UUID
-        if($row["STATUS_CHECKBOX"]=='si') { 
-            echo '#ceffcc'; 
-        } else { 
-            echo '#e9d8ee'; 
-        }
-    } else {
-        // Fondo cuando hay UUID (sin checkbox)
-        echo '#f0f0f0'; // Color gris claro
-    }
-?>" id="color_CHECKBOX<?php echo $row["07COMPROBACIONid"]; ?>">
-
-<?php 
-// Verificar permiso de modificación
-$permiso_modificar = $database->variablespermisos('','PAGOS_BOTONQUITAR','modificar') == 'si';
-$disabled = ($row["STATUS_CHECKBOX"] == 'si' && !$permiso_modificar) ? 'disabled' : '';
-
-// Mostrar checkbox solo si no hay UUID
-if(strlen($row['UUID']) < 1): ?>
-    <input type="checkbox" style="width:30PX;" class="form-check-input" 
-        id="STATUS_CHECKBOX2<?php echo $row["07COMPROBACIONid"]; ?>"  
-        name="STATUS_CHECKBOX<?php echo $row["07COMPROBACIONid"]; ?>"    
-        value="<?php echo $row["07COMPROBACIONid"]; ?>" 
-        onclick="STATUS_CHECKBOX2(<?php echo $row['07COMPROBACIONid']; ?>, <?php echo $permiso_modificar ? 'true' : 'false'; ?>)" 
-        <?php if($row["STATUS_CHECKBOX"]=='si') echo "checked"; ?>
-        <?php echo $disabled; ?>
-    />
-<?php else: ?>
-    <!-- Mostrar este texto cuando hay UUID -->
-    <span style="color:#999;">CON XML </span>
-<?php endif; ?>
-
-<?php $colspan += 1; ?>
+        echo ($row["STATUS_CHECKBOX"]=='si') ? '#ceffcc' : '#e9d8ee';
+    } else { echo '#f0f0f0'; }
+?>" id="color_CHECKBOX_COM2_<?php echo $rowID; ?>">
+    <span id="buscanumero_COM2_<?php echo $rowID; ?>">
+        <?php if(strlen($row['UUID']) < 1): ?>
+        <?php
+            $permiso_modificar = $database->variablespermisos('','sincuarenta','modificar') == 'si';
+            $disabled = ($row["STATUS_CHECKBOX"] == 'si' && !$permiso_modificar) ? 'disabled' : '';
+        ?>
+        <input type="checkbox" style="width:30PX;" class="form-check-input"
+            id="STATUS_CHECKBOX_COM2_<?php echo $rowID; ?>"
+            name="STATUS_CHECKBOX_COM2_<?php echo $rowID; ?>"
+            value="<?php echo $rowID; ?>"
+            onclick="STATUS_CHECKBOX_COM2(<?php echo $rowID; ?>, <?php echo $permiso_modificar ? 'true' : 'false'; ?>)"
+            <?php if($row["STATUS_CHECKBOX"]=='si') echo "checked"; ?>
+            <?php echo $disabled; ?>
+        />
+        <?php else: ?>
+            <span style="color:#999;">CON XML </span>
+        <?php endif; ?>
+    </span>
 </td>
 <?php } ?>
-
 <td>
+<div id="ajax-notification-COM2" style="position:fixed; top:20px; right:20px; padding:15px; background:#4CAF50; color:white; border-radius:5px; display:none; z-index:1000;"></div>
 
 <?php if($database->variablespermisos('','PAGOS_EGRESOSCG','modificar')=='si'){ ?>
 <input type="button" name="view" value="MODIFICAR" id="<?php echo $row["07COMPROBACIONid"]; ?>" class="btn btn-info btn-xs view_dataPAGOPROVEEmodifica22" /><?php } ?>  
@@ -1858,7 +1851,7 @@ if ($UUID == '' && $database->variablespermisos('', 'SUBIRF_COMCALE', 'ver') == 
 <tr>
 
 <?php if($totales == 'si'){ ?>
-<td style="text-align:right; padding-right:45px;" colspan="<?php echo $colspan; ?>" ><strong style="font-size:16px">TOTALES</strong></td>
+<td style="text-align:right; padding-right:45px;" colspan="<?php echo $colspan +1; ?>" ><strong style="font-size:16px">TOTALES</strong></td>
 <?php } ?>
 
 
@@ -1929,9 +1922,26 @@ if ($UUID == '' && $database->variablespermisos('', 'SUBIRF_COMCALE', 'ver') == 
 <td style="text-align:center" ><strong style="font-size:16px" >$<?php echo number_format($TUA12,2,'.',','); ?></strong></td>
 
 <?php  if($database->plantilla_filtro($nombreTabla,"total",$altaeventos,$DEPARTAMENTO)=="si"){  ?>
-<td style="text-align:center" ><strong style="font-size:16px" >$<?php echo number_format($totalf12,2,'.',','); ?></strong></td>
+<td class="celda-total"  style="text-align:center" ><strong style="font-size:16px" >$<?php echo number_format($totalf12,2,'.',','); ?></strong></td>
 <?php } ?>
-
+<style>
+  .celda-total {
+      text-align: center;
+      background: #eef6ff;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a5276;
+      font-family: "Segoe UI", Arial, sans-serif;
+      transition: transform 0.2s ease;
+  }
+  .celda-total:hover {
+      transform: scale(1.05);
+      background: #d6eaff;
+  }
+</style>
 <td style="text-align:center" ><strong style="font-size:16px" >$<?php echo number_format($PorfaltaDeFactura12,2,'.',','); ?></strong></td>
 
 
