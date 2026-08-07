@@ -40,10 +40,10 @@ $_SESSION['idevento'] = $idevento;
     
     <!-- loader-->
 	  <link href="assets/css/pace.min.css" rel="stylesheet" />
-	  <script src="assets/js/pace.min.js"></script>
+	    <script defer src="assets/js/pace.min.js"></script>
 
-   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script type="text/javascript" src="calendariodeeventos/typeahead.js"></script>
+   <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script defer type="text/javascript" src="calendariodeeventos/typeahead.js"></script>
 	<style>
 	
 span.twitter-typeahead .tt-menu,
@@ -257,127 +257,162 @@ color:red;
 <?php
 
    /*require "calendariodeeventos2/expansores.php";*/
-   if($conexion->variablespermisos('','EVENTOS1','ver')=='si' ){
-   require "calendariodeeventos2/EVENTOS1.php";
+   $permisoVerCache = array();
+   $puedeVerModulo = function ($permiso) use ($conexion, &$permisoVerCache) {
+      if (!isset($permisoVerCache[$permiso])) {
+         $permisoVerCache[$permiso] = ($conexion->variablespermisos('', $permiso, 'ver') == 'si');
+      }
 
-  }
-     if($conexion->variablespermisos('','EVENTO_CONTRATO','ver')=='si' ){
-   require "calendariodeeventos2/CONTRATO.php";
+      return $permisoVerCache[$permiso];
+   };
 
-  }
-  
-     if($conexion->variablespermisos('','COTIZACION_CLIENTES','ver')=='si'){ 	 	 
-     require "calendariodeeventos2/COTIZACION_CLIENTES.php";
-}
-   if($conexion->variablespermisos('','COTIZACION_PRO','ver')=='si'){  	 	 
-     require "calendariodeeventos2/COTIZACION_PROVEEDORES.php";
-}	 
-	 
-if($conexion->variablespermisos('','COBROS_CLIENTE','ver')=='si'){ 
-   require "calendariodeeventos2/COBROS_CLIENTE.php";
-}
-   if($conexion->variablespermisos('','VEHIEVE','ver')=='si'){  
-  require "calendariodeeventos2/VEHICULOS.php"; 
-}
-  if($conexion->variablespermisos('','MATEEVE','ver')=='si'){ 
-  require "calendariodeeventos2/MATERIALYEQUIPO.php";
-}
-  if($conexion->variablespermisos('','PAPEEVE','ver')=='si'){ 
-  require "calendariodeeventos2/PAPELERIA.php";
-}
-  if($conexion->variablespermisos('','OFICINA','ver')=='si'){
-  require "calendariodeeventos2/EQUIPOOFICINA.php";
-  }
-   if($conexion->variablespermisos('','BOTIQUIN','ver')=='si'){
-  require "calendariodeeventos2/BOTIQUIN.php";
-  }
-  if($conexion->variablespermisos('','MENSAJERIA','ver')=='si'){
-  require "calendariodeeventos2/MENSAJERIA.php";
-  }
-    if($conexion->variablespermisos('','MENSAJERIA2','ver')=='si'){
-  require "calendariodeeventos2/fetch_page_mensajeria.php";
-  }
-  if($conexion->variablespermisos('','DOCUMENTO_NUEVO_CIERRE','ver')=='si'){
-   require "calendariodeeventos2/DOCUMENTO_NUEVO_CIERRE.php";
-  }
-  if($conexion->variablespermisos('','DOCUMENTO_CIERRE','ver')=='si'){
-   require "calendariodeeventos2/CIERRE.php";
-  }
-  if($conexion->variablespermisos('','FEE_COBRADO','ver')=='si'){
-   require "calendariodeeventos2/FEE_COBRADO.php";
-  }
-  if($conexion->variablespermisos('','PAGOS_INGRESOS22','ver')=='si'){
-   require "calendariodeeventos2/PAGOS_INGRESOS.php";
-  }
-  
-  if($conexion->variablespermisos('','OTROS_INGRESOS','ver')=='si'){
-   require "calendariodeeventos2/PAGOS_EGRESOS.php";
-  } 
-   if($conexion->variablespermisos('','PAGOS_EGRESOSBOTON','ver')=='si'  and $var_bloquea_fecha=='no'){
-   require "calendariodeeventos2/fetch_page_botton.php";
+   if($puedeVerModulo('EVENTOS1')){
+      require "calendariodeeventos2/EVENTOS1.php";
    }
-      if($conexion->variablespermisos('','PORCENTAJE','ver')=='si'){  
-     require "calendariodeeventos2/PORCENTAJEVENDEDOR.php";
-}
-    if($conexion->variablespermisos('','PAGOS_EGRESOSCG','ver')=='si'){
-	   require "calendariodeeventos2/fetch_page_nuevoCOM.php";	
-	}
-   if($conexion->variablespermisos('','PAGOS_EGRESOSPP','ver')=='si'){  
-    require "calendariodeeventos2/fetch_page_nuevo.php";	
-	}
-	 if($conexion->variablespermisos('','nuevotodos','ver')=='si'){
-	require "calendariodeeventos2/fetch_page_nuevotodospp.php";
-	}
-	require "calendariodeeventos2/class.epcinnTIKETSYAVION.php";
-    $pagoproveedores = new TIKETSYAVION();
-	if($conexion->variablespermisos('','PAGOS_BOLETOS_AVION','ver' )=='si' and $var_bloquea_fecha=='no'){
-    require "calendariodeeventos2/avion.php";
-	}
 
-	if($conexion->variablespermisos('','PAGOS_BOLETOS_AVIONFILTRO','ver')=='si'){	
-    require "calendariodeeventos2/fetch_page_nuevo_AVION.php"; 
-	}
+   if($puedeVerModulo('EVENTO_CONTRATO')){
+      require "calendariodeeventos2/CONTRATO.php";
+   }
 
-    if($conexion->variablespermisos('','PAGOS_EGRESOS','ver')=='si' and $var_bloquea_fecha=='no'){
-    require "calendariodeeventos2/tickets.php";
-	}	
-	if($conexion->variablespermisos('','PAGOS_EGRESOSFILTRO','ver')=='si'){   
-    require "calendariodeeventos2/fetch_page_nuevo_TIKETS.php";
-	}
-	
+   if($puedeVerModulo('COTIZACION_CLIENTES')){
+      require "calendariodeeventos2/COTIZACION_CLIENTES.php";
+   }
 
-	if($conexion->variablespermisos('','CIERRE','ver')=='si'){
-    require "calendariodeeventos2/RESUMEN_INGRESOS_EGRESOS2.php";	
-    }
-		if($conexion->variablespermisos('','FACTURACION_CLIENTES','ver')=='si'){
-    require "calendariodeeventos2/RESUMEN_INGRESOS_EGRESOS3.php";
- }
- if($conexion->variablespermisos('','FACTURACION_OTROS','ver')=='si'){
-    require "calendariodeeventos2/RESUMEN_INGRESOS_EGRESOSOTROS.php";	
-	}
-  if($conexion->variablespermisos('','PROGRAMA_OPERATIVO','ver')=='si'){
-   require "calendariodeeventos2/PROGRAMA_OPERATIVO.php";
-  }
-   if($conexion->variablespermisos('','ROOMING','ver')=='si'){
-   require "calendariodeeventos2/ROOMING.php";
-  }
-   if($conexion->variablespermisos('','CRONOLOGICO_TRANSPORTACION','ver')=='si'){
-   require "calendariodeeventos2/CRONOLOGICO_TRANSPORTACION.php";
-  }
-   if($conexion->variablespermisos('','CRONOLOGICO_VUELOS','ver')=='si'){   
-   require "calendariodeeventos2/CRONOLOGICO_VUELOS.php";
-  }
+   if($puedeVerModulo('COTIZACION_PRO')){
+      require "calendariodeeventos2/COTIZACION_PROVEEDORES.php";
+   }
 
-   if($conexion->variablespermisos('','PERSONAL','ver')=='si'){
-   require "calendariodeeventos2/PERSONAL.php";  
-  }
-    if($conexion->variablespermisos('','PERSONALNUEVO','ver')=='si'){    
-     require "calendariodeeventos2/PERSONAL2.php";
-   } 
-     if($conexion->variablespermisos('','RESUMENPERSONAL','ver')=='si'){
-   require "calendariodeeventos2/RESUMENPERSONAL.php";  
-  } 
-    
+   if($puedeVerModulo('COBROS_CLIENTE')){
+      require "calendariodeeventos2/COBROS_CLIENTE.php";
+   }
+
+   if($puedeVerModulo('VEHIEVE')){
+      require "calendariodeeventos2/VEHICULOS.php";
+   }
+
+   if($puedeVerModulo('MATEEVE')){
+      require "calendariodeeventos2/MATERIALYEQUIPO.php";
+   }
+
+   if($puedeVerModulo('PAPEEVE')){
+      require "calendariodeeventos2/PAPELERIA.php";
+   }
+
+   if($puedeVerModulo('OFICINA')){
+      require "calendariodeeventos2/EQUIPOOFICINA.php";
+   }
+
+   if($puedeVerModulo('BOTIQUIN')){
+      require "calendariodeeventos2/BOTIQUIN.php";
+   }
+
+   if($puedeVerModulo('MENSAJERIA')){
+      require "calendariodeeventos2/MENSAJERIA.php";
+   }
+
+   if($puedeVerModulo('MENSAJERIA2')){
+      require "calendariodeeventos2/fetch_page_mensajeria.php";
+   }
+
+   if($puedeVerModulo('DOCUMENTO_NUEVO_CIERRE')){
+      require "calendariodeeventos2/DOCUMENTO_NUEVO_CIERRE.php";
+   }
+
+   if($puedeVerModulo('DOCUMENTO_CIERRE')){
+      require "calendariodeeventos2/CIERRE.php";
+   }
+
+   if($puedeVerModulo('FEE_COBRADO')){
+      require "calendariodeeventos2/FEE_COBRADO.php";
+   }
+
+   if($puedeVerModulo('PAGOS_INGRESOS22')){
+      require "calendariodeeventos2/PAGOS_INGRESOS.php";
+   }
+
+   if($puedeVerModulo('OTROS_INGRESOS')){
+      require "calendariodeeventos2/PAGOS_EGRESOS.php";
+   }
+
+   if($puedeVerModulo('PAGOS_EGRESOSBOTON') && $var_bloquea_fecha=='no'){
+      require "calendariodeeventos2/fetch_page_botton.php";
+   }
+
+   if($puedeVerModulo('PORCENTAJE')){
+      require "calendariodeeventos2/PORCENTAJEVENDEDOR.php";
+   }
+
+   if($puedeVerModulo('PAGOS_EGRESOSCG')){
+      require "calendariodeeventos2/fetch_page_nuevoCOM.php";
+   }
+
+   if($puedeVerModulo('PAGOS_EGRESOSPP')){
+      require "calendariodeeventos2/fetch_page_nuevo.php";
+   }
+
+   if($puedeVerModulo('nuevotodos')){
+      require "calendariodeeventos2/fetch_page_nuevotodospp.php";
+   }
+
+   require "calendariodeeventos2/class.epcinnTIKETSYAVION.php";
+   $pagoproveedores = new TIKETSYAVION();
+
+   if($puedeVerModulo('PAGOS_BOLETOS_AVION') && $var_bloquea_fecha=='no'){
+      require "calendariodeeventos2/avion.php";
+   }
+
+   if($puedeVerModulo('PAGOS_BOLETOS_AVIONFILTRO')){
+      require "calendariodeeventos2/fetch_page_nuevo_AVION.php";
+   }
+
+   if($puedeVerModulo('PAGOS_EGRESOS') && $var_bloquea_fecha=='no'){
+      require "calendariodeeventos2/tickets.php";
+   }
+
+   if($puedeVerModulo('PAGOS_EGRESOSFILTRO')){
+      require "calendariodeeventos2/fetch_page_nuevo_TIKETS.php";
+   }
+
+   if($puedeVerModulo('CIERRE')){
+      require "calendariodeeventos2/RESUMEN_INGRESOS_EGRESOS2.php";
+   }
+
+   if($puedeVerModulo('FACTURACION_CLIENTES')){
+      require "calendariodeeventos2/RESUMEN_INGRESOS_EGRESOS3.php";
+   }
+
+   if($puedeVerModulo('FACTURACION_OTROS')){
+      require "calendariodeeventos2/RESUMEN_INGRESOS_EGRESOSOTROS.php";
+   }
+
+   if($puedeVerModulo('PROGRAMA_OPERATIVO')){
+      require "calendariodeeventos2/PROGRAMA_OPERATIVO.php";
+   }
+
+   if($puedeVerModulo('ROOMING')){
+      require "calendariodeeventos2/ROOMING.php";
+   }
+
+   if($puedeVerModulo('CRONOLOGICO_TRANSPORTACION')){
+      require "calendariodeeventos2/CRONOLOGICO_TRANSPORTACION.php";
+   }
+
+   if($puedeVerModulo('CRONOLOGICO_VUELOS')){
+      require "calendariodeeventos2/CRONOLOGICO_VUELOS.php";
+   }
+
+   if($puedeVerModulo('PERSONAL')){
+      require "calendariodeeventos2/PERSONAL.php";
+   }
+
+   if($puedeVerModulo('PERSONALNUEVO')){
+      require "calendariodeeventos2/PERSONAL2.php";
+   }
+
+   if($puedeVerModulo('RESUMENPERSONAL')){
+      require "calendariodeeventos2/RESUMENPERSONAL.php";
+   }
+
  ?>
 
  
@@ -412,8 +447,7 @@ if($conexion->variablespermisos('','COBROS_CLIENTE','ver')=='si'){
   <!--end wrapper-->
 
     <!-- JS Files-->
-    <script defer src="https://code.angularjs.org/snapshot/angular.min.js"></script>
-    <script defer src="assets/bootstrap/js/bootstrap.min.js"></script>
+     <script defer src="https://code.angularjs.org/1.8.3/angular.min.js"></script>
     <script defer src="js/jspdf.umd.min.js"></script> 
     <script defer src="js/html2canvas.min.js"></script> 
     <script defer src="js/convertir.js"></script>                
