@@ -2,10 +2,8 @@
 /*
 clase EPC INNOVA
 CREADO : 10/mayo/2023
-TESTER: FATIMA ARELLANO
-PROGRAMER: SANDOR ACTUALIZACION: 1 MAY 2023
 FECHA sandor: 
-FECHA fatima:01 JUNIO 2025     
+FECHA fatima:01 JUNIO 2026   
 */
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
@@ -337,6 +335,14 @@ color:red;
    if($puedeVerModulo('PAGOS_EGRESOSBOTON') && $var_bloquea_fecha=='no'){
       require "calendariodeeventos2/fetch_page_botton.php";
    }
+ if($puedeVerModulo('CALIFICACION')){
+
+      require "calificacion/Listado_CALIFICACION_PAGOS.php";
+
+   }
+
+
+
 
    if($puedeVerModulo('PORCENTAJE')){
       require "calendariodeeventos2/PORCENTAJEVENDEDOR.php";
