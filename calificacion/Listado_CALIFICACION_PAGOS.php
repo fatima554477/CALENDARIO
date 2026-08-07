@@ -15,16 +15,60 @@ function escaparCalificacionProveedor($valor)
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 ?>
+<style>
+    #calificacion-proveedores-pagos .encabezado-calificacion-proveedores {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #212529;
+    }
+    #calificacion-proveedores-pagos .control-calificacion-proveedores {
+        border: 0;
+        background: transparent;
+        color: #168896;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        line-height: 1;
+        padding: 0 2px;
+    }
+    #calificacion-proveedores-pagos .control-calificacion-proveedores:hover,
+    #calificacion-proveedores-pagos .control-calificacion-proveedores:focus {
+        color: #0d5f69;
+        outline: 2px solid #b8e4e8;
+        outline-offset: 2px;
+    }
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores thead tr {
+        background: #d4f1d3;
+        color: #244d2a;
+        text-align: center;
+    }
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores tbody tr:nth-child(odd) {
+        background: #ebf8fa;
+    }
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores tbody tr:nth-child(even) {
+        background: #d4f1d3;
+    }
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores td {
+        vertical-align: middle;
+    }
+</style>
 <div id="calificacion-proveedores-pagos">
     <hr>
-    <strong><p class="mb-0 text-uppercase">CALIFICACIÓN DE PROVEEDORES</p></strong>
+    <div class="encabezado-calificacion-proveedores">
+        <img src="includes/contraer31.png" id="mostrar40" style="cursor:pointer;"/>
+       <img src="includes/contraer41.png" id="ocultar40" style="cursor:pointer;"/>
+        <strong><span class="mb-0 text-uppercase">CALIFICACIÓN DE PROVEEDORES</span></strong>
+    </div>
     <div id="mensaje-calificacion-proveedores" aria-live="polite"></div>
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered" style="width:100%">
+    <div id="contenido-calificacion-proveedores" >
+	  <div id="target40" style="display:block;" class="content2">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                <table class="table table-bordered tabla-calificacion-proveedores" style="width:100%">
                     <thead>
-                        <tr style="background:#f5f9fc;text-align:center">
+                        <tr>
                             <th>ID DEL PROVEEDOR</th>
                             <th>NOMBRE COMERCIAL</th>
                             <th>NOMBRE FISCAL O RAZÓN SOCIAL</th>
@@ -65,12 +109,25 @@ function escaparCalificacionProveedor($valor)
                     </tbody>
                 </table>
             </div>
+            </div>
         </div>
     </div>
 </div>
  
 <script>
 document.addEventListener('click', function (event) {
+    var contenido = document.getElementById('contenido-calificacion-proveedores');
+    var botonAbrir = event.target.closest('#mostrar-calificacion-proveedores');
+    var botonCerrar = event.target.closest('#ocultar-calificacion-proveedores');
+
+    if (contenido && (botonAbrir || botonCerrar)) {
+        var debeAbrir = Boolean(botonAbrir);
+        contenido.style.display = debeAbrir ? 'block' : 'none';
+        document.getElementById('mostrar-calificacion-proveedores').setAttribute('aria-expanded', debeAbrir ? 'true' : 'false');
+        document.getElementById('ocultar-calificacion-proveedores').setAttribute('aria-expanded', debeAbrir ? 'true' : 'false');
+        return;
+    }
+
     var boton = event.target.closest('.abrir-calificacion-proveedor');
     if (!boton || typeof window.jQuery === 'undefined') {
         return;
