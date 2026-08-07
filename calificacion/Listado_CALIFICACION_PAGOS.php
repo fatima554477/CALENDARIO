@@ -56,13 +56,45 @@ function escaparCalificacionProveedor($valor)
 <div id="calificacion-proveedores-pagos">
     <hr>
     <div class="encabezado-calificacion-proveedores">
-        <img src="includes/contraer31.png" id="mostrar40" style="cursor:pointer;"/>
-       <img src="includes/contraer41.png" id="ocultar40" style="cursor:pointer;"/>
-        <strong><span class="mb-0 text-uppercase">CALIFICACIÓN DE PROVEEDORES</span></strong>
+              <button type="button"
+
+            id="mostrar-calificacion-proveedores"
+
+            class="control-calificacion-proveedores"
+
+            aria-controls="contenido-calificacion-proveedores"
+
+            aria-expanded="false"
+
+            aria-label="Abrir calificación de proveedores">
+
+            <img src="includes/contraer31.png" alt="">
+
+        </button>
+
+        <button type="button"
+
+            id="ocultar-calificacion-proveedores"
+
+            class="control-calificacion-proveedores"
+
+            aria-controls="contenido-calificacion-proveedores"
+
+            aria-expanded="false"
+
+            aria-label="Cerrar calificación de proveedores">
+
+            <img src="includes/contraer41.png" alt="">
+
+        </button>
+
+        <strong><span class="mb-0 text-uppercase">CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</span></strong>
     </div>
-    <div id="mensaje-calificacion-proveedores" aria-live="polite"></div>
-    <div id="contenido-calificacion-proveedores" >
-	  <div id="target40" style="display:block;" class="content2">
+    <div id="mensaje-calificacion-proveedores" aria-live="polite">
+  <div id="contenido-calificacion-proveedores" style="display:none;">
+
+	  <div class="content2">
+
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
@@ -112,6 +144,7 @@ function escaparCalificacionProveedor($valor)
             </div>
         </div>
     </div>
+</div>
 </div>
  
 <script>
