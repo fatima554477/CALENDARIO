@@ -249,6 +249,9 @@ $sWhere2.="  $tables2.TImpuestosTrasladados = ".$TImpuestosTrasladados." OR ";}
 if($search['TImpuestosRetenidos']!=""){
 $TImpuestosRetenidos = str_replace(',','',str_replace('$','',$search['TImpuestosRetenidos']));
 $sWhere2.="  $tables2.TImpuestosRetenidos = ".$TImpuestosRetenidos." OR ";}
+if($search['EJECUTIVOTARJETA']!=""){
+
+$sWhere2.="  $tables.EJECUTIVOTARJETA LIKE '%".$search['EJECUTIVOTARJETA']."%' OR ";}
 
 if($search['Version']!=""){
 $sWhere2.="  $tables2.Version = '".$search['Version']."' OR ";}

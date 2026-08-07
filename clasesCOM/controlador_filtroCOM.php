@@ -566,7 +566,8 @@ if($database->plantilla_filtro($nombreTabla,"total",$altaeventos,$DEPARTAMENTO)=
 <?php } ?>
 
 <th style="background:#f16c4f;text-align:center">46% PERDIDA DE COSTO FISCAL</th>
-<?php if($database->variablespermisos('','PAGOS_BOTONQUITAR','ver')=='si'){ ?>
+
+<?php if($database->variablespermisos('','sincuarenta','ver')=='si'){ ?>
 <th style="background:#c6eaaa;text-align:center">SIN 46%</th>
 <?php } ?>
 <th style="background:#c9e8e8;text-align:center"></th>
@@ -1004,7 +1005,7 @@ if($database->plantilla_filtro($nombreTabla,"total",$altaeventos,$DEPARTAMENTO)=
 
 
 <td style="background:#f16c4f;text-align:center"><input type="text" class="form-control" id="PorfaltaDeFactura" value="<?php echo $PorfaltaDeFactura; ?>"></td>
-<?php if($database->variablespermisos('','PAGOS_BOTONQUITAR','ver')=='si'){ ?>
+<?php if($database->variablespermisos('','sincuarenta','ver')=='si'){ ?>
 <td style="background:#c6eaaa;text-align:center"></td>
 <?php } ?>
 
@@ -1793,29 +1794,15 @@ $totales2 = 'si';
     </span>
 </td>
 <?php } ?>
-<td>
+
 <div id="ajax-notification-COM2" style="position:fixed; top:20px; right:20px; padding:15px; background:#4CAF50; color:white; border-radius:5px; display:none; z-index:1000;"></div>
 
-<?php if($database->variablespermisos('','PAGOS_EGRESOSCG','modificar')=='si'){ ?>
-<input type="button" name="view" value="MODIFICAR" id="<?php echo $row["07COMPROBACIONid"]; ?>" class="btn btn-info btn-xs view_dataPAGOPROVEEmodifica22" /><?php } ?>  
-
-<?php  
-$UUID = isset($row['UUID']) ? trim($row['UUID']) : '';
-
-if ($UUID == '' && $database->variablespermisos('', 'SUBIRF_COMCALE', 'ver') == 'si') { ?>
-    <input 
-        type="button" 
-        name="view" 
-        value="SUBIR FACTURA" 
-        id="<?php echo $row['07COMPROBACIONid']; ?>" 
-        class="btn btn-info btn-xs view_dataPAGOSUBIR" 
-    />
-<?php } ?>
 
 
 
 
-</td>
+
+
 
 
 

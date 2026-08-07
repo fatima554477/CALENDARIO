@@ -341,20 +341,43 @@
         });
 
 	function load7(page){
-			var getVal = id => {
-				const value = $("#" + id).val();
-				return typeof value === 'string' ? value.trim() : '';
+			var $filtroCOM = $('#target46');
+			var getVal = (id, aliases) => {
+				var ids = [id];
+				if (Array.isArray(aliases)) {
+					ids = ids.concat(aliases);
+				}
+				var idAlterno = id;
+				while (/(?:_\d+|1AA)$/.test(idAlterno)) {
+					idAlterno = idAlterno.replace(/(?:_\d+|1AA)$/, '');
+					ids.push(idAlterno);
+				}
+
+				for (var i = 0; i < ids.length; i++) {
+					var selector = '#' + ids[i];
+					var $campo = $filtroCOM.find(selector).last();
+					if ($campo.length === 0) {
+						$campo = $(selector).last();
+					}
+					if ($campo.length > 0) {
+						const value = $campo.val();
+						return typeof value === 'string' ? value.trim() : '';
+					}
+				}
+
+				return '';
 			};
-		var query = $("#NOMBRE_EVENTO").val();
+		var query = getVal("NOMBRE_EVENTO");
 		var DEPARTAMENTO2 = getVal("DEPARTAMENTO2WE");
 		var NUMERO_CONSECUTIVO_PROVEE = getVal("NUMERO_CONSECUTIVO_PROVEE_1");
 		var RAZON_SOCIAL = getVal("RAZON_SOCIAL_1");
 		var RFC_PROVEEDOR = getVal("RFC_PROVEEDOR_1");
+		var RFC_RECEPTOR = getVal("RFC_RECEPTOR");
 		var NUMERO_EVENTO = getVal("NUMERO_EVENTO_1");
 		var EJECUTIVOTARJETA = getVal("EJECUTIVOTARJETA_1");
 		var NOMBRE_EVENTO = getVal("NOMBRE_EVENTO_1");
-		var FECHA_INICIO_EVENTO=$("#FECHA_INICIO_EVENTO").val();
-        var FECHA_FINAL_EVENTO=$("#FECHA_FINAL_EVENTO").val();
+		var FECHA_INICIO_EVENTO = getVal("FECHA_INICIO_EVENTO");
+        var FECHA_FINAL_EVENTO = getVal("FECHA_FINAL_EVENTO");
 		var MOTIVO_GASTO = getVal("MOTIVO_GASTO_1");
 		var CONCEPTO_PROVEE = getVal("CONCEPTO_PROVEE_1");
 		var MONTO_TOTAL_COTIZACION_ADEUDO = getVal("MONTO_TOTAL_COTIZACION_ADEUDO_1");
@@ -385,7 +408,7 @@
 		var TOTAL_ENPESOS = getVal("TOTAL_ENPESOS");
 		var IMPUESTO_HOSPEDAJE = getVal("IMPUESTO_HOSPEDAJE");
 		var NOMBRE_COMERCIAL = getVal("NOMBRE_COMERCIAL_1");
-		var IVA = getVal("IVA_1");
+		var IVA = getVal("IVA_1", ["IVA_3", "IVA"]);
 		var TImpuestosRetenidosIVA = getVal("TImpuestosRetenidosIVA_5");
 		var TImpuestosRetenidosISR = getVal("TImpuestosRetenidosISR_5");
 		var descuentos = getVal("descuentos_5");
@@ -405,30 +428,33 @@
 		var nombreR = getVal("nombreR");
 		var rfcR = getVal("rfcR");
 		var Moneda = getVal("Moneda");
+		var MonedaF = getVal("MonedaF");
 		var TipoCambio = getVal("TipoCambio");
 		var ValorUnitarioConcepto = getVal("ValorUnitarioConcepto");
 		var DescripcionConcepto = getVal("DescripcionConcepto");
-		var ClaveUnidad = getVal("ClaveUnidad");
-		var ClaveProdServ = getVal("ClaveProdServ");
-		var Cantidad = getVal("Cantidad");
+		var ClaveUnidadConcepto = getVal("ClaveUnidadConcepto", ["ClaveUnidad"]);
+		var ClaveProdServConcepto = getVal("ClaveProdServConcepto", ["ClaveProdServ"]);
+		var CantidadConcepto = getVal("CantidadConcepto", ["Cantidad"]);
 		var ImporteConcepto = getVal("ImporteConcepto");
 		var UnidadConcepto = getVal("UnidadConcepto");
 		var TUA = getVal("TUA");
 		var TuaTotalCargos = getVal("TuaTotalCargos");
 		var Descuento = getVal("Descuento");
+		var subTotal = getVal("subTotal");
 		var propina = getVal("propina");
-		var per_page = getVal("per_page8");
+		var per_page = getVal("per_page8") || getVal("per_page");
 		var parametros = {
 			"action2": "ajax2",
 			"page": page,
 			'query': query,
 			'per_page': per_page,
-			
-			
-			
+
+
+
 			'NUMERO_CONSECUTIVO_PROVEE': NUMERO_CONSECUTIVO_PROVEE,
 			'RAZON_SOCIAL': RAZON_SOCIAL,
 			'RFC_PROVEEDOR': RFC_PROVEEDOR,
+			'RFC_RECEPTOR': RFC_RECEPTOR,
 			'NUMERO_EVENTO': NUMERO_EVENTO,
 			'EJECUTIVOTARJETA': EJECUTIVOTARJETA,
 			'NOMBRE_EVENTO': NOMBRE_EVENTO,
@@ -484,29 +510,32 @@
 			'nombreR': nombreR,
 			'rfcR': rfcR,
 			'Moneda': Moneda,
+			'MonedaF': MonedaF,
 			'TipoCambio': TipoCambio,
 			'ValorUnitarioConcepto': ValorUnitarioConcepto,
 			'DescripcionConcepto': DescripcionConcepto,
-			'ClaveUnidad': ClaveUnidad,
-			'ClaveProdServ': ClaveProdServ,
-			'Cantidad': Cantidad,
+			'ClaveUnidadConcepto': ClaveUnidadConcepto,
+			'ClaveProdServConcepto': ClaveProdServConcepto,
+			'CantidadConcepto': CantidadConcepto,
 			'ImporteConcepto': ImporteConcepto,
 			'UnidadConcepto': UnidadConcepto,
 			'TUA': TUA,
 			'TuaTotalCargos': TuaTotalCargos,
 			'Descuento': Descuento,
+			'subTotal': subTotal,
 			'propina': propina,
-			
-			
-			'DEPARTAMENTO2':DEPARTAMENTO2  
+
+
+			'DEPARTAMENTO': DEPARTAMENTO2,
+			'DEPARTAMENTO2': DEPARTAMENTO2
 			};
-			$("#loader2").fadeIn('slow');
+			$filtroCOM.find("#loader2").fadeIn('slow');
     $.ajax({
-        url: 'calendariodeeventos2/clasesCOM/controlador_filtroCOM.php', 
+        url: 'calendariodeeventos2/clasesCOM/controlador_filtroCOM.php',
         type: 'POST',
         data: parametros,
 beforeSend: function(objeto){
-  $("#loader2").html(
+  $filtroCOM.find("#loader2").html(
     '<div class="msg-actualizando">' +
       '<span class="loader2"></span> ⏳ ACTUALIZADO...' +
     '</div>'
@@ -514,14 +543,14 @@ beforeSend: function(objeto){
 
   // Quitar el mensaje después de 3 segundos
   setTimeout(function(){
-    $("#loader2").fadeOut("slow", function(){
+    $filtroCOM.find("#loader2").fadeOut("slow", function(){
       $(this).html(""); // limpia el contenido después de ocultarlo
     });
   }, 1000);
 },
 
         success: function (data) {
-            $(".datos_ajax2").html(data).fadeIn('slow');
+            $filtroCOM.find(".datos_ajax2").html(data).fadeIn('slow');
 			$('.checkbox').each(function() {
     const id = $(this).data('id');
     if (localStorage.getItem('checkbox_' + id) === 'checked') {
@@ -529,7 +558,7 @@ beforeSend: function(objeto){
         this.closest('tr').style.filter = 'brightness(65%) sepia(100%) saturate(200%) hue-rotate(0deg)';
     }
 });
-          
+
 
             // Scroll al checkbox editado
 if (lastCheckboxID !== null) {
@@ -544,6 +573,6 @@ if (lastCheckboxID !== null) {
         }
     });
 }
-/* terminaB1*/		
-		
+/* terminaB1*/
+
 	</script>
