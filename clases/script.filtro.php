@@ -469,8 +469,7 @@ function STATUS_RECHAZADO(RECHAZADO_id){
 		$checkBox.removeData('forzarAgregarMotivo');
 	}
 
-	actualizarBotonesRechazo(RECHAZADO_id, RECHAZADO_text);
-		load(obtenerPaginaActualFiltro());
+actualizarBotonesRechazo(RECHAZADO_id, RECHAZADO_text);
 
 
 	$.ajax({
@@ -498,14 +497,18 @@ function STATUS_RECHAZADO(RECHAZADO_id){
 
 			if(result[1]=='no') $('#color_RECHAZADO'+RECHAZADO_id).css('background-color', '#e9d8ee');
 
-	        if(result[1] == 'si' || result[1] == 'no'){
+        if(result[1] == 'si' || result[1] == 'no'){
 				if(result[1] == 'si' && $checkBox.data('forzarAgregarMotivo') !== 'si'){
 					$checkBox.removeData('forzarAgregarMotivo');
 				}
 				actualizarBotonesRechazo(RECHAZADO_id, result[1]);
+				if(typeof load3 === 'function'){
+					load3(obtenerPaginaActualFiltro());
+				} else if(typeof load === 'function'){
+					load(obtenerPaginaActualFiltro());
+				}
 			}
-
-		}
+			}
 
 	});
 

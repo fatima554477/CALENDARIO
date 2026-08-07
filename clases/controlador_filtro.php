@@ -2078,7 +2078,11 @@ $resultadoEstadoCuenta = $database->resultadoTemproal($idactual,$identificadorPr
 
         $subTotal12 += $MONTO_FACTURAxm2;
 
+        // ✅ Solo acumular CIERRE si NO está rechazado
+        $esRechazado = (isset($row['STATUS_RECHAZADO']) && $row['STATUS_RECHAZADO'] == 'si');
+
         if (
+            !$esRechazado &&
             $row['VIATICOSOPRO'] === 'PAGO A PROVEEDOR'
             && !empty($row['UUID'])
         ) {
@@ -2117,7 +2121,10 @@ $resultadoEstadoCuenta = $database->resultadoTemproal($idactual,$identificadorPr
         <?php 
         if ($mostrarXML) {
             echo number_format($row['Descuento'],2,'.',',');
-            $Descuento12 += $row['Descuento'];
+            // ✅ Solo acumular descuento si NO está rechazado
+            if (!isset($esRechazado) || !$esRechazado) {
+                $Descuento12 += $row['Descuento'];
+            }
             $totales2 = 'si';
         }
         ?>
@@ -2206,39 +2213,37 @@ $resultadoEstadoCuenta = $database->resultadoTemproal($idactual,$identificadorPr
 
 
 <td style="text-align:center" id="valorCalculado_<?php echo $row['02SUBETUFACTURAid']; ?>">
-    <?php
-     if (in_array($row['VIATICOSOPRO'], [
+<?php
+if (
+    !$esRechazado &&
+    in_array($row['VIATICOSOPRO'], [
         'VIATICOS',
         'REEMBOLSO',
         'PAGO A PROVEEDOR CON DOS O MAS FACTURAS'
-        
-    ])) {
+    ])
+) {
+
+    if ((int)$row['NUMERO_CONSECUTIVO_PROVEE'] === 7423) {
+        $PorfaltaDeFacturaSUBERES2 = 0;
+    } else {
         $PorfaltaDeFacturaSUBERES2 = $database->diferenciaPorConsecutivo($row['NUMERO_CONSECUTIVO_PROVEE']);
-        $valorNUEVO = $PorfaltaDeFacturaSUBERES2 ;
-        echo number_format($valorNUEVO, 2, '.', ',');
-          $PorfaltaDeFactura += $valorNUEVO ;
-				   
-				   
-       
+    }
 
-    }	
-        elseif (($row['STATUS_CHECKBOX'] === 'no' || $row['STATUS_CHECKBOX'] === null) && strlen(trim($row['UUID'])) < 1) {
-            $valorCalculado = $porfalta2 * 1.46;
-            echo number_format($valorCalculado, 2, '.', ',');
-			   $PorfaltaDeFactura1 += $valorCalculado ;
-			
-			 
-			
-	
-					                 
-				    
-				    $totales2 = 'si';
-				   
-				   
+    $valorNUEVO = $PorfaltaDeFacturaSUBERES2;
+    echo number_format($valorNUEVO, 2, '.', ',');
+    $PorfaltaDeFactura += $valorNUEVO;
 
-        }
-    
-    ?>
+} elseif (
+    !$esRechazado &&
+    ($row['STATUS_CHECKBOX'] === 'no' || $row['STATUS_CHECKBOX'] === null) &&
+    strlen(trim($row['UUID'])) < 1
+) {
+    $valorCalculado = $porfalta2 * 1.46;
+    echo number_format($valorCalculado, 2, '.', ',');
+    $PorfaltaDeFactura1 += $valorCalculado;
+    $totales2 = 'si';
+}
+?>
 </td>
 
 <?php if ($database->variablespermisos('', 'boton_sinxml2', 'ver') == 'si') { ?>
@@ -2644,7 +2649,30 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
    
  $PorfaltaDeFactura12 = $PorfaltaDeFactura1 + $PorfaltaDeFactura;
 ?>
-<td style="text-align:center">
+
+<style>
+.celda-total {
+    text-align: center;
+    background: #fff5f4;
+    padding: 14px 20px;
+    border-radius: 8px;
+    border-left: 4px solid #e74c3c;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    font-size: 19px;
+    font-weight: 700;
+    color: #c0392b;
+    font-family: "Segoe UI", sans-serif;
+    letter-spacing: 0.3px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.celda-total:hover {
+    transform: translateX(3px);
+    background: #ffeeec;
+}
+</style>
+
+ 
+<td class="celda-total"  style="text-align:center">
   <strong style="font-size:16px" id="totalCalculado">
     $<?php echo number_format($PorfaltaDeFactura12, 2, '.', ','); ?>
   </strong>
@@ -2710,7 +2738,7 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
 
 
 <?php if($totales2 == 'si'){ ?>
-<td style="text-align:right; padding-right:45px;" colspan="<?php echo $colspan2 + 2; ?>"><strong style="font-size:16px;COLOR:#C70039">TOTAL XML CON DESCUENTO</strong></td>
+<td style="text-align:right; padding-right:45px;" colspan="<?php echo $colspan2 + 2; ?>"><strong style="font-size:16px;COLOR:#C70039">TOTAL  XML CON DESCUENTO </strong></td>
 <?php } ?>
 
 
@@ -2719,7 +2747,7 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
 <style>
   .celda-total {
       text-align: center;
-      background: #FCC6BB;
+      background:#B0B04D;
       padding: 12px;
       border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -2731,7 +2759,7 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
   }
   .celda-total:hover {
       transform: scale(1.05);
-      background:#FCC6BB;
+      background:#B0B04D;
   }
 </style>
 
