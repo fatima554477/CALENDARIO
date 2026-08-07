@@ -1,12 +1,15 @@
 <?php
 require_once __DIR__ . '/CalificacionProveedoresPagados.php';
-
+ 
 $calificacionPagosConexion = $conexion->db();
 $calificacionPagosRepositorio = new CalificacionProveedoresPagados($calificacionPagosConexion);
-$calificacionPagosResultado = $calificacionPagosRepositorio->listar();
+$calificacionEventoId = isset($_SESSION['idevento']) ? (int) $_SESSION['idevento'] : 0;
+$calificacionPagosResultado = $calificacionEventoId > 0
+    ? $calificacionPagosRepositorio->listar($calificacionEventoId)
+    : false;
 $puedeGuardarCalificacion = $conexion->variablespermisos('', 'CALIFICACION', 'guardar') == 'si';
 $puedeModificarCalificacion = $conexion->variablespermisos('', 'CALIFICACION', 'modificar') == 'si';
-
+ 
 function escaparCalificacionProveedor($valor)
 {
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
@@ -57,7 +60,7 @@ function escaparCalificacionProveedor($valor)
                             </tr>
                         <?php } ?>
                     <?php } else { ?>
-                        <tr><td colspan="7" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS.</td></tr>
+                        <tr><td colspan="7" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
                     <?php } ?>
                     </tbody>
                 </table>
@@ -65,7 +68,7 @@ function escaparCalificacionProveedor($valor)
         </div>
     </div>
 </div>
-
+ 
 <script>
 document.addEventListener('click', function (event) {
     var boton = event.target.closest('.abrir-calificacion-proveedor');
@@ -76,7 +79,7 @@ document.addEventListener('click', function (event) {
     if (!Number.isInteger(proveedorId) || proveedorId < 1) {
         return;
     }
-
+ 
     jQuery.ajax({
         url: 'calificacion/VistaPreviaCALIFICACION.php',
         method: 'POST',
@@ -88,6 +91,11 @@ document.addEventListener('click', function (event) {
             jQuery('#mensaje-calificacion-proveedores').empty();
             jQuery('#personal_detalles').html(contenido);
             jQuery('#dataModal').modal('show');
+        },
+        error: function (xhr) {
+            jQuery('#mensaje-calificacion-proveedores').text(
+                xhr.responseText || 'NO FUE POSIBLE ABRIR LA CALIFICACIÓN'
+            );
         }
     });
 });
