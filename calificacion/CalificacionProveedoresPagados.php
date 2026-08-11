@@ -42,38 +42,43 @@ class CalificacionProveedoresPagados
         }
         $numeroEvento = mysqli_real_escape_string($this->conexion, $numeroEvento);
  
-        $sql = "SELECT proveedor.id AS proveedor_id,
-                       datos.P_NOMBRE_COMERCIAL_EMPRESA AS nombre_comercial,
-                       datos.P_NOMBRE_FISCAL_RS_EMPRESA AS nombre_fiscal,
+          $sql = "SELECT pago.proveedor_id,
+                       pago.NOMBRE_COMERCIAL AS nombre_comercial,
+                       pago.RAZON_SOCIAL AS nombre_fiscal,
                        calificacion.id AS calificacion_id,
                        calificacion.ADJUNTO_CALIFICACION AS calificacion_actual,
                        calificacion.OBSERVACIONES_CALIFICACION AS observaciones,
                        calificacion.FECHA_CALIFICACION AS fecha_carga
-                FROM 02usuarios AS proveedor
-                INNER JOIN (
-                    SELECT DISTINCT idRelacion
-                    FROM 02SUBETUFACTURA
-                    WHERE idRelacion IS NOT NULL
-                      AND idRelacion > 0
-                      AND NUMERO_EVENTO = '" . $numeroEvento . "'
-                ) AS pago ON pago.idRelacion = proveedor.id
-                LEFT JOIN (
-                    SELECT idRelacion,
-                           MAX(P_NOMBRE_COMERCIAL_EMPRESA) AS P_NOMBRE_COMERCIAL_EMPRESA,
-                           MAX(P_NOMBRE_FISCAL_RS_EMPRESA) AS P_NOMBRE_FISCAL_RS_EMPRESA
-                    FROM 02direccionproveedor1
-                    GROUP BY idRelacion
-                ) AS datos
-                       ON datos.idRelacion = proveedor.id
+    FROM (
+                    SELECT COALESCE(usuario_pago.id, datos.idRelacion) AS proveedor_id,
+                           MAX(factura.NOMBRE_COMERCIAL) AS NOMBRE_COMERCIAL,
+                           MAX(factura.RAZON_SOCIAL) AS RAZON_SOCIAL
+                    FROM 02SUBETUFACTURA AS factura
+                    LEFT JOIN 02usuarios AS usuario_pago
+                           ON usuario_pago.id = factura.idRelacion
+                    LEFT JOIN (
+                        SELECT TRIM(P_RFC_MTDP) AS RFC_PROVEEDOR,
+                               MAX(idRelacion) AS idRelacion
+                        FROM 02direccionproveedor1
+                        WHERE P_RFC_MTDP IS NOT NULL
+                          AND TRIM(P_RFC_MTDP) <> ''
+                        GROUP BY TRIM(P_RFC_MTDP)
+                    ) AS datos
+                           ON datos.RFC_PROVEEDOR = TRIM(factura.RFC_PROVEEDOR)
+                    WHERE factura.NUMERO_EVENTO = '" . $numeroEvento . "'
+                      AND (factura.ID_RELACIONADO IS NULL OR TRIM(factura.ID_RELACIONADO) = '')
+                      AND COALESCE(usuario_pago.id, datos.idRelacion) IS NOT NULL
+                    GROUP BY COALESCE(usuario_pago.id, datos.idRelacion)
+                ) AS pago
                 LEFT JOIN 02CALIFICACION AS calificacion
                        ON calificacion.id = (
                            SELECT MAX(calificacion_actual.id)
                            FROM 02CALIFICACION AS calificacion_actual
-                           WHERE calificacion_actual.idRelacion = proveedor.id
+                           WHERE calificacion_actual.idRelacion = pago.proveedor_id
                        )
-                ORDER BY datos.P_NOMBRE_COMERCIAL_EMPRESA ASC,
-                         datos.P_NOMBRE_FISCAL_RS_EMPRESA ASC,
-                         proveedor.id ASC";
+                ORDER BY pago.NOMBRE_COMERCIAL ASC,
+                         pago.RAZON_SOCIAL ASC,
+                         pago.proveedor_id ASC";
  
         return mysqli_query($this->conexion, $sql);
     }
@@ -86,38 +91,44 @@ class CalificacionProveedoresPagados
         }
         $numeroEvento = mysqli_real_escape_string($this->conexion, $numeroEvento);
  
-        $sql = "SELECT proveedor.id AS proveedor_id,
-                       datos.P_NOMBRE_COMERCIAL_EMPRESA AS nombre_comercial,
-                       datos.P_NOMBRE_FISCAL_RS_EMPRESA AS nombre_fiscal,
+      $sql = "SELECT pago.proveedor_id,
+                       pago.NOMBRE_COMERCIAL AS nombre_comercial,
+                       pago.RAZON_SOCIAL AS nombre_fiscal,
                        calificacion.id AS calificacion_id,
                        calificacion.DOCUMENTO_CALIFICACION,
                        calificacion.ADJUNTO_CALIFICACION,
                        calificacion.OBSERVACIONES_CALIFICACION,
                        calificacion.FECHA_CALIFICACION
-                FROM 02usuarios AS proveedor
-                INNER JOIN (
-                    SELECT DISTINCT idRelacion
-                    FROM 02SUBETUFACTURA
-                    WHERE idRelacion IS NOT NULL
-                      AND idRelacion > 0
-                      AND NUMERO_EVENTO = '" . $numeroEvento . "'
-                ) AS pago ON pago.idRelacion = proveedor.id
-                LEFT JOIN (
-                    SELECT idRelacion,
-                           MAX(P_NOMBRE_COMERCIAL_EMPRESA) AS P_NOMBRE_COMERCIAL_EMPRESA,
-                           MAX(P_NOMBRE_FISCAL_RS_EMPRESA) AS P_NOMBRE_FISCAL_RS_EMPRESA
-                    FROM 02direccionproveedor1
-                    GROUP BY idRelacion
-                ) AS datos
-                       ON datos.idRelacion = proveedor.id
+  FROM (
+                    SELECT COALESCE(usuario_pago.id, datos.idRelacion) AS proveedor_id,
+                           MAX(factura.NOMBRE_COMERCIAL) AS NOMBRE_COMERCIAL,
+                           MAX(factura.RAZON_SOCIAL) AS RAZON_SOCIAL
+                    FROM 02SUBETUFACTURA AS factura
+                    LEFT JOIN 02usuarios AS usuario_pago
+                           ON usuario_pago.id = factura.idRelacion
+                    LEFT JOIN (
+                        SELECT TRIM(P_RFC_MTDP) AS RFC_PROVEEDOR,
+                               MAX(idRelacion) AS idRelacion
+                        FROM 02direccionproveedor1
+                        WHERE P_RFC_MTDP IS NOT NULL
+                          AND TRIM(P_RFC_MTDP) <> ''
+                        GROUP BY TRIM(P_RFC_MTDP)
+                    ) AS datos
+                           ON datos.RFC_PROVEEDOR = TRIM(factura.RFC_PROVEEDOR)
+                    WHERE factura.NUMERO_EVENTO = '" . $numeroEvento . "'
+                      AND (factura.ID_RELACIONADO IS NULL OR TRIM(factura.ID_RELACIONADO) = '')
+                      AND COALESCE(usuario_pago.id, datos.idRelacion) IS NOT NULL
+                    GROUP BY COALESCE(usuario_pago.id, datos.idRelacion)
+                ) AS pago
                 LEFT JOIN 02CALIFICACION AS calificacion
                        ON calificacion.id = (
                            SELECT MAX(calificacion_actual.id)
                            FROM 02CALIFICACION AS calificacion_actual
-                           WHERE calificacion_actual.idRelacion = proveedor.id
+                           WHERE calificacion_actual.idRelacion = pago.proveedor_id
                        )
-                WHERE proveedor.id = ?
+                WHERE pago.proveedor_id = ?
                 LIMIT 1";
+
  
         $sentencia = mysqli_prepare($this->conexion, $sql);
         if (!$sentencia) {

@@ -7,8 +7,8 @@ $calificacionEventoId = isset($_SESSION['idevento']) ? (int) $_SESSION['idevento
 $calificacionPagosResultado = $calificacionEventoId > 0
     ? $calificacionPagosRepositorio->listar($calificacionEventoId)
     : false;
-$puedeGuardarCalificacion = $conexion->variablespermisos('', 'CALIFICACION', 'guardar') == 'si';
-$puedeModificarCalificacion = $conexion->variablespermisos('', 'CALIFICACION', 'modificar') == 'si';
+$puedeGuardarCalificacion = $conexion->variablespermisos('', 'CALIFICACIONPEVENTOS', 'guardar') == 'si';
+$puedeModificarCalificacion = $conexion->variablespermisos('', 'CALIFICACIONPEVENTOS', 'modificar') == 'si';
  
 function escaparCalificacionProveedor($valor)
 {
@@ -90,7 +90,8 @@ function escaparCalificacionProveedor($valor)
 
         <strong><span class="mb-0 text-uppercase">CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</span></strong>
     </div>
-    <div id="mensaje-calificacion-proveedores" aria-live="polite">
+    <div id="mensaje-calificacion-proveedores" aria-live="polite"></div>
+
   <div id="contenido-calificacion-proveedores" style="display:none;">
 
 	  <div class="content2">
