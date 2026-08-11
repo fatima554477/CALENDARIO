@@ -46,6 +46,8 @@ class CalificacionProveedoresPagados
                        pago.NOMBRE_COMERCIAL AS nombre_comercial,
                        pago.RAZON_SOCIAL AS nombre_fiscal,
                        calificacion.id AS calificacion_id,
+					    calificacion.DOCUMENTO_CALIFICACION AS motivo_calificacion,
+
                        calificacion.ADJUNTO_CALIFICACION AS calificacion_actual,
                        calificacion.OBSERVACIONES_CALIFICACION AS observaciones,
                        calificacion.FECHA_CALIFICACION AS fecha_carga

@@ -88,7 +88,7 @@ function escaparCalificacionProveedor($valor)
 
         </button>
 
-        <strong><span class="mb-0 text-uppercase">CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</span></strong>
+        <span >CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</span>
     </div>
     <div id="mensaje-calificacion-proveedores" aria-live="polite"></div>
 
@@ -105,6 +105,8 @@ function escaparCalificacionProveedor($valor)
                             <th>ID DEL PROVEEDOR</th>
                             <th>NOMBRE COMERCIAL</th>
                             <th>NOMBRE FISCAL O RAZÓN SOCIAL</th>
+							 <th>MOTIVO DE LA CALIFICACIÓN</th>
+
                             <th>CALIFICACIÓN ACTUAL</th>
                             <th>OBSERVACIONES</th>
                             <th>FECHA DE CARGA</th>
@@ -122,6 +124,8 @@ function escaparCalificacionProveedor($valor)
                                 <td><?php echo (int) $proveedorCalificacion['proveedor_id']; ?></td>
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['nombre_comercial']); ?></td>
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['nombre_fiscal']); ?></td>
+								  <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['motivo_calificacion']); ?></td>
+
                                 <td><?php echo $tieneCalificacion ? (int) $proveedorCalificacion['calificacion_actual'] : 'SIN CALIFICAR'; ?></td>
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['observaciones']); ?></td>
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['fecha_carga']); ?></td>
@@ -137,7 +141,7 @@ function escaparCalificacionProveedor($valor)
                             </tr>
                         <?php } ?>
                     <?php } else { ?>
-                        <tr><td colspan="7" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
+                        <tr><td colspan="8" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
                     <?php } ?>
                     </tbody>
                 </table>
