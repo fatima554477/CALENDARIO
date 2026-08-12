@@ -24,10 +24,18 @@ $puedeModificarAutorizadoVehiculo = ($conexion->variablespermisos('', 'AUTORIZAD
         <div class="card">
           <div class="card-body" id='actualizaVehiculos'>
                                 <?php if($conexion->variablespermisos('','VEHIEVE','guardar')=='si' and $var_bloquea_fecha=='no'){ ?>
-                      <form class="row g-3 needs-validation was-validated" id="VEHICULOSEVEform"  novalidate="" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                      <form class="row g-3 needs-validation was-validated" id="VEHICULOSEVEform"  novalidate="" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post"><table>
+					  <tr>
+    <td style="text-align: center;width:500px">
+        <a href="CALENDARIO_VEHICULOS.php"
+           target="_blank"
+           class="btn btn-sm btn-outline-primary px-5">
+            📅 CALENDARIO DE VEHÍCULOS
+        </a>
+    </td>
+</tr></table>
  
                       <table  style="border-collapse: collapse;" border="1" class="table mb-0 table-striped">
-
 
 
                       
@@ -117,6 +125,20 @@ echo $encabezado.$option20.'</select>';
     color: #8b0000 !important;
     font-weight: bold !important;
     font-style: italic;
+}
+@keyframes iluminar-entrada {
+    0%   { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+tr.fila-iluminada-activa,
+tr.fila-iluminada-activa td,
+tr.fila-iluminada-activa th {
+    --bs-table-bg: #fff3cd !important;
+    --bs-table-striped-bg: #fff3cd !important;
+    --bs-table-accent-bg: #fff3cd !important;
+    background-color: #fff3cd !important;
+    box-shadow: inset 0 0 10px rgba(240, 180, 50, 0.5) !important;
+    animation: iluminar-entrada 0.4s ease;
 }
 </style>
 
@@ -333,11 +355,7 @@ echo $encabezadoA.$option2.'</select>';
 
  <td>
  		
-    <a href="CALENDARIO_VEHICULOS.php" target="_blank" 
-       class="btn btn-sm btn-outline-primary px-5" 
-       style="margin-left:700px;">
-       📅 CALENDARIO DE VEHÍCULOS
-    </a>
+
 
       
            
@@ -401,8 +419,7 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <tbody= 'font-style:italic;'>
 <table class="table table-striped table-bordered" style="width:100%" id='reset_VEHICULOSEVE' name='reset_VEHICULOSEVE'>
 <tr style='background:#f5f9fc;text-align:center'>
-<th width="3%" style="background:#c9e8e8">☀</th>
-
+<th width="3%"></th> 
 <th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th> 
  <?php if($puedeVerAutorizadoVehiculo){ ?>
 <th width="10%"style="background:#c9e8e8">AUTORIZADO</th>
@@ -415,7 +432,7 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <th width="20%"style="background:#c9e8e8">PLACAS</th>
 <th width="20%"style="background:#c9e8e8">NOMBRE DEL QUE SOLICITA</th>
 <th width="20%"style="background:#c9e8e8">NOMBRE DEL QUE MANEJA EL VEHÍCULO</th>
-<th width="20%"style="background:#c9e8e8">FECHA DE ENTREGA</th>
+<th width="20%"style="background:#f48a81">FECHA DE ENTREGA</th>
 <th width="20%"style="background:#c9e8e8">LUGAR DE ENTREGA</th>
 <th width="20%"style="background:#c9e8e8">HORA DE ENTREGA</th>
 <th width="20%"style="background:#c9e8e8">FECHA DE DEVOLUCIÓN</th>
@@ -440,13 +457,27 @@ while($row = mysqli_fetch_array($querycontras))
 ?>
 
 
-<tr style='background:#f5f9fc;text-align:center'>
-<td style="text-align:center" >
-<input type="checkbox" style="width:14px;height:14px;cursor:pointer;" class="form-check-input iluminar-fila-vehiculo" data-id="<?php echo $row["id"]; ?>" title="Iluminar fila"/> </td>
-
-<td style="text-align:center" >
-
-<input type="checkbox" style="width:15%" class="form-check-input" name="VEHICULOSEVE[]" id="VEHICULOSEVE" value="<?php echo $row["id"]; ?>"/> </td>
+<tr style='background:#f5f9fc;text-align:center' class="fila-vehiculo">
+<td style="text-align:center">
+    <input type="checkbox" 
+           class="form-check-input check-iluminar"
+           data-id="<?php echo $row['id']; ?>"
+           style="width:13px;height:13px;cursor:pointer;accent-color:#f0ad4e;"
+           title="Iluminar fila"
+           onchange="
+               const fila = this.closest('tr');
+               const id = this.getAttribute('data-id');
+               if(this.checked){
+                   fila.style.filter = 'brightness(85%) sepia(100%) saturate(300%) hue-rotate(0deg)';
+                   localStorage.setItem('veh_highlight_' + id, 'checked');
+               } else {
+                   fila.style.filter = 'none';
+                   localStorage.removeItem('veh_highlight_' + id);
+               }">
+</td>
+<td>
+    <input type="checkbox" style="width:15%" class="form-check-input" name="VEHICULOSEVE[]" id="VEHICULOSEVE" value="<?php echo $row["id"]; ?>"/>
+</td>
 <?php if($puedeVerAutorizadoVehiculo){ ?>
 <td style="text-align:center" >
 
@@ -501,7 +532,7 @@ $GTOTAL += $row["PRECIOPESOS_SOFTWARE"];
 ?>
 <tr>
 
-<?php $columnasPreviasTotalesVehiculo = 17 + ($puedeVerAutorizadoVehiculo ? 1 : 0); ?>
+<?php $columnasPreviasTotalesVehiculo = 18 + ($puedeVerAutorizadoVehiculo ? 1 : 0); ?>
 
 <td colspan='<?php echo $columnasPreviasTotalesVehiculo; ?>' style="text-align:right;"><strong style="font-size:16px">TOTALES</strong></td><td>$ <?php echo number_format($GSUNTOTAL,2,'.',','); ?></td><td>$ <?php echo number_format($GIVA,2,'.',','); ?></td><td>$ <?php echo number_format($GTOTAL,2,'.',','); ?></td><td></td></tr>
 
@@ -597,60 +628,7 @@ $(document).ready(function(){
 
     mostrarFechasOcupadasVehiculo();
 
-   restaurarFilasIluminadasVehiculo();
-
-
-
 });
-
-
-
-$(document).on('change', '.iluminar-fila-vehiculo', function(){
-
-    var fila = this.closest('tr');
-
-    var id = $(this).data('id');
-
-
-
-    if(this.checked){
-
-        fila.style.backgroundColor = '#fff3cd';
-
-        localStorage.setItem('iluminar_fila_vehiculo_' + id, 'checked');
-
-    }else{
-
-        fila.style.backgroundColor = '#f5f9fc';
-
-        localStorage.removeItem('iluminar_fila_vehiculo_' + id);
-
-    }
-
-});
-
-
-
-function restaurarFilasIluminadasVehiculo(){
-
-    $('.iluminar-fila-vehiculo').each(function(){
-
-        var id = $(this).data('id');
-
-
-
-        if(localStorage.getItem('iluminar_fila_vehiculo_' + id) === 'checked'){
-
-            this.checked = true;
-
-            this.closest('tr').style.backgroundColor = '#fff3cd';
-
-        }
-
-    });
-
-}
-
 function actualizarFechasOcupadasSelect(){
     $.ajax({
         url: 'calendariodeeventos2/controladorAE.php',
@@ -680,6 +658,16 @@ function actualizarFechasOcupadasSelect(){
         }
     });
 }
+
+$(document).ready(function(){
+    $('.check-iluminar').each(function(){
+        var id = $(this).data('id');
+        if(localStorage.getItem('veh_highlight_' + id) === 'checked'){
+            $(this).prop('checked', true);
+            $(this).closest('tr').css('filter', 'brightness(85%) sepia(100%) saturate(300%) hue-rotate(0deg)');
+        }
+    });
+});
 
 </script>
 
