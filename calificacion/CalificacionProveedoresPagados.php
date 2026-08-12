@@ -52,25 +52,32 @@ class CalificacionProveedoresPagados
                        calificacion.OBSERVACIONES_CALIFICACION AS observaciones,
                        calificacion.FECHA_CALIFICACION AS fecha_carga
     FROM (
-                    SELECT COALESCE(usuario_pago.id, datos.idRelacion) AS proveedor_id,
+                     SELECT datos.idRelacion AS proveedor_id,
+
                            MAX(factura.NOMBRE_COMERCIAL) AS NOMBRE_COMERCIAL,
                            MAX(factura.RAZON_SOCIAL) AS RAZON_SOCIAL
-                    FROM 02SUBETUFACTURA AS factura
-                    LEFT JOIN 02usuarios AS usuario_pago
-                           ON usuario_pago.id = factura.idRelacion
-                    LEFT JOIN (
+ INNER JOIN (
+
+                        SELECT TRIM(P_NOMBRE_COMERCIAL_EMPRESA) AS NOMBRE_COMERCIAL,
+
                         SELECT TRIM(P_RFC_MTDP) AS RFC_PROVEEDOR,
                                MAX(idRelacion) AS idRelacion
                         FROM 02direccionproveedor1
-                        WHERE P_RFC_MTDP IS NOT NULL
-                          AND TRIM(P_RFC_MTDP) <> ''
-                        GROUP BY TRIM(P_RFC_MTDP)
+           WHERE P_NOMBRE_COMERCIAL_EMPRESA IS NOT NULL
+
+                          AND TRIM(P_NOMBRE_COMERCIAL_EMPRESA) <> ''
+
+                        GROUP BY TRIM(P_NOMBRE_COMERCIAL_EMPRESA)
+
                     ) AS datos
-                           ON datos.RFC_PROVEEDOR = TRIM(factura.RFC_PROVEEDOR)
+                                ON datos.NOMBRE_COMERCIAL = TRIM(factura.NOMBRE_COMERCIAL)
+
                     WHERE factura.NUMERO_EVENTO = '" . $numeroEvento . "'
+					  AND factura.VIATICOSOPRO = 'PAGO A PROVEEDOR'
+
                       AND (factura.ID_RELACIONADO IS NULL OR TRIM(factura.ID_RELACIONADO) = '')
-                      AND COALESCE(usuario_pago.id, datos.idRelacion) IS NOT NULL
-                    GROUP BY COALESCE(usuario_pago.id, datos.idRelacion)
+                      GROUP BY datos.idRelacion
+
                 ) AS pago
                 LEFT JOIN 02CALIFICACION AS calificacion
                        ON calificacion.id = (
@@ -102,25 +109,29 @@ class CalificacionProveedoresPagados
                        calificacion.OBSERVACIONES_CALIFICACION,
                        calificacion.FECHA_CALIFICACION
   FROM (
-                    SELECT COALESCE(usuario_pago.id, datos.idRelacion) AS proveedor_id,
+                    SELECT datos.idRelacion AS proveedor_id,
                            MAX(factura.NOMBRE_COMERCIAL) AS NOMBRE_COMERCIAL,
                            MAX(factura.RAZON_SOCIAL) AS RAZON_SOCIAL
                     FROM 02SUBETUFACTURA AS factura
-                    LEFT JOIN 02usuarios AS usuario_pago
-                           ON usuario_pago.id = factura.idRelacion
-                    LEFT JOIN (
-                        SELECT TRIM(P_RFC_MTDP) AS RFC_PROVEEDOR,
+                     INNER JOIN (
+
+                        SELECT TRIM(P_NOMBRE_COMERCIAL_EMPRESA) AS NOMBRE_COMERCIAL,
+
                                MAX(idRelacion) AS idRelacion
                         FROM 02direccionproveedor1
-                        WHERE P_RFC_MTDP IS NOT NULL
-                          AND TRIM(P_RFC_MTDP) <> ''
-                        GROUP BY TRIM(P_RFC_MTDP)
+                          WHERE P_NOMBRE_COMERCIAL_EMPRESA IS NOT NULL
+
+                          AND TRIM(P_NOMBRE_COMERCIAL_EMPRESA) <> ''
+
+                        GROUP BY TRIM(P_NOMBRE_COMERCIAL_EMPRESA)
+
                     ) AS datos
-                           ON datos.RFC_PROVEEDOR = TRIM(factura.RFC_PROVEEDOR)
+                               ON datos.NOMBRE_COMERCIAL = TRIM(factura.NOMBRE_COMERCIAL)
+
                     WHERE factura.NUMERO_EVENTO = '" . $numeroEvento . "'
                       AND (factura.ID_RELACIONADO IS NULL OR TRIM(factura.ID_RELACIONADO) = '')
-                      AND COALESCE(usuario_pago.id, datos.idRelacion) IS NOT NULL
-                    GROUP BY COALESCE(usuario_pago.id, datos.idRelacion)
+                       GROUP BY datos.idRelacion
+
                 ) AS pago
                 LEFT JOIN 02CALIFICACION AS calificacion
                        ON calificacion.id = (
