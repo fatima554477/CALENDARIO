@@ -20,7 +20,9 @@ function escaparCalificacionProveedor($valor)
         display: flex;
         align-items: center;
         gap: 10px;
-        color: #212529;
+       
+		
+
     }
     #calificacion-proveedores-pagos .control-calificacion-proveedores {
         border: 0;
@@ -88,7 +90,7 @@ function escaparCalificacionProveedor($valor)
 
         </button>
 
-        <span >CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</span>
+        <p class="mb-0 text-uppercase">CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</p>
     </div>
     <div id="mensaje-calificacion-proveedores" aria-live="polite"></div>
 

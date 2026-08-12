@@ -290,10 +290,17 @@ if ($proveedorIdCalendario && $eventoIdCalendario > 0) {
  
                     if (respuesta.ok) {
  
-                        jQuery('#dataModal').modal('hide');
- 
+          jQuery('#dataModal').modal('hide');
+
                         jQuery('#calificacion-proveedores-pagos').load(
-                            location.href + ' #calificacion-proveedores-pagos'
+                            location.href + ' #calificacion-proveedores-pagos',
+                            function () {
+                                // La vista recargada inicia contraída por defecto. Después de
+                                // guardar, conserva visible el listado en el que estaba el usuario.
+                                jQuery('#contenido-calificacion-proveedores').show();
+                                jQuery('#mostrar-calificacion-proveedores, #ocultar-calificacion-proveedores')
+                                    .attr('aria-expanded', 'true');
+                            }
                         );
  
                     }

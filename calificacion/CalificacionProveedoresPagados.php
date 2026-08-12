@@ -56,11 +56,14 @@ class CalificacionProveedoresPagados
 
                            MAX(factura.NOMBRE_COMERCIAL) AS NOMBRE_COMERCIAL,
                            MAX(factura.RAZON_SOCIAL) AS RAZON_SOCIAL
- INNER JOIN (
+   FROM 02SUBETUFACTURA AS factura
+
+                    INNER JOIN (
+
 
                         SELECT TRIM(P_NOMBRE_COMERCIAL_EMPRESA) AS NOMBRE_COMERCIAL,
 
-                        SELECT TRIM(P_RFC_MTDP) AS RFC_PROVEEDOR,
+                        
                                MAX(idRelacion) AS idRelacion
                         FROM 02direccionproveedor1
            WHERE P_NOMBRE_COMERCIAL_EMPRESA IS NOT NULL
