@@ -333,7 +333,8 @@ $output .= '<div id="actualizatabla"></div><form  id="Listadoticketsform">
             <td width="70%"><button class="btn btn-sm btn-outline-success px-5"  type="button" id="clicktickets">GUARDAR</button>
 			<input type="hidden" value="'.$row["tipo_documento"].'"  name="tipo_documento"/>
 			<input type="hidden" value="'.$row["idRelacion"].'"  name="idem_relacion"/>
-			
+			<input type="hidden" value="hiddenTIKETS1QA"  name="hiddenTIKETS1QA"/>
+
 			<input type="hidden" value="ENVIARtickets"  name="ENVIARtickets"/>
 			<input type="hidden" value="'.$row["id"].'"  name="ipactualiza" id="ipactualiza"/>
 			</td>  
