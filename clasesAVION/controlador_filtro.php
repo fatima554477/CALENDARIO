@@ -56,7 +56,7 @@ $SUB_GENERAL = isset($_POST["SUB_GENERAL"])?$_POST["SUB_GENERAL"]:"";
 $MONTO_DE_COMISION = isset($_POST["MONTO_DE_COMISION"])?$_POST["MONTO_DE_COMISION"]:""; 
 $POLIZA_NUMERO = isset($_POST["POLIZA_NUMERO"])?$_POST["POLIZA_NUMERO"]:""; 
 $NOMBRE_DEL_EJECUTIVO = isset($_POST["NOMBRE_DEL_EJECUTIVO"])?$_POST["NOMBRE_DEL_EJECUTIVO"]:""; 
-$OBSERVACIONES_1 = isset($_POST["OBSERVACIONES_1"])?$_POST["OBSERVACIONES_1"]:""; 
+$OBSERVACIONESA = isset($_POST["OBSERVACIONESA"])?$_POST["OBSERVACIONESA"]:""; 
 $FECHA_DE_LLENADO = isset($_POST["FECHA_DE_LLENADO"])?$_POST["FECHA_DE_LLENADO"]:""; 
 $hiddenTIKETS1QA = isset($_POST["hiddenTIKETS1QA"])?$_POST["hiddenTIKETS1QA"]:""; 
 $tipo_documento = isset($_POST["tipo_documento"])?$_POST["tipo_documento"]:""; 
@@ -131,7 +131,7 @@ $per_page=intval($_POST["per_page"]);
 "MONTO_DE_COMISION"=>$MONTO_DE_COMISION,
 "POLIZA_NUMERO"=>$POLIZA_NUMERO,
 "NOMBRE_DEL_EJECUTIVO"=>$NOMBRE_DEL_EJECUTIVO,
-"OBSERVACIONES_1"=>$OBSERVACIONES_1,
+"OBSERVACIONESA"=>$OBSERVACIONESA,
 "FECHA_DE_LLENADO"=>$FECHA_DE_LLENADO,
 "hiddenTIKETS1QA"=>$hiddenTIKETS1QA,
 "tipo_documento"=>$tipo_documento,
@@ -262,7 +262,7 @@ if($database->plantilla_filtro($nombreTabla,"POLIZA_NUMERO",$altaeventos,$DEPART
 <?php } ?><?php 
 if($database->plantilla_filtro($nombreTabla,"NOMBRE_DEL_EJECUTIVO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NOMBRE DEL EJECUTIVO <BR>QUE REALIZÓ LA COMPRA</th>
 <?php } ?><?php 
-if($database->plantilla_filtro($nombreTabla,"OBSERVACIONES_1",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">OBSERVACIONES </th>
+if($database->plantilla_filtro($nombreTabla,"OBSERVACIONESA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">OBSERVACIONES </th>
 <?php } ?><?php 
 if($database->plantilla_filtro($nombreTabla,"FECHA_DE_LLENADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA DE LLENADO</th>
 <?php } ?>
@@ -645,8 +645,8 @@ echo $POLIZA_NUMERO; ?>"></td>
 if($database->plantilla_filtro($nombreTabla,"NOMBRE_DEL_EJECUTIVO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8"><input type="text" class="form-control" id="NOMBRE_DEL_EJECUTIVO_1" value="<?php 
 echo $NOMBRE_DEL_EJECUTIVO; ?>"></td>
 <?php } ?><?php  
-if($database->plantilla_filtro($nombreTabla,"OBSERVACIONES_1",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8"><input type="text" class="form-control" id="OBSERVACIONES_1_1A" value="<?php 
-echo $OBSERVACIONES_1; ?>"></td>
+if($database->plantilla_filtro($nombreTabla,"OBSERVACIONESA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8"><input type="text" class="form-control" id="OBSERVACIONESA_8" value="<?php 
+echo $OBSERVACIONESA; ?>"></td>
 <?php } ?><?php  
 if($database->plantilla_filtro($nombreTabla,"FECHA_DE_LLENADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8"><input type="text" class="form-control" id="FECHA_DE_LLENADO_1" value="<?php 
 echo $FECHA_DE_LLENADO; ?>"></td>
@@ -1059,7 +1059,7 @@ $colspan2 += 1;?></td>
 $colspan2 += 1;?></td>
 <?php } ?><?php  if($database->plantilla_filtro($nombreTabla,"NOMBRE_DEL_EJECUTIVO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['NOMBRE_DEL_EJECUTIVO'];
 $colspan2 += 1;?></td>
-<?php } ?><?php  if($database->plantilla_filtro($nombreTabla,"OBSERVACIONES_1",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['OBSERVACIONES_1'];$colspan2 += 1;
+<?php } ?><?php  if($database->plantilla_filtro($nombreTabla,"OBSERVACIONESA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['OBSERVACIONESA'];$colspan2 += 1;
 ?></td>
 <?php } ?><?php  if($database->plantilla_filtro($nombreTabla,"FECHA_DE_LLENADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['FECHA_DE_LLENADO'];$colspan2 += 1;
 ?></td>
