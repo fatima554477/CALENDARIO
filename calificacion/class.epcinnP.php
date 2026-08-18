@@ -1080,14 +1080,16 @@ WHERE id='".$IPdatosbancario1p."' ;";
 	public function CALIFICACION($DOCUMENTO_CALIFICACION,$ADJUNTO_CALIFICACION,$OBSERVACIONES_CALIFICACION,$QUIENINGRESO,$FECHA_CALIFICACION,$hCALIFICACION,$IpCALIFICACION,$enviarCALIFICACION){
 		$conn=$this->db(); $session=isset($_SESSION['idPROV'])?$_SESSION['idPROV']:'';
 		if($session!=''){
-			$var1="update 02CALIFICACION set DOCUMENTO_CALIFICACION='".$DOCUMENTO_CALIFICACION."',OBSERVACIONES_CALIFICACION='".$OBSERVACIONES_CALIFICACION."',QUIENINGRESO='".$QUIENINGRESO."',hCALIFICACION='".$hCALIFICACION."' where id='".$IpCALIFICACION."' ;";
+		$var1="update 02CALIFICACION set DOCUMENTO_CALIFICACION='".$DOCUMENTO_CALIFICACION."',ADJUNTO_CALIFICACION='".$ADJUNTO_CALIFICACION."',OBSERVACIONES_CALIFICACION='".$OBSERVACIONES_CALIFICACION."',QUIENINGRESO='".$QUIENINGRESO."',hCALIFICACION='".$hCALIFICACION."' where id='".$IpCALIFICACION."' ;";
 			$var2="insert into 02CALIFICACION (DOCUMENTO_CALIFICACION,ADJUNTO_CALIFICACION,OBSERVACIONES_CALIFICACION,QUIENINGRESO,FECHA_CALIFICACION,hCALIFICACION,idRelacion) values('".$DOCUMENTO_CALIFICACION."','".$ADJUNTO_CALIFICACION."','".$OBSERVACIONES_CALIFICACION."','".$QUIENINGRESO."','".$FECHA_CALIFICACION."','".$hCALIFICACION."','".$session."');";
  
 			if($enviarCALIFICACION=='enviarCALIFICACION'){
 				mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
 				$this->registrar_bitacora_proveedor($session,'ACTUALIZACION',
-					'Se actualizó calificación (ID:'.$IpCALIFICACION.').'
+	'Se actualizó calificación (ID:'.$IpCALIFICACION.').'
+
 					.' Tipo: '.$DOCUMENTO_CALIFICACION
+
 					.' | Observaciones: '.$OBSERVACIONES_CALIFICACION
 					.' | Fecha: '.$FECHA_CALIFICACION
 				);
@@ -1105,7 +1107,24 @@ WHERE id='".$IPdatosbancario1p."' ;";
 		}else{ echo "TU SESIÓN HA TERMINADO"; }
 	}
  
-	public function Listado_CALIFICACION(){ $conn=$this->db(); return mysqli_query($conn,"select * from 02CALIFICACION WHERE idRelacion='".(isset($_SESSION['idPROV'])?$_SESSION['idPROV']:'')."' order by id desc "); }
+public function Listado_CALIFICACION(){
+
+		$conn=$this->db();
+
+		$idProveedor = isset($_SESSION['idPROV']) ? mysqli_real_escape_string($conn, $_SESSION['idPROV']) : '';
+
+		return mysqli_query($conn, "SELECT calificacion.*, usuarios.EVALUACION
+
+			FROM 02CALIFICACION AS calificacion
+
+			LEFT JOIN 02usuarios AS usuarios ON usuarios.id = calificacion.idRelacion
+
+			WHERE calificacion.idRelacion='".$idProveedor."'
+
+			ORDER BY calificacion.id DESC");
+
+	}
+
 	public function Listado_CALIFICACION2($id){ $conn=$this->db(); return mysqli_query($conn,"select * from 02CALIFICACION where id='".$id."' "); }
  
 	public function borra_CALIFICACION($id){
