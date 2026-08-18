@@ -62,7 +62,16 @@ if ($proveedorIdCalendario && $eventoIdCalendario > 0) {
         return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
  
     };
- 
+     // Al igual que en CALIFICACION_PROVEEDOR.php, el responsable de la
+
+    // calificacion siempre es el usuario que tiene la sesion iniciada.
+
+    $quienIngresoCalendario = isset($_SESSION['NOMBREUSUARIO'])
+
+        ? trim($_SESSION['NOMBREUSUARIO'])
+
+        : '';
+
     // Escala 1 (rojo, bs-danger) -> 10 (verde, bs-success), interpolación lineal RGB
     $colorInicioCalendario = ['r' => 220, 'g' => 53,  'b' => 69];
     $colorFinCalendario    = ['r' => 25,  'g' => 135, 'b' => 84];

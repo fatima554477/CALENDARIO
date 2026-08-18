@@ -205,6 +205,7 @@ class CalificacionProveedoresPagados
                     SET DOCUMENTO_CALIFICACION = ?,
                         ADJUNTO_CALIFICACION = ?,
                         OBSERVACIONES_CALIFICACION = ?,
+						 QUIENINGRESO = ?,
                         FECHA_CALIFICACION = ?
                     WHERE id = ? AND idRelacion = ?";
             $sentencia = mysqli_prepare($this->conexion, $sql);
@@ -214,10 +215,12 @@ class CalificacionProveedoresPagados
             $calificacionId = (int) $proveedor['calificacion_id'];
             mysqli_stmt_bind_param(
                 $sentencia,
-                'sissii',
+                'sisssii',
+
                 $motivo,
                 $calificacion,
                 $observaciones,
+				 $quienIngreso,
                 $fecha,
                 $calificacionId,
                 $proveedorId
