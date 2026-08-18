@@ -14,6 +14,30 @@ function escaparCalificacionProveedor($valor)
 {
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
+
+/**
+ * Formatea fecha_carga como DIA/MES/AÑO y separa la hora en un <span>
+ * con clase propia para poder pintarla de otro color vía CSS.
+ */
+function formatearFechaCargaConHora($valor)
+{
+    $valor = trim((string) $valor);
+    if ($valor === '') {
+        return '';
+    }
+
+    $timestamp = strtotime($valor);
+    if ($timestamp === false) {
+        // Si no se pudo interpretar la fecha, se muestra el valor original escapado
+        return escaparCalificacionProveedor($valor);
+    }
+
+    $fechaFormateada = date('d/m/Y', $timestamp);
+    $horaFormateada = date('H:i:s', $timestamp);
+
+    return $fechaFormateada
+        . ' <span class="hora-carga-calificacion">' . escaparCalificacionProveedor($horaFormateada) . '</span>';
+}
 ?>
 <style>
     #calificacion-proveedores-pagos .encabezado-calificacion-proveedores {
@@ -72,6 +96,12 @@ function escaparCalificacionProveedor($valor)
         line-height: 1.4em;
         max-height: 5.6em; /* 4 * line-height */
     }
+    /* Hora de carga: color distinto para diferenciarla de la fecha */
+    #calificacion-proveedores-pagos .hora-carga-calificacion {
+        color: #a83279;
+        font-weight: 600;
+        font-size: 0.9em;
+    }
 </style>
 <div id="calificacion-proveedores-pagos">
     <hr>
@@ -129,7 +159,7 @@ function escaparCalificacionProveedor($valor)
 
                             <th>CALIFICACIÓN ACTUAL</th>
                             <th>OBSERVACIONES</th>
-							 <th>USUARIO QUE INGRESÓ</th>
+							 <th>EJECUTIVO QUE INGRESÓ</th>
                             <th>FECHA DE CARGA</th>
                             <th>ACCIÓN</th>
                         </tr>
@@ -151,7 +181,7 @@ function escaparCalificacionProveedor($valor)
                                 <td class="celda-observaciones-calificacion"><?php echo escaparCalificacionProveedor($proveedorCalificacion['observaciones']); ?></td>
 								 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['quien_ingreso']); ?></td>
 
-                                <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['fecha_carga']); ?></td>
+                                <td><?php echo formatearFechaCargaConHora($proveedorCalificacion['fecha_carga']); ?></td>
                                 <td>
                                 <?php if ($puedeAbrir) { ?>
                                     <button type="button"

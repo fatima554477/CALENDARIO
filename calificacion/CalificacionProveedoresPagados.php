@@ -200,52 +200,28 @@ class CalificacionProveedoresPagados
             return false;
         }
  
-        if (!empty($proveedor['calificacion_id'])) {
-            $sql = "UPDATE 02CALIFICACION
-                    SET DOCUMENTO_CALIFICACION = ?,
-                        ADJUNTO_CALIFICACION = ?,
-                        OBSERVACIONES_CALIFICACION = ?,
-						 QUIENINGRESO = ?,
-                        FECHA_CALIFICACION = ?
-                    WHERE id = ? AND idRelacion = ?";
-            $sentencia = mysqli_prepare($this->conexion, $sql);
-            if (!$sentencia) {
-                return false;
-            }
-            $calificacionId = (int) $proveedor['calificacion_id'];
-            mysqli_stmt_bind_param(
-                $sentencia,
-                'sisssii',
-
-                $motivo,
-                $calificacion,
-                $observaciones,
-				 $quienIngreso,
-                $fecha,
-                $calificacionId,
-                $proveedorId
-            );
-        } else {
-            $sql = "INSERT INTO 02CALIFICACION
-                        (DOCUMENTO_CALIFICACION, ADJUNTO_CALIFICACION,
-                          OBSERVACIONES_CALIFICACION, QUIENINGRESO, FECHA_CALIFICACION,
-                         hCALIFICACION, idRelacion)
-                    VALUES (?, ?, ?, ?, ?, 'hCALIFICACION', ?)";
-            $sentencia = mysqli_prepare($this->conexion, $sql);
-            if (!$sentencia) {
-                return false;
-            }
-            mysqli_stmt_bind_param(
-                $sentencia,
-                'sisssi',
-                $motivo,
-                $calificacion,
-                $observaciones,
-				$quienIngreso,
-                $fecha,
-                $proveedorId
-            );
+       // Cada cambio se conserva como un registro nuevo. Las consultas del
+        // listado toman el id mas reciente, por lo que las versiones anteriores
+        // permanecen disponibles como historial sin dejar de mostrar la vigente.
+        $sql = "INSERT INTO 02CALIFICACION
+                    (DOCUMENTO_CALIFICACION, ADJUNTO_CALIFICACION,
+                     OBSERVACIONES_CALIFICACION, QUIENINGRESO, FECHA_CALIFICACION,
+                     hCALIFICACION, idRelacion)
+                VALUES (?, ?, ?, ?, ?, 'hCALIFICACION', ?)";
+        $sentencia = mysqli_prepare($this->conexion, $sql);
+        if (!$sentencia) {
+            return false;
         }
+        mysqli_stmt_bind_param(
+            $sentencia,
+            'sisssi',
+            $motivo,
+            $calificacion,
+            $observaciones,
+            $quienIngreso,
+            $fecha,
+            $proveedorId
+        );
  
         $guardado = mysqli_stmt_execute($sentencia);
         mysqli_stmt_close($sentencia);
