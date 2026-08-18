@@ -54,6 +54,24 @@ function escaparCalificacionProveedor($valor)
     #calificacion-proveedores-pagos .tabla-calificacion-proveedores td {
         vertical-align: middle;
     }
+    /* Columna OBSERVACIONES: ancho fijo para controlar el salto de línea */
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores th:nth-child(6),
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores td:nth-child(6) {
+        width: 400px; /* ajusta este valor al ancho que necesites */
+    }
+    /* Texto de OBSERVACIONES: justificado y limitado a 4 renglones */
+    #calificacion-proveedores-pagos .celda-observaciones-calificacion {
+        text-align: justify;
+        white-space: normal !important;
+        word-wrap: break-word;
+        word-break: break-word;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+        line-height: 1.4em;
+        max-height: 5.6em; /* 4 * line-height */
+    }
 </style>
 <div id="calificacion-proveedores-pagos">
     <hr>
@@ -111,6 +129,7 @@ function escaparCalificacionProveedor($valor)
 
                             <th>CALIFICACIÓN ACTUAL</th>
                             <th>OBSERVACIONES</th>
+							 <th>USUARIO QUE INGRESÓ</th>
                             <th>FECHA DE CARGA</th>
                             <th>ACCIÓN</th>
                         </tr>
@@ -129,7 +148,9 @@ function escaparCalificacionProveedor($valor)
 								  <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['motivo_calificacion']); ?></td>
 
                                 <td><?php echo $tieneCalificacion ? (int) $proveedorCalificacion['calificacion_actual'] : 'SIN CALIFICAR'; ?></td>
-                                <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['observaciones']); ?></td>
+                                <td class="celda-observaciones-calificacion"><?php echo escaparCalificacionProveedor($proveedorCalificacion['observaciones']); ?></td>
+								 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['quien_ingreso']); ?></td>
+
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['fecha_carga']); ?></td>
                                 <td>
                                 <?php if ($puedeAbrir) { ?>
@@ -143,7 +164,7 @@ function escaparCalificacionProveedor($valor)
                             </tr>
                         <?php } ?>
                     <?php } else { ?>
-                        <tr><td colspan="8" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
+                        <tr><td colspan="9" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
                     <?php } ?>
                     </tbody>
                 </table>

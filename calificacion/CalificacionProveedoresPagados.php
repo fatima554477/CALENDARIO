@@ -50,6 +50,7 @@ class CalificacionProveedoresPagados
 
                        calificacion.ADJUNTO_CALIFICACION AS calificacion_actual,
                        calificacion.OBSERVACIONES_CALIFICACION AS observaciones,
+					   calificacion.QUIENINGRESO AS quien_ingreso,
                        calificacion.FECHA_CALIFICACION AS fecha_carga
     FROM (
                      SELECT datos.idRelacion AS proveedor_id,
@@ -110,6 +111,7 @@ class CalificacionProveedoresPagados
                        calificacion.DOCUMENTO_CALIFICACION,
                        calificacion.ADJUNTO_CALIFICACION,
                        calificacion.OBSERVACIONES_CALIFICACION,
+					   calificacion.QUIENINGRESO,
                        calificacion.FECHA_CALIFICACION
   FROM (
                     SELECT datos.idRelacion AS proveedor_id,
@@ -166,6 +168,7 @@ class CalificacionProveedoresPagados
             $documentoCalificacion,
             $adjuntoCalificacion,
             $observacionesCalificacion,
+			$quienIngreso,
             $fechaCalificacion
         );
 
@@ -179,6 +182,7 @@ class CalificacionProveedoresPagados
                 'DOCUMENTO_CALIFICACION' => $documentoCalificacion,
                 'ADJUNTO_CALIFICACION' => $adjuntoCalificacion,
                 'OBSERVACIONES_CALIFICACION' => $observacionesCalificacion,
+				'QUIENINGRESO' => $quienIngreso,
                 'FECHA_CALIFICACION' => $fechaCalificacion,
             );
         }
@@ -188,7 +192,8 @@ class CalificacionProveedoresPagados
         return $proveedor;
     }
  
-    public function guardar($proveedorId, $eventoId, $motivo, $calificacion, $observaciones, $fecha)
+    public function guardar($proveedorId, $eventoId, $motivo, $calificacion, $observaciones, $quienIngreso, $fecha)
+
     {
         $proveedor = $this->obtenerProveedor($proveedorId, $eventoId);
         if (!$proveedor) {
@@ -220,19 +225,20 @@ class CalificacionProveedoresPagados
         } else {
             $sql = "INSERT INTO 02CALIFICACION
                         (DOCUMENTO_CALIFICACION, ADJUNTO_CALIFICACION,
-                         OBSERVACIONES_CALIFICACION, FECHA_CALIFICACION,
+                          OBSERVACIONES_CALIFICACION, QUIENINGRESO, FECHA_CALIFICACION,
                          hCALIFICACION, idRelacion)
-                    VALUES (?, ?, ?, ?, 'hCALIFICACION', ?)";
+                    VALUES (?, ?, ?, ?, ?, 'hCALIFICACION', ?)";
             $sentencia = mysqli_prepare($this->conexion, $sql);
             if (!$sentencia) {
                 return false;
             }
             mysqli_stmt_bind_param(
                 $sentencia,
-                'sissi',
+                'sisssi',
                 $motivo,
                 $calificacion,
                 $observaciones,
+				$quienIngreso,
                 $fecha,
                 $proveedorId
             );

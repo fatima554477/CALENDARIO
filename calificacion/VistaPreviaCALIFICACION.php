@@ -221,6 +221,21 @@ if ($proveedorIdCalendario && $eventoIdCalendario > 0) {
             </form>
  
         </div>
+		
+                <div class="mb-2">
+
+                    <label class="form-label" for="quien-ingreso-calificacion-pagado">
+
+                        <ion-icon name="person-outline" class="me-1"></ion-icon>USUARIO QUE INGRESÓ LA CALIFICACIÓN
+
+                    </label>
+
+                    <input class="form-control" id="quien-ingreso-calificacion-pagado" type="text"
+
+                        value="<?php echo $escaparCalendario($quienIngresoCalendario); ?>" readonly>
+
+                </div>
+
  
         <div class="card-footer text-end">
             <button class="btn btn-sm btn-outline-success px-5" type="button" id="guardar-calificacion-proveedor-pagado">

@@ -23,9 +23,11 @@ $calificacion = filter_input(INPUT_POST, 'ADJUNTO_CALIFICACION', FILTER_VALIDATE
 $observaciones = isset($_POST['OBSERVACIONES_CALIFICACION'])
     ? trim($_POST['OBSERVACIONES_CALIFICACION'])
     : '';
+$quienIngreso = isset($_SESSION['NOMBREUSUARIO']) ? trim($_SESSION['NOMBREUSUARIO']) : '';
 
 if (!$proveedorId || $eventoId < 1 || $motivo === '' || $observaciones === ''
-    || $calificacion === false || $calificacion < 1 || $calificacion > 10) {
+     || $quienIngreso === '' || $calificacion === false || $calificacion < 1 || $calificacion > 10) {
+
     responderCalificacion(422, false, 'REVISA LOS DATOS DE LA CALIFICACIÓN.');
 }
 
@@ -59,6 +61,8 @@ $guardado = $repositorio->guardar(
     $motivo,
     (int) $calificacion,
     $observaciones,
+	$quienIngreso,
+
     $fecha
 );
 
