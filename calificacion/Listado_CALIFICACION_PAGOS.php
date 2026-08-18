@@ -19,7 +19,7 @@ function escaparCalificacionProveedor($valor)
     #calificacion-proveedores-pagos .encabezado-calificacion-proveedores {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 1.5px;
        
 		
 
@@ -32,7 +32,7 @@ function escaparCalificacionProveedor($valor)
         font-size: 22px;
         font-weight: bold;
         line-height: 1;
-        padding: 0 2px;
+        padding: 0;
     }
     #calificacion-proveedores-pagos .control-calificacion-proveedores:hover,
     #calificacion-proveedores-pagos .control-calificacion-proveedores:focus {
@@ -90,7 +90,7 @@ function escaparCalificacionProveedor($valor)
 
         </button>
 
-        <p class="mb-0 text-uppercase">CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</p>
+        &nbsp;&nbsp;&nbsp;<p class="mb-0 text-uppercase">CALIFICACIÓN PROVEEDORES DE ESTE EVENTO</p>
     </div>
     <div id="mensaje-calificacion-proveedores" aria-live="polite"></div>
 
