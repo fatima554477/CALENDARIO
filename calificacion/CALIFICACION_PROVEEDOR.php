@@ -85,6 +85,13 @@ echo $encabezado.$option9.'</select>';
          name="OBSERVACIONES_CALIFICACION">
   <div class="valid-feedback">¡Bien!</div>
 </div>
+						  						<div class="col-md-4" style="background:#fbeee6">
+  <strong>
+					<label for="validationCustom03" class="form-label"> INGRESO ESTA CALIFICACIÓN:</label>
+		
+				  </strong><input type="text" class="form-control" id="validationCustom03" required="" value="<?php echo $_SESSION["NOMBREUSUARIO"]; ?>" name="QUIENINGRESO" placeholder="NOMBRE DEL EJECUTIVO" readonly="readonly">
+  <div class="valid-feedback">¡Bien!</div>
+</div>  <strong>
                         
 
            <td  style="background:#faebee">
@@ -153,10 +160,11 @@ $querycontras = $proveedoresC->Listado_CALIFICACION();
 <tbody= 'font-style:italic;'>
 <table class="table table-striped table-bordered" style="width:100%" id='reset_CALIFICACION' name='reset_CALIFICACION'>
 <tr style='background:#f5f9fc;text-align:center'>
-<th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th>  
+<th width="10%"style="background:#c9e8e8">ENVIAR<br> POR EMAIL</th>  
 <th width="20%"style="background:#c9e8e8">MOTIVO</th>
 <th width="20%"style="background:#c9e8e8">CALIFICACIÓN</th>
 <th width="20%"style="background:#c9e8e8">OBSERVACIONES</th>
+<th width="20%"style="background:#c9e8e8">INGRESO ESTA CALIFICACIÓN</th>
 <th width="20%"style="background:#c9e8e8">FECHA DE CARGA</th>
 
 </tr>
@@ -183,6 +191,7 @@ while($row = mysqli_fetch_array($querycontras))
 ">
     <?php echo $row["OBSERVACIONES_CALIFICACION"]; ?>
 </td>
+<td ><?php echo $row["QUIENINGRESO"]; ?></td>
 <td ><?php echo $row["FECHA_CALIFICACION"]; ?></td>
 <?php if($conexion->variablespermisos('','CALIFICACION','modificar')=='si'){ ?>
 <td>
