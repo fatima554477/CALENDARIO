@@ -1,0 +1,700 @@
+<?php
+/*
+NOMBRE:scriptVO.php
+fecha sandor: 21/ABRIL/2023
+fecha fatis : 05/JUNIO/2025
+*/
+?>
+
+<!-- ===================== MODALES ===================== -->
+
+<!-- Modal: Detalles secundario -->
+<div id="add_data_Modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detalles</h4>
+      </div>
+      <div class="modal-body" id="personal_detalles2"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Fullscreen principal -->
+<div id="dataModal" class="modal fade">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detalles</h4>
+      </div>
+      <div class="modal-body" id="personal_detalles"></div>
+      <div class="modal-footer">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Confirmar borrado -->
+<div id="dataModal3" class="modal fade">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirmación</h4>
+      </div>
+      <div class="modal-body" id="personal_detalles3">
+        ¿ESTÁS SEGURO DE BORRAR ESTE REGISTRO?
+      </div>
+      <div class="modal-footer">
+        <button id="btnYes" class="btn confirm">SI BORRAR</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+
+/* -------------------------------------------------------
+   CARGA DE ARCHIVOS (DRAG & DROP + FILE EXPLORER)
+------------------------------------------------------- */
+var fileobj;
+
+function upload_file(e, name) {
+  e.preventDefault();
+  if (name === 'ADJUNTAR_FACTURA_XML' || name === 'ADJUNTAR_FACTURA_PDF') {
+    var tipo = name === 'ADJUNTAR_FACTURA_XML' ? 'XML' : 'PDF';
+    if ($('#' + name).val().trim() !== '' || $('#2' + name + ' .view_dataSBborrar2').length > 0) {
+      alert('Ya hay un archivo ' + tipo + ' cargado. Bórralo antes de subir otro.');
+      return;
+    }
+  }
+  fileobj = e.dataTransfer.files[0];
+  ajax_file_upload1(fileobj, name);
+}
+
+function file_explorer(name) {
+  document.getElementsByName(name)[0].click();
+  document.getElementsByName(name)[0].onchange = function () {
+    fileobj = document.getElementsByName(name)[0].files[0];
+    ajax_file_upload1(fileobj, name);
+  };
+}
+function limpiarInputFileVO(nombre) {
+
+  $('input[type="file"][name="' + nombre + '"]').val('');
+
+}
+
+function mostrarErrorCargaArchivo(nombre, mensaje) {
+  $('#1' + nombre).html(
+    '<p style="color:red;font-weight:600;">⚠️ ' + mensaje + '</p>'
+  );
+  $('#mensajeADJUNTOCOL').html(
+    '<p style="color:red;font-weight:600;">⚠️ ' + mensaje + '</p>'
+  );
+  limpiarInputFileVO(nombre);
+  alert(mensaje);
+}
+
+function ajax_file_upload1(file_obj, nombre) {
+  if (!file_obj) return;
+
+  if (navigator.onLine === false) {
+    mostrarErrorCargaArchivo(
+      nombre,
+      'NO HAY CONEXIÓN A INTERNET. El archivo no se cargó; verifica tu conexión e intenta nuevamente.'
+    );
+    return;
+  }
+
+  if (nombre === 'ADJUNTAR_FACTURA_XML' || nombre === 'ADJUNTAR_FACTURA_PDF') {
+    var tipo = nombre === 'ADJUNTAR_FACTURA_XML' ? 'XML' : 'PDF';
+    if ($('#' + nombre).val().trim() !== '' || $('#2' + nombre + ' .view_dataSBborrar2').length > 0) {
+      alert('Ya hay un archivo ' + tipo + ' cargado. Bórralo antes de subir otro.');
+      return;
+    }
+  }
+
+  var form_data = new FormData();
+  form_data.append(nombre, file_obj);
+
+  $.ajax({
+    type: 'POST',
+    url: 'ventasoperaciones/controladorVO.php',
+    contentType: false,
+    processData: false,
+    data: form_data,
+    beforeSend: function () {
+      $('#1' + nombre).html('<p style="color:green;"><span class="spinner-border spinner-border-sm"></span>&nbsp;Cargando archivo...</p>');
+      $('#mensajeADJUNTOCOL').html('<p style="color:green;"><span class="spinner-border spinner-border-sm"></span>&nbsp;Cargando archivo...</p>');
+    },
+     success: function (response) {
+      var resp = $.trim(response);
+
+      if (resp === 'SESION_EXPIRADA') {
+        mostrarErrorCargaArchivo(
+          nombre,
+          'TU SESIÓN HA TERMINADO. El archivo no se cargó. Inicia sesión nuevamente e inténtalo de nuevo.'
+        );
+        return;
+      }
+
+      // ── Archivo vacío (0 bytes) ─────────────────────────────────────────
+      if (resp.indexOf('VACIO^^') === 0) {
+        $('#1' + nombre).html(
+          '<p style="color:red;font-weight:600;">⚠️ EL ARCHIVO ESTÁ VACÍO (0 KB). ' +
+          'Verifica que el archivo tenga contenido antes de subirlo.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── Sin extensión ───────────────────────────────────────────────────
+      } else if (resp.indexOf('SIN_EXTENSION^^') === 0) {
+        $('#1' + nombre).html(
+          '<p style="color:red;font-weight:600;">⚠️ EL ARCHIVO NO TIENE EXTENSIÓN RECONOCIDA. ' +
+          'Asegúrate de que el nombre termine en .xml, .pdf, .jpg, etc.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── Error de subida al servidor ─────────────────────────────────────
+      } else if (resp.indexOf('ERROR_SUBIDA^^') === 0) {
+        $('#1' + nombre).html(
+          '<p style="color:red;font-weight:600;">⚠️ ERROR AL RECIBIR EL ARCHIVO EN EL SERVIDOR. ' +
+          'Puede que sea demasiado grande o que la conexión se interrumpió. Intenta de nuevo.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── Error al guardar en disco ───────────────────────────────────────
+      } else if (resp === '1') {
+        $('#1' + nombre).html(
+          '<p style="color:red;font-weight:600;">⚠️ ERROR AL GUARDAR EL ARCHIVO EN EL SERVIDOR. ' +
+          'Intenta de nuevo o contacta a soporte técnico.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── Formato no permitido genérico ───────────────────────────────────
+      } else if (resp === '2') {
+        var exts = (nombre === 'ADJUNTAR_FACTURA_XML') ? 'XML' :
+                   (nombre === 'ADJUNTAR_FACTURA_PDF') ? 'PDF' :
+                   'PDF, JPG, PNG, DOCX, XML, XLSX, MP4, TXT u otro formato de documento';
+        $('#1' + nombre).html(
+          '<p style="color:red;">⚠️ FORMATO DE ARCHIVO NO PERMITIDO. ' +
+          'Este campo acepta únicamente: <strong>' + exts + '</strong>.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── UUID duplicado en Pago Proveedores (02XML) ──────────────────────
+      } else if (resp.indexOf('3^^') === 0) {
+        var partes          = resp.split('^^');
+        var numeroSolicitud = partes[1] ? $.trim(partes[1]) : '';
+        var numeroEvento    = partes[2] ? $.trim(partes[2]) : '';
+        var detalleEvento   = numeroEvento !== '' ? ' — Evento: <strong>' + numeroEvento + '</strong>' : '';
+        var msgDuplicado    = numeroSolicitud !== ''
+          ? '<p style="color:red;font-weight:600;">⚠️ UUID YA REGISTRADO — Se encuentra en la solicitud: <strong>' + numeroSolicitud + '</strong>' + detalleEvento + '</p>'
+          : '<p style="color:red;font-weight:600;">⚠️ UUID PREVIAMENTE CARGADO.</p>';
+        $('#1' + nombre).html(msgDuplicado);
+        $('#' + nombre).val('');
+
+      // ── Formato estricto XML/PDF ────────────────────────────────────────
+      } else if (resp === '4') {
+        var formatoEsperado = nombre === 'ADJUNTAR_FACTURA_XML' ? 'XML' : 'PDF';
+        $('#1' + nombre).html(
+          '<p style="color:red;">⚠️ ESTE ARCHIVO TIENE QUE SER EN FORMATO <strong>' + formatoEsperado + '</strong>.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── XML vacío o sin timbre válido ───────────────────────────────────
+      } else if (resp.indexOf('5^^') === 0) {
+        $('#1' + nombre).html(
+          '<p style="color:red;font-weight:600;">⚠️ EL ARCHIVO XML ESTÁ VACÍO O NO CONTIENE INFORMACIÓN VÁLIDA. ' +
+          'Verifica que sea un CFDI timbrado correctamente e inténtalo de nuevo.</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── Receptor no válido ──────────────────────────────────────────────
+      } else if (resp.indexOf('6^^') === 0) {
+        var partesReceptor = resp.split('^^');
+        var nombreReceptor = partesReceptor[1] ? $.trim(partesReceptor[1]) : '';
+        var detalleReceptor = nombreReceptor !== ''
+          ? ' Receptor detectado: <strong>' + nombreReceptor + '</strong>.'
+          : '';
+        $('#1' + nombre).html(
+          '<p style="color:red;font-weight:600;">⚠️ EL RECEPTOR DE LA FACTURA NO ES: EPC, INN, EVE520; ' +
+          'FAVOR DE SOLICITAR EL CAMBIO.' + detalleReceptor + '</p>'
+        );
+        $('#' + nombre).val('');
+
+      // ── UUID duplicado en Comprobación de Gastos (07XML) ────────────────
+      } else if (resp.indexOf('7^^^') === 0) {
+        var partesGasto = resp.split('^^^');
+        var numeroGasto = partesGasto[1] ? $.trim(partesGasto[1]) : '';
+        var msgGasto = numeroGasto !== ''
+          ? '<p style="color:#9C2007;font-weight:600;">⚠️ UUID YA REGISTRADO EN COMPROBACIÓN DE GASTOS — CON EL ID: <strong>' + numeroGasto + '</strong></p>'
+          : '<p style="color:#9C2007;font-weight:600;">⚠️ UUID PREVIAMENTE CARGADO EN COMPROBACIÓN DE GASTOS.</p>';
+        $('#1' + nombre).html(msgGasto);
+        $('#' + nombre).val('');
+
+      // ── Éxito ───────────────────────────────────────────────────────────
+      } else {
+        $('#' + nombre).val(response);
+		  var nombreArchivoGuardado = resp;
+
+        if (nombre === 'ADJUNTAR_FACTURA_XML' && resp.indexOf('^^') !== -1) {
+
+          nombreArchivoGuardado = $.trim(resp.split('^^')[0]);
+
+        }
+
+        $('#' + nombre).val(nombreArchivoGuardado);
+		  limpiarInputFileVO(nombre);
+
+		   $('#1' + nombre)
+          .stop(true, true)
+          .show()
+          .html('<p style="color:green;">✅ ¡Archivo cargado con éxito!</p>')
+          .delay(2500)
+          .fadeOut(300, function () { $(this).html('').show(); });
+        $('#mensajeADJUNTOCOL').html('<p style="color:green;">✅ ¡Actualizado!</p>');
+        recargarElemento('#2ADJUNTAR_FACTURA_XML');
+        if (nombre === 'ADJUNTAR_FACTURA_XML') {
+          var camposXML = [
+            '#RAZON_SOCIAL2', '#RFC_PROVEEDOR2', '#CONCEPTO_PROVEE2',
+            '#TIPO_DE_MONEDA2', '#FECHA_DE_PAGO2', '#NUMERO_CONSECUTIVO_PROVEE2',
+            '#2MONTO_FACTURA', '#2MONTO_DEPOSITAR', '#2PFORMADE_PAGO',
+            '#2TImpuestosRetenidosIVA', '#2TImpuestosRetenidosISR',
+            '#2descuentos', '#2IVA', '#NOMBRE_COMERCIAL2'
+          ];
+          camposXML.forEach(recargarElemento);
+        }
+        recargarElemento('#2' + nombre);
+        recargarElemento('#resettabla');
+      }
+    },
+    error: function (xhr, textStatus) {
+      var sesionExpirada = xhr.status === 401 || $.trim(xhr.responseText || '') === 'SESION_EXPIRADA';
+      var sinConexion = navigator.onLine === false || xhr.status === 0 || textStatus === 'timeout';
+
+      if (sesionExpirada) {
+        mostrarErrorCargaArchivo(
+          nombre,
+          'TU SESIÓN HA TERMINADO. El archivo no se cargó. Inicia sesión nuevamente e inténtalo de nuevo.'
+        );
+      } else if (sinConexion) {
+        mostrarErrorCargaArchivo(
+          nombre,
+          'NO HAY CONEXIÓN A INTERNET O SE INTERRUMPIÓ LA COMUNICACIÓN. El archivo no se cargó; verifica tu conexión e intenta nuevamente.'
+        );
+      } else {
+        mostrarErrorCargaArchivo(
+          nombre,
+          'NO FUE POSIBLE CARGAR EL ARCHIVO. Intenta nuevamente o contacta a soporte técnico.'
+        );
+      }
+    }
+  });
+}
+
+/* -------------------------------------------------------
+   HELPER: recarga un elemento por selector
+------------------------------------------------------- */
+function recargarElemento(selector) {
+  $(selector).load(location.href + ' ' + selector);
+}
+
+
+/* -------------------------------------------------------
+   FORMATEO DE MONTOS CON COMAS
+------------------------------------------------------- */
+function comasainput(name) {
+  const numberNoCommas  = (x) => x.toString().replace(/,/g, '');
+  const numberWithCommas = (x) => {
+    const num = parseFloat(x);
+    if (isNaN(num)) return '';
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  const inputElement = document.getElementsByName(name)[0];
+
+  inputElement.addEventListener('keydown', function (e) {
+    const keyCode = e.keyCode || e.which;
+    const isNumberKey =
+      (keyCode >= 48 && keyCode <= 57)  ||
+      (keyCode >= 96 && keyCode <= 105) ||
+      keyCode === 46 || keyCode === 8;
+
+    if (isNumberKey) {
+      setTimeout(() => {
+        const originalValue    = inputElement.value;
+        const originalCursorPos = inputElement.selectionStart;
+        const countCommasBefore = originalValue.slice(0, originalCursorPos).split(',').length - 1;
+
+        const numericValue   = numberNoCommas(originalValue);
+        const formattedValue = numberWithCommas(numericValue);
+        inputElement.value   = formattedValue;
+
+        let newCursorPos = originalCursorPos - countCommasBefore;
+        let i = 0, charsPassed = 0;
+        while (charsPassed < newCursorPos && i < formattedValue.length) {
+          if (formattedValue[i] !== ',') charsPassed++;
+          i++;
+        }
+        inputElement.setSelectionRange(i, i);
+      }, 0);
+    }
+  });
+}
+
+
+/* -------------------------------------------------------
+   SHOW/HIDE TARGETS
+------------------------------------------------------- */
+function activarTarget(num) {
+  var allTargets = [];
+  for (var i = 1; i <= 15; i++) allTargets.push(i);
+  allTargets.push('VIDEO');
+  allTargets.forEach(function (t) { $('#target' + t).hide('linear'); });
+  if (num !== null) {
+    $('#target' + num).show('swing');
+    if (num === 2 && typeof load === 'function') {
+      setTimeout(function () { load(1); }, 100);
+    }
+  }
+}
+
+function guardarYIrATarget2() {
+  activarTarget(2);
+  var el = document.getElementById('target2');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function recargarTodosLosElementos() {
+  $.get(location.href, function(html) {
+    var doc = $(html);
+    var selectores = [
+      'ADJUNTAR_FACTURA_XML', '1ADJUNTAR_FACTURA_XML', '2ADJUNTAR_FACTURA_XML',
+      'ADJUNTAR_FACTURA_PDF', '1ADJUNTAR_FACTURA_PDF', '2ADJUNTAR_FACTURA_PDF',
+      '2ADJUNTAR_COTIZACION', '2CONPROBANTE_TRANSFERENCIA', '2ADJUNTAR_ARCHIVO_1',
+      'RAZON_SOCIAL2', 'RFC_PROVEEDOR2', 'CONCEPTO_PROVEE2',
+      'TIPO_DE_MONEDA2', 'FECHA_DE_PAGO2', 'NUMERO_CONSECUTIVO_PROVEE2',
+      'NOMBRE_COMERCIAL2', '2MONTO_FACTURA', '2MONTO_DEPOSITAR',
+      '2PFORMADE_PAGO', '2TImpuestosRetenidosIVA', 'TImpuestosRetenidosIVA',
+      '2TImpuestosRetenidosISR', 'TImpuestosRetenidosISR',
+      '2descuentos', 'descuentos', '2IVA', 'IVA',
+      'IMPUESTO_HOSPEDAJE', 'MONTO_PROPINA',
+      'resettabla', 'reset_totales',
+      'NUMERO_CONSECUTIVO_PROVEE2', 'mensajeADJUNTOCOL'
+    ];
+    selectores.forEach(function(id) {
+      var remoto = doc.find('#' + id);
+      var local  = $('#' + id);
+      if (remoto.length && local.length) {
+        local.html(remoto.html());
+      }
+    });
+    inicializarCalculoTotales();
+  });
+}
+
+$(document).ready(function () {
+
+  // Si venimos de guardar/borrar un archivo, abrir target2 automáticamente
+  // en vez de ocultar todos los targets.
+  var abrirTarget2 = sessionStorage.getItem('abrirTarget2');
+  if (abrirTarget2 === '1') {
+    sessionStorage.removeItem('abrirTarget2');
+    activarTarget(2);
+    setTimeout(function () {
+      var el = document.getElementById('target2');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  } else {
+    activarTarget(null);
+  }
+
+  var allNums = [];
+  for (var n = 1; n <= 15; n++) allNums.push(n);
+  allNums.push('VIDEO');
+
+  allNums.forEach(function (num) {
+    $('#mostrar' + num).on('click', function () {
+      $('#target' + num).show('swing');
+      if (num === 2 && typeof load === 'function') { load(1); }
+    });
+    $('#ocultar' + num).on('click', function () { $('#target' + num).hide('linear'); });
+  });
+
+  function toggleTodos(accion) {
+    allNums.forEach(function (n) { $('#target' + n)[accion](accion === 'show' ? 'swing' : 'linear'); });
+  }
+  $('#mostrartodos,  #mostrartodos2').on('click', function () { toggleTodos('show'); });
+  $('#ocultartodos, #ocultartodos2').on('click', function () { toggleTodos('hide'); });
+
+  $('#dataModal').on('hidden.bs.modal', function () {
+    $('#target2').show('swing');
+    var el = document.getElementById('target2');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  $('#dataModal3').on('hidden.bs.modal', function () {
+    $('#btnYes').off('click');
+  });
+
+
+  /* ---------------------------------------------------
+     HELPER: limpia el formulario
+  --------------------------------------------------- */
+  function limpiarFormularioVO() {
+    var form = document.getElementById('ventasoperacionesform');
+    if (form) form.reset();
+
+    var camposVacios = [
+      '#RAZON_SOCIAL2', '#CONCEPTO_PROVEE', '#RFC_PROVEEDOR2',
+      '#TIPO_DE_MONEDA', '#FECHA_DE_PAGO', '#NUMERO_CONSECUTIVO_PROVEE',
+      '#ADJUNTAR_FACTURA_XML', '#ADJUNTAR_FACTURA_PDF',
+      '#ADJUNTAR_COTIZACION', '#ADJUNTAR_ARCHIVO_1',
+      '#2MONTO_FACTURA', '#2MONTO_DEPOSITAR',
+      '#2ADJUNTAR_FACTURA_PDF', '#2TImpuestosRetenidos'
+    ];
+    camposVacios.forEach(function (id) { $(id).val(''); });
+	   ['ADJUNTAR_COTIZACION', 'ADJUNTAR_ARCHIVO_1'].forEach(function (nombre) {
+      $('#' + nombre).val('');
+      $('input[type="file"][name="' + nombre + '"]').val('');
+      $('#1' + nombre).stop(true, true).html('').show();
+      $('#2' + nombre).html('');
+    });
+
+    $('#NOMBRE_COMERCIAL').empty().trigger('change');
+    recargarTodosLosElementos();
+  }
+
+
+  /* ---------------------------------------------------
+     ENVIAR VENTAS OPERACIONES
+  --------------------------------------------------- */
+  $('#enviarVENTASOPERACIONES').on('click', function () {
+    var $btn = $(this);
+    if ($btn.prop('disabled')) return;
+    $btn.prop('disabled', true);
+   ['ADJUNTAR_FACTURA_XML', 'ADJUNTAR_FACTURA_PDF'].forEach(limpiarInputFileVO);
+
+
+    var formData = new FormData($('#ventasoperacionesform')[0]);
+
+    $.ajax({
+      url: 'ventasoperaciones/controladorVO.php',
+      type: 'POST',
+      dataType: 'html',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false
+    }).done(function (data) {
+      var respuesta = $.trim(data).replace(/[\r\n\t]/g, '');
+      if (respuesta.indexOf('Ingresado') !== -1 || respuesta.indexOf('Actualizado') !== -1) {
+        // Marcamos que al recargar la página debe abrirse target2 automáticamente
+        sessionStorage.setItem('abrirTarget2', '1');
+        location.reload();
+        return;
+      } else {
+        var dataLimpia = data
+          .replace(/5\^\^/g, '')
+          .replace(/3\^\^/g, '')
+          .replace(/^[234]\s*$/mg, '')
+          .trim();
+        if (dataLimpia !== '') {
+          $('#mensajeventasoperaciones').html('<span style="color:red;">' + dataLimpia + '</span>').show().delay(4000).fadeOut();
+        }
+        $btn.prop('disabled', false);
+      }
+    }).fail(function () {
+      console.error('[enviarVENTASOPERACIONES] Error en la petición AJAX.');
+      $btn.prop('disabled', false);
+    });
+  });
+
+
+  /* ---------------------------------------------------
+     Borrar documento adjunto
+    ------------------------------------------------------- */
+/* ---------------------------------------------------
+   Borrar documento adjunto
+------------------------------------------------------- */
+$(document).on('click', '.view_dataSBborrar2', function () {
+    var borra_id_sb    = $(this).attr('id');
+    var $documentoNodo = $(this);
+
+    // ── Detectar si el botón está dentro del contenedor del XML ──────────
+    var esXML = $documentoNodo.closest('#2ADJUNTAR_FACTURA_XML').length > 0;
+
+    $('#dataModal3').modal('show');
+
+    $('#btnYes').off('click').on('click', function () {
+        $.ajax({
+            url: 'ventasoperaciones/controladorVO.php',
+            method: 'POST',
+            data: { borra_id_sb: borra_id_sb, borrasbdoc: 'borrasbdoc' },
+            beforeSend: function () { 
+                $('#mensajeventasoperaciones').html('cargando...'); 
+            },
+            success: function (data) {
+                $('#dataModal3').modal('hide');
+
+                // ── Si era un XML, recargar página completa ───────────────
+                if (esXML) {
+                    location.reload();
+                    return;
+                }
+                // ─────────────────────────────────────────────────────────
+
+                $('#mensajeventasoperaciones').html('<span id="ACTUALIZADO">' + data + '</span>');
+
+                var $contenedorLinea = $documentoNodo.closest('p');
+                if ($contenedorLinea.length) {
+                    $contenedorLinea.remove();
+                } else {
+                    var $saltoLinea = $documentoNodo.nextAll('br:first');
+                    $documentoNodo.prev('a').remove();
+                    $documentoNodo.next('span').remove();
+                    $saltoLinea.remove();
+                    $documentoNodo.remove();
+                }
+
+                recargarElemento('#' + borra_id_sb);
+                recargarElemento('#A' + borra_id_sb);
+            }
+        });
+    });
+});
+
+  /* ---------------------------------------------------
+     BORRAR VENTAS OPERACIONES
+  --------------------------------------------------- */
+  $(document).on('click', '.view_dataBORRAVENTASOPERACIONES', function () {
+    var borra_id_VO = $(this).attr('id');
+    $('#dataModal3').modal('show');
+
+    $('#btnYes').off('click').on('click', function () {
+      $.ajax({
+        url: 'ventasoperaciones/controladorVO.php',
+        method: 'POST',
+        data: { borra_id_VO: borra_id_VO, borraventasoperaciones: 'borraventasoperaciones' },
+        beforeSend: function () { $('#mensajeventasoperaciones').html('cargando...'); },
+        success: function (data) {
+          $('#dataModal3').modal('hide');
+          $('#mensajeventasoperaciones').html('<span id="ACTUALIZADO">' + data + '</span>');
+          if (typeof load === 'function') load(1);
+          recargarElemento('#reset_totales');
+        }
+      });
+    });
+  });
+
+
+  /* ---------------------------------------------------
+     VER / MODIFICAR REGISTROS
+  --------------------------------------------------- */
+  function bindVistaPrevia(selector, url) {
+    $(document).on('click', selector, function () {
+      var personal_id = $(this).attr('id');
+      $.ajax({
+        url: url,
+        method: 'POST',
+        data: { personal_id: personal_id },
+        beforeSend: function () { $('#mensajeventasoperaciones').html('cargando...'); },
+        success: function (data) {
+          $('#personal_detalles').html(data);
+          $('#dataModal').modal('toggle');
+          recargarElemento('#reset_totales');
+        }
+      });
+    });
+  }
+
+  bindVistaPrevia('.view_dataVENTASOPERACIONES', 'pagoproveedores/VistaPreviapagoproveedorVENTAS.php');
+  bindVistaPrevia('.view_dataSUBIRF',             'pagoproveedores/VistaPreviapagoproveedor3.php');
+  bindVistaPrevia('.view_dataSUBIRCOMP',          'pagoproveedores/VistaPreviapagoproveedorU.php');
+
+
+  /* ---------------------------------------------------
+     DATOS BANCARIOS 1
+  --------------------------------------------------- */
+  $('#enviarDATOSBANCARIOS1').on('click', function () {
+    var formData = new FormData($('#DATOSBANCARIOS1form')[0]);
+    $.ajax({
+      url: 'ventasoperaciones/controladorVO.php',
+      type: 'POST',
+      dataType: 'html',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false
+    }).done(function (data) {
+      if ($.trim(data) === 'Ingresado' || $.trim(data) === 'Actualizado') {
+        $('#mensajeDATOSBANCARIOS1').html('<span id="ACTUALIZADO">' + data + '</span>');
+        recargarElemento('#resetBancario1p');
+      } else {
+        $('#mensajeDATOSBANCARIOS1').html(data);
+      }
+    }).fail(function () {
+      console.error('[enviarDATOSBANCARIOS1] Error en la petición.');
+    });
+  });
+
+  $(document).on('click', '.view_data_bancario1p_modifica', function () {
+    var personal_id = $(this).attr('id');
+    $.ajax({
+      url: 'pagoproveedores/VistaPreviaDatosBancario1.php',
+      method: 'POST',
+      data: { personal_id: personal_id },
+      beforeSend: function () { $('#mensajeDATOSBANCARIOS1').html('cargando...'); },
+      success: function (data) {
+        $('#personal_detalles').html(data);
+        $('#dataModal').modal('toggle');
+      }
+    });
+  });
+
+  $(document).on('click', '.view_databancario1borrar', function () {
+    var borra_id_bancaP = $(this).attr('id');
+    $('#dataModal3').modal('show');
+    $('#btnYes').off('click').on('click', function () {
+      $.ajax({
+        url: 'ventasoperaciones/controladorVO.php',
+        method: 'POST',
+        data: { borra_id_bancaP: borra_id_bancaP, borra_datos_bancario1: 'borra_datos_bancario1' },
+        beforeSend: function () { $('#mensajeREFERENCIAS').html('cargando...'); },
+        success: function (data) {
+          $('#dataModal3').modal('hide');
+          $('#mensajeDATOSBANCARIOS1').html('<span id="ACTUALIZADO">' + data + '</span>');
+          recargarElemento('#resetBancario1p');
+        }
+      });
+    });
+  });
+
+
+  /* ---------------------------------------------------
+     ENVIAR EMAIL BANCARIOS
+  --------------------------------------------------- */
+  $(document).on('click', '#enviar_email_bancarios', function () {
+    var DAbancaPRO_ENVIAR_IMAIL = $('#DAbancaPRO_ENVIAR_IMAIL').val();
+    var dataString = $('#form_emai_DATOSBpro').serialize();
+    $.ajax({
+      url: 'ventasoperaciones/controladorVO.php',
+      method: 'POST',
+      dataType: 'html',
+      data: dataString + '&DAbancaPRO_ENVIAR_IMAIL=' + encodeURIComponent(DAbancaPRO_ENVIAR_IMAIL),
+      beforeSend: function () { $('#mensajeDATOSBANCARIOS1').html('cargando...'); },
+      success: function (data) {
+        $('#mensajeDATOSBANCARIOS1').html('<span id="ACTUALIZADO">' + data + '</span>');
+      }
+    });
+  });
+
+}); // END $(document).ready
+</script>
