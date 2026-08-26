@@ -607,7 +607,9 @@ $(document).ready(function(){
             },
             success: function(data){
                 // Espera JSON: {"color":"...","placas":"...","foto":"...","costo":"..."}
-       $('#Listado_VEHICULOSEVEform [name="VEHICULOSEVE_COSTO"]').val(data);
+      // Actualiza el costo del vehículo seleccionado y recalcula importes.
+                $('#Listado_VEHICULOSEVEform [name="VEHICULOSEVE_COSTO"]').val(data);
+                vistaprevTotalCantidadPrecio();
 
             }
 
