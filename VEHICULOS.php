@@ -445,6 +445,8 @@ $querycontras = $altaeventos->Listado_VEHICULOSEVE();
 <th width="20%"style="background:#c9e8e8">IVA</th>
 <th width="20%"style="background:#c9e8e8">TOTAL</th>
 <th width="20%"style="background:#c9e8e8">OBSERVACIONES</th>
+<th width="20%"style="background:#c9e8e8">FOTOS</th>
+<th width="20%"style="background:#c9e8e8">OBSERVACIONES DE FOTOS</th>
 
 
 </tr>
@@ -518,6 +520,11 @@ while($row = mysqli_fetch_array($querycontras))
 <td ><?php echo number_format($row["VEHICULOSEVE_IVA"],2,'.',','); ?></td>
 <td ><?php echo number_format($row["PRECIOPESOS_SOFTWARE"],2,'.',','); ?></td>  
 <td ><?php echo $row["VEHICULOSEVE_OBSERVA"]; ?></td>
+<td ><?php echo $FOTOVEHIEVENUEVA; ?></td>
+<td ><?php echo $row["OBSERVACIONFOTO"]; ?></td>
+
+<td><input type="button" name="view2" value="FOTOS" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataVEHICULOFOTOS" />
+</td>
 <?php if($conexion->variablespermisos('','VEHIEVE','modificar')=='si' and $var_bloquea_fecha=='no'){ ?>
 
 <td><?php if(!isset($row["AUTORIZADO_VEHICULOSEVE"]) or $row["AUTORIZADO_VEHICULOSEVE"]!='si'){ ?><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_VEHICULOSEVE" /><?php } ?></td>

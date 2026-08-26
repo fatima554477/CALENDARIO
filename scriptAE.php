@@ -4889,7 +4889,22 @@ $(document).on('click', '.view_VEHICULOSEVE', function(){
   });
  })
 
-
+$(document).on('click', '.view_dataVEHICULOFOTOS', function(){
+  //$('#dataModal').modal();
+  var personal_id = $(this).attr("id");
+  $.ajax({
+  url:"calendariodeeventos2/VistaPreviaVEHICULOSEVEFOTO.php",
+   method:"POST",
+   data:{personal_id:personal_id},
+    beforeSend:function(){  
+    $('#mensajeVEHICULOSEVE').html('CARGANDO'); 
+    },    
+   success:function(data){
+    $('#personal_detalles').html(data);
+    $('#dataModal').modal('show');
+   }
+  });
+ })
 
 $(document).on('click', '.view_dataVEHICULOSEVEborrar', function(){
 
