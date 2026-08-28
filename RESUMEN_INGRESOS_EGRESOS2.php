@@ -1,48 +1,44 @@
-
 <?php
 
 if (!isset($_SESSION)) {
     session_start();
 }
 $PorfaltaDeFacturaSession = isset($_SESSION['PorfaltaDeFactura12']) ? $_SESSION['PorfaltaDeFactura12'] : 0;
-?>
+?>     
 <script>
+let lastStatusChecksum = null;
 
 function refreshSection() {
     const target = document.querySelector('#target31');
     target.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
 
-    fetch(window.location.href)
-        .then(response => response.text())
+    fetch(window.location.href, { cache: 'no-store' })
+        .then(r => r.text())
         .then(html => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            const newContent = doc.querySelector('#target31').innerHTML;
-            target.innerHTML = newContent;
+            target.innerHTML = doc.querySelector('#target31').innerHTML;
         });
 }
 
-// Verifica periódicamente si hay cambios en la tabla 02SUBETUFACTURA
-function checkStatusUpdates() {
-    fetch('check_status_checkbox.php')
-        .then(response => response.json())
-        .then(data => {
-            if (window.lastStatusChecksum !== data.checksum) {
-                window.lastStatusChecksum = data.checksum;
-                refreshSection();
-            }
-        })
-        .catch(console.error);
-}
-
-setInterval(checkStatusUpdates, 5000);
+const resumenChannel = new BroadcastChannel('#target31');
+resumenChannel.onmessage = (event) => {
+    if (event.data === 'update' || (event.data && event.data.type === 'PorfaltaDeFactura12')) {
+        refreshSection();   // vuelve a cargar la sección y lee el nuevo valor de la sesión
+    }
+};
 
 </script>
 
-<div id="content">     
+
+
+<div id="content">
+
+
+
 			<hr/>
 			<strong>  <p class="mb-0 text-uppercase">
-<img src="includes/contraer31.png" id="mostrar31" style="cursor:pointer;"/>
+<img src="includes/contraer31.png" onclick="refreshSection()" id="mostrar31" style="cursor:pointer;"/>
 <img src="includes/contraer41.png" id="ocultar31" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;CIERRE DEL EVENTO</p><div  id="mensajeRESUMEN"><div class="progress" style="width: 25%;">
 									</div>
 								</div></div></strong>
@@ -67,6 +63,16 @@ setInterval(checkStatusUpdates, 5000);
 		}
 		}
 		
+				$con = $altaeventos->db();
+		$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
+		$variablequeryIP = "select * from 04pagosingresos WHERE idRelacion = '".$session."' order by id desc ";
+		$arrayqueryIP = mysqli_query($con,$variablequeryIP);
+		while($rowIngresoP = mysqli_fetch_array($arrayqueryIP) ){
+			
+			$TOTAINGRESOSsinP += $rowIngresoP['OBSERVACIONES_INGRESOS'];
+		
+		}
+		
 		
 		
         $con = $altaeventos->db();
@@ -77,6 +83,16 @@ setInterval(checkStatusUpdates, 5000);
 			if($rowIngreso2['pagado'] == 'si'){
 			$TOTAINGRESOS2 += $rowIngreso2['MONTO_OTRO'];
 		}
+		}
+		
+		 $con = $altaeventos->db();
+		$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
+		$variablequeryI2P = "select * from 04pagoegresos WHERE idRelacion = '".$session."' order by id desc ";
+		$arrayqueryI2P = mysqli_query($con,$variablequeryI2P);
+		while($rowIngreso2P = mysqli_fetch_array($arrayqueryI2P) ){
+		
+			$TOTAINGRESOS2P += $rowIngreso2P['MONTO_OTRO'];
+		
 		}
 		
 		
@@ -115,18 +131,21 @@ while($ROWap=mysqli_fetch_array($QUERYAvionp)){
 }
 
 
-$VarCOMPROBACION = 'SELECT subTotal, UUID, MONTO_DEPOSITAR, STATUS_CHECKBOX ,MONTO_FACTURA, Descuento
+$VarCOMPROBACION = 'SELECT subTotal, UUID, MONTO_DEPOSITAR, STATUS_CHECKBOX, MONTO_FACTURA, Descuento, STATUS_RECHAZADO
                     FROM 07COMPROBACION 
                     LEFT JOIN 07XML ON 07COMPROBACION.id = 07XML.`ultimo_id` 
                     WHERE 07COMPROBACION.NUMERO_EVENTO = "'.$NUMERO_EVENTO.'"';
 $QUERYCOMPROBACION = mysqli_query($con, $VarCOMPROBACION);
-
 while($ROWd = mysqli_fetch_array($QUERYCOMPROBACION)){
-    // Verificar si falta UUID o el checkbox es 'no' o null
-if (($ROWd['STATUS_CHECKBOX'] =='no' ) && strlen(trim($ROWd['UUID'])) < 1) {
+
+    // Si está rechazado, no se cuenta
+    if (isset($ROWd['STATUS_RECHAZADO']) && $ROWd['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
+
+    if (($ROWd['STATUS_CHECKBOX'] == 'no') && strlen(trim($ROWd['UUID'])) < 1) {
         $PorfaltaDeFacturaCOMPROBACION += $ROWd['MONTO_DEPOSITAR'] * 1.46;
-    }     else {
-  
+    } else {
         $descuento = (isset($ROWd['Descuento']) && is_numeric($ROWd['Descuento'])) ? $ROWd['Descuento'] : 0;
         if (isset($ROWd['subTotal']) && is_numeric($ROWd['subTotal']) && $ROWd['subTotal'] > 0) {
             $subTotalCOMPROBACION += $ROWd['subTotal'] - $descuento;
@@ -138,16 +157,26 @@ if (($ROWd['STATUS_CHECKBOX'] =='no' ) && strlen(trim($ROWd['UUID'])) < 1) {
 
 
 
-	$VarCOMPROBACIONpropina = 'SELECT  MONTO_PROPINA, IMPUESTO_HOSPEDAJE, STATUS_CHECKBOX,UUID FROM 07COMPROBACION LEFT JOIN 07XML ON 07COMPROBACION.id = 07XML.`ultimo_id` where 07COMPROBACION.NUMERO_EVENTO ="'.$NUMERO_EVENTO.'" ';  
-	$QUERYCOMPROBACIONP = mysqli_query($con,$VarCOMPROBACIONpropina);
-	$subTotalCOMPROBACIONpropina = 0;
+$VarCOMPROBACIONpropina = 'SELECT MONTO_PROPINA, IMPUESTO_HOSPEDAJE, STATUS_CHECKBOX, UUID, STATUS_RECHAZADO 
+                           FROM 07COMPROBACION 
+                           LEFT JOIN 07XML ON 07COMPROBACION.id = 07XML.`ultimo_id` 
+                           WHERE 07COMPROBACION.NUMERO_EVENTO ="'.$NUMERO_EVENTO.'"';
+$QUERYCOMPROBACIONP = mysqli_query($con, $VarCOMPROBACIONpropina);
+$subTotalCOMPROBACIONpropina = 0;
+
 while($ROWCC = mysqli_fetch_array($QUERYCOMPROBACIONP)){
-     if ($ROWCC['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWCC['UUID'])) > 0 ) {
-			$montoPropina = $ROWCC['MONTO_PROPINA'] ?: 0;
-            $impuesto = $ROWCC['IMPUESTO_HOSPEDAJE'] ?: 0;
-            $subTotalCOMPROBACIONpropina += $montoPropina + $impuesto;
-	}
-	}
+
+    // Si está rechazado, no se cuenta
+    if (isset($ROWCC['STATUS_RECHAZADO']) && $ROWCC['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
+
+    if ($ROWCC['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWCC['UUID'])) > 0) {
+        $montoPropina = $ROWCC['MONTO_PROPINA'] ?: 0;
+        $impuesto     = $ROWCC['IMPUESTO_HOSPEDAJE'] ?: 0;
+        $subTotalCOMPROBACIONpropina += $montoPropina + $impuesto;
+    }
+}
 	
 
 
@@ -157,32 +186,27 @@ while($ROWCC = mysqli_fetch_array($QUERYCOMPROBACIONP)){
 
 
 
-
-$VarSUBE = 'SELECT subTotal, UUID, MONTO_DEPOSITAR,ID_RELACIONADO, STATUS_CHECKBOX, MONTO_FACTURA, Descuento
+$VarSUBE = 'SELECT subTotal, UUID, MONTO_DEPOSITAR, ID_RELACIONADO, STATUS_CHECKBOX, MONTO_FACTURA, Descuento, STATUS_RECHAZADO
     FROM 02SUBETUFACTURA 
     LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` 
-  
     WHERE 02SUBETUFACTURA.NUMERO_EVENTO = "'.$NUMERO_EVENTO.'" 
     AND 02SUBETUFACTURA.VIATICOSOPRO IN (
         "REEMBOLSO", 
         "VIATICOS", 
-        "PAGO A PROVEEDOR CON DOS O MAS FACTURAS",
-        "PAGOS CON UNA SOLA FACTURA"
+        "PAGO A PROVEEDOR CON DOS O MAS FACTURAS"
     ) AND 02SUBETUFACTURA.ID_RELACIONADO != ""';
-
 $QUERYSUBE = mysqli_query($con, $VarSUBE);
-
-
-
 while ($ROWe = mysqli_fetch_array($QUERYSUBE)) {
-    // Verificar condiciones para factura faltante
-    if ($ROWe['STATUS_CHECKBOX'] == 'no'  && strlen(trim($ROWe['UUID'])) < 1) {
-        $PorfaltaDeFacturaSUBE += $ROWe['MONTO_DEPOSITAR'] * 1.46;
-    }  
 
-    else {
-		  $descuento = (isset($ROWe['Descuento']) && is_numeric($ROWe['Descuento'])) ? $ROWe['Descuento'] : 0;
-       
+    // Si está rechazado, no se cuenta
+    if (isset($ROWe['STATUS_RECHAZADO']) && $ROWe['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
+
+    if ($ROWe['STATUS_CHECKBOX'] == 'no' && strlen(trim($ROWe['UUID'])) < 1) {
+        $PorfaltaDeFacturaSUBE += $ROWe['MONTO_DEPOSITAR'] * 1.46;
+    } else {
+        $descuento = (isset($ROWe['Descuento']) && is_numeric($ROWe['Descuento'])) ? $ROWe['Descuento'] : 0;
         if (isset($ROWe['subTotal']) && is_numeric($ROWe['subTotal']) && $ROWe['subTotal'] > 0) {
             $subTotalSUBETUFACTURA += $ROWe['subTotal'] - $descuento;
         } else {
@@ -193,33 +217,26 @@ while ($ROWe = mysqli_fetch_array($QUERYSUBE)) {
 
 
 
-
 /////////////////////////////////////////////nuevo///////////////////////////////////////////
-
-$VarSUBERES = 'SELECT subTotal, UUID, MONTO_DEPOSITAR,NUMERO_CONSECUTIVO_PROVEE, STATUS_CHECKBOX, MONTO_FACTURA
+$VarSUBERES = 'SELECT subTotal, UUID, MONTO_DEPOSITAR, NUMERO_CONSECUTIVO_PROVEE, STATUS_CHECKBOX, MONTO_FACTURA, STATUS_RECHAZADO
     FROM 02SUBETUFACTURA 
     LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` 
-  
     WHERE 02SUBETUFACTURA.NUMERO_EVENTO = "'.$NUMERO_EVENTO.'" 
     AND 02SUBETUFACTURA.VIATICOSOPRO IN (
         "REEMBOLSO", 
         "VIATICOS", 
-        "PAGO A PROVEEDOR CON DOS O MAS FACTURAS",
-        "PAGOS CON UNA SOLA FACTURA"
+        "PAGO A PROVEEDOR CON DOS O MAS FACTURAS"
     ) AND 02SUBETUFACTURA.NUMERO_CONSECUTIVO_PROVEE != ""';
-
 $QUERYSUBERES = mysqli_query($con, $VarSUBERES);
-
-
-
 while ($ROWeR = mysqli_fetch_array($QUERYSUBERES)) {
-    // Verificar condiciones para factura faltante
-    if ($ROWeR['STATUS_CHECKBOX'] == 'no'  && strlen(trim($ROWeR['UUID'])) < 1) {
-        $PorfaltaDeFacturaSUBERES += $ROWeR['MONTO_DEPOSITAR'] * 1.46;
-    }  
 
-    else {
-       
+    if (isset($ROWeR['STATUS_RECHAZADO']) && $ROWeR['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
+
+    if ($ROWeR['STATUS_CHECKBOX'] == 'no' && strlen(trim($ROWeR['UUID'])) < 1) {
+        $PorfaltaDeFacturaSUBERES += $ROWeR['MONTO_DEPOSITAR'] * 1.46;
+    } else {
         if (isset($ROWeR['subTotal']) && is_numeric($ROWeR['subTotal']) && $ROWeR['subTotal'] > 0) {
             $subTotalSUBETUFACTURARES += $ROWeR['subTotal'];
         } else {
@@ -228,54 +245,68 @@ while ($ROWeR = mysqli_fetch_array($QUERYSUBERES)) {
     }
 }
 
-
-
-
-$VarSUBE2 = 'SELECT subTotal, UUID, MONTO_DEPOSITAR ,STATUS_CHECKBOX ,MONTO_FACTURA, Descuento
-            FROM 02SUBETUFACTURA 
-            LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` 
-            WHERE 02SUBETUFACTURA.NUMERO_EVENTO = "'.$NUMERO_EVENTO.'" 
-            AND 02SUBETUFACTURA.VIATICOSOPRO = "PAGO A PROVEEDOR"'; // Nueva condición
-
+$VarSUBE2 = '
+    SELECT subTotal, UUID, MONTO_DEPOSITAR, STATUS_CHECKBOX, MONTO_FACTURA, Descuento, STATUS_RECHAZADO
+    FROM 02SUBETUFACTURA 
+    LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id`
+    WHERE 02SUBETUFACTURA.NUMERO_EVENTO = "'.$NUMERO_EVENTO.'" 
+    AND 02SUBETUFACTURA.VIATICOSOPRO IN ("PAGO A PROVEEDOR","PAGOS CON UNA SOLA FACTURA")
+    AND (02SUBETUFACTURA.STATUS_SINXML = "no" OR 02SUBETUFACTURA.STATUS_SINXML IS NULL)
+';
 $QUERYSUBE2 = mysqli_query($con, $VarSUBE2);
+while ($ROWe2 = mysqli_fetch_array($QUERYSUBE2)) {
 
-while ($ROWe2 = mysqli_fetch_array($QUERYSUBE2)) {   
-    // Verificar condiciones para factura faltante
-    if ($ROWe2['STATUS_CHECKBOX'] == 'no'  && strlen(trim($ROWe2['UUID'])) < 1) {
+    if (isset($ROWe2['STATUS_RECHAZADO']) && $ROWe2['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
+
+    if ($ROWe2['STATUS_CHECKBOX'] == 'no' && strlen(trim($ROWe2['UUID'])) < 1) {
         $PorfaltaDeFacturaSUBE2 += $ROWe2['MONTO_DEPOSITAR'] * 1.46;
-    } 
-
-    else {
-		$descuento = (isset($ROWe2['Descuento']) && is_numeric($ROWe2['Descuento'])) ? $ROWe2['Descuento'] : 0;
-  
+    } else {
+        $descuento = (isset($ROWe2['Descuento']) && is_numeric($ROWe2['Descuento'])) ? $ROWe2['Descuento'] : 0;
         if (isset($ROWe2['subTotal']) && is_numeric($ROWe2['subTotal']) && $ROWe2['subTotal'] > 0) {
-            $subTotalSUBETUFACTURA2 += $ROWe2['subTotal']- $descuento;
+            $subTotalSUBETUFACTURA2 += $ROWe2['subTotal'] - $descuento;
         } else {
-            $subTotalSUBETUFACTURA2 += $ROWe2['MONTO_FACTURA']- $descuento;
+            $subTotalSUBETUFACTURA2 += $ROWe2['MONTO_FACTURA'] - $descuento;
         }
     }
 }
 
+$VarSUBEpropina = 'SELECT MONTO_PROPINA, IMPUESTO_HOSPEDAJE, STATUS_CHECKBOX, UUID, STATUS_RECHAZADO 
+    FROM 02SUBETUFACTURA 
+    LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` 
+    WHERE 02SUBETUFACTURA.NUMERO_EVENTO ="'.$NUMERO_EVENTO.'" 
+    AND 02SUBETUFACTURA.ID_RELACIONADO != ""';
+$QUERYSUBEP = mysqli_query($con, $VarSUBEpropina);
+while ($ROWep = mysqli_fetch_array($QUERYSUBEP)) {
 
+    if (isset($ROWep['STATUS_RECHAZADO']) && $ROWep['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
 
-        $VarSUBEpropina = 'SELECT MONTO_PROPINA, IMPUESTO_HOSPEDAJE, STATUS_CHECKBOX, UUID FROM 02SUBETUFACTURA LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` where 02SUBETUFACTURA.NUMERO_EVENTO ="'.$NUMERO_EVENTO.'" AND 02SUBETUFACTURA.ID_RELACIONADO != ""';  // Condición para ID_RELACION lleno
-        $QUERYSUBEP = mysqli_query($con,$VarSUBEpropina);
-while($ROWep=mysqli_fetch_array($QUERYSUBEP)){
-    if ($ROWep['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWep['UUID'])) > 0 ) {
-                 $subTotalSUBETUFACTURApropina += $ROWep['MONTO_PROPINA'] + $ROWep['IMPUESTO_HOSPEDAJE'];
-        }
-        }
+    if ($ROWep['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWep['UUID'])) > 0) {
+        $subTotalSUBETUFACTURApropina += $ROWep['MONTO_PROPINA'] + $ROWep['IMPUESTO_HOSPEDAJE'];
+    }
+}
 
+$VarSUBEpropina2 = 'SELECT MONTO_PROPINA, IMPUESTO_HOSPEDAJE, STATUS_CHECKBOX, UUID, STATUS_RECHAZADO 
+    FROM 02SUBETUFACTURA 
+    LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` 
+    WHERE 02SUBETUFACTURA.NUMERO_EVENTO ="'.$NUMERO_EVENTO.'" 
+    AND 02SUBETUFACTURA.VIATICOSOPRO IN ("PAGO A PROVEEDOR","PAGOS CON UNA SOLA FACTURA") 
+    AND (02SUBETUFACTURA.STATUS_SINXML = "no" OR 02SUBETUFACTURA.STATUS_SINXML IS NULL)
+';
+$QUERYSUBEP2 = mysqli_query($con, $VarSUBEpropina2);
+while ($ROWep2 = mysqli_fetch_array($QUERYSUBEP2)) {
 
+    if (isset($ROWep2['STATUS_RECHAZADO']) && $ROWep2['STATUS_RECHAZADO'] == 'si') {
+        continue;
+    }
 
-
-        $VarSUBEpropina2 = 'SELECT MONTO_PROPINA, IMPUESTO_HOSPEDAJE, STATUS_CHECKBOX, UUID FROM 02SUBETUFACTURA LEFT JOIN 02XML ON 02SUBETUFACTURA.id = 02XML.`ultimo_id` where 02SUBETUFACTURA.NUMERO_EVENTO ="'.$NUMERO_EVENTO.'" AND 02SUBETUFACTURA.VIATICOSOPRO = "PAGO A PROVEEDOR"';
-        $QUERYSUBEP2 = mysqli_query($con,$VarSUBEpropina2);
-while($ROWep2=mysqli_fetch_array($QUERYSUBEP2)){
-if ($ROWep2['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWep2['UUID'])) > 0) {
-                 $subTotalSUBETUFACTURApropina2 += $ROWep2['MONTO_PROPINA'] + $ROWep2['IMPUESTO_HOSPEDAJE'];
-        }
-        }
+    if ($ROWep2['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWep2['UUID'])) > 0) {
+        $subTotalSUBETUFACTURApropina2 += $ROWep2['MONTO_PROPINA'] + $ROWep2['IMPUESTO_HOSPEDAJE'];
+    }
+}
 
 
 	
@@ -311,20 +342,21 @@ if ($ROWep2['STATUS_CHECKBOX'] === 'si' || strlen(trim($ROWep2['UUID'])) > 0) {
 		$subTotaBOTIQUIN +=  $ROWBOTIQUIN['BOTIQUIN_SUB'];
 	}
 
-	$VarPERSONAL = 'SELECT VIATICOS_PERSONAL, id, MONTO_BONO_TOTAL FROM 04personal where idRelacion ="'.$_SESSION['idevento'].'" ';
-	$QUERYPERSONAL = mysqli_query($con,$VarPERSONAL);
-	while($ROWPERSONAL =mysqli_fetch_array($QUERYPERSONAL)){
-		$subBONO_TOTAL +=  $ROWPERSONAL['MONTO_BONO_TOTAL'];
-		$subVIATICOS_VIATICOS_PERSONAL +=  $ROWPERSONAL['VIATICOS_PERSONAL'];		
-	}
+$VarPERSONAL = 'SELECT id, MONTO_BONO_TOTAL, STATUS_RECHAZOBONO FROM 04personal WHERE idRelacion ="'.$_SESSION['idevento'].'"';
+$QUERYPERSONAL = mysqli_query($con,$VarPERSONAL);
+while($ROWPERSONAL = mysqli_fetch_array($QUERYPERSONAL)){
+    if($ROWPERSONAL['STATUS_RECHAZOBONO'] != 'si'){
+        $subBONO_TOTAL += $ROWPERSONAL['MONTO_BONO_TOTAL'];
+    }
+}
 
-	$VarPERSONAL2 = 'SELECT VIATICOS_PERSONAL2, MONTO_BONO_TOTAL1, id FROM 04personal2 where idRelacion ="'.$_SESSION['idevento'].'" ';
-	$QUERYPERSONAL2 = mysqli_query($con,$VarPERSONAL2);
-	while($ROWPERSONAL2 =mysqli_fetch_array($QUERYPERSONAL2)){
-		$subBONO_TOTAL1 +=  $ROWPERSONAL2['MONTO_BONO_TOTAL1'];
-		$subVIATICOS_PERSONAL2 +=  $ROWPERSONAL2['VIATICOS_PERSONAL2'];
-	}
-
+$VarPERSONAL2 = 'SELECT id, MONTO_BONO_TOTAL1, STATUS_BONORECHAZO FROM 04personal2 WHERE idRelacion ="'.$_SESSION['idevento'].'"';
+$QUERYPERSONAL2 = mysqli_query($con,$VarPERSONAL2);
+while($ROWPERSONAL2 = mysqli_fetch_array($QUERYPERSONAL2)){
+    if($ROWPERSONAL2['STATUS_BONORECHAZO'] != 'si'){
+        $subBONO_TOTAL1 += $ROWPERSONAL2['MONTO_BONO_TOTAL1'];
+    }
+}
 
 
 
@@ -371,12 +403,16 @@ $GTOTALBONO_VIATICO = $subBONOtotal1 + $subVIATICOtotal1;
 $diferenciaPorFaltaDeFactura = $PorfaltaDeFacturaSUBERES - $PorfaltaDeFacturaSUBE;
 $diferenciaSubTotal = $subTotalSUBETUFACTURARES - $subTotalSUBETUFACTURA;
 $INGRESOS = $TOTAINGRESOS + $TOTAINGRESOS2;
+$INGRESOS2 = $TOTAINGRESOSsinP + $TOTAINGRESOS2P;
 $subTotalPROPINAOSERVICIO = $subTotalTiketspropina + $subTotalAVIONpropina + $subTotalCOMPROBACIONpropina +$subTotalSUBETUFACTURApropina + $subTotalSUBETUFACTURApropina2;
 
 $PorfaltaDeFactura = $PorfaltaDeFacturaSession > 0
     ? $PorfaltaDeFacturaSession
-    : ($PorfaltaDeFacturaCOMPROBACION + $PorfaltaDeFacturaSession);
-$GTotalAvioComSube = $subTotalAVION + $subTotalCOMPROBACION + $subTotalSUBETUFACTURA + $subTotalSUBETUFACTURA2 +  $subTotalTikets+ $subTotalPROPINAOSERVICIO + $PorfaltaDeFactura+$subTotalVheiculo+$subTotalmaterial+$subTotapapeleria+$subTotaOFICINA+$subTotaBOTIQUIN+$subPERSONALtotal+$GTOTALBONO_VIATICO + $diferenciaSubTotal;
+    : ( $PorfaltaDeFacturaSession = $PorfaltaDeFactura);   
+
+// Mantiene el total actualizado en la sesión para otras vistas
+$_SESSION['PorfaltaDeFactura12'] = $PorfaltaDeFactura;
+$GTotalAvioComSube = $subTotalAVION + $subTotalCOMPROBACION + $subTotalSUBETUFACTURA + $subTotalSUBETUFACTURA2 +  $subTotalTikets+ $subTotalPROPINAOSERVICIO + $PorfaltaDeFactura + $subTotalVheiculo+$subTotalmaterial+$subTotapapeleria+$subTotaOFICINA+$subTotaBOTIQUIN+$subPERSONALtotal+$GTOTALBONO_VIATICO +$PorfaltaDeFacturaCOMPROBACION + $diferenciaSubTotal;
 
 
 $utilidad = $INGRESOS - ($GTotalAvioComSube ); 
@@ -386,6 +422,14 @@ $PorcentajeComisionVendedor = ($comisionVendedor *100)/ $INGRESOS;
 $utilidadEmpresa = $utilidad -  $comisionVendedor;
 $utilidadFinal = ($utilidadEmpresa * 100)/$INGRESOS;
 $subtotal_SINIVA = $subtotal_AVIONSINIVA + $subtotal_MONTOSINIVA ;
+
+$utilidad2 = $INGRESOS2 - ($GTotalAvioComSube ); 
+$PorUtilidad2 = ($utilidad2 * 100)/$INGRESOS2;
+$comisionVendedor2 =  ($utilidad2 ) * ($PorcentajevenDedor2  * 0.01);
+$PorcentajeComisionVendedor2 = ($comisionVendedor2 *100)/ $INGRESOS2;
+$utilidadEmpresa2 = $utilidad2 -  $comisionVendedor2;
+$utilidadFinal2 = ($utilidadEmpresa2 * 100)/$INGRESOS2;
+$subtotal_SINIVA2 = $subtotal_AVIONSINIVA + $subtotal_MONTOSINIVA ;
 ?>
 
 
@@ -468,10 +512,7 @@ EVENTO SIN IMPUESTOS  <a style="color:red;font:12px">&nbsp;(INFORMATIVO)</a></td
 
 
 
-<tr>
-<td style="background:#efdcf0;text-align:right;">TIKETS</td>
-<td style="background:#efdcf0">  <?php ECHO '$ '. number_format($subTotalTikets,2,'.',','); ?></td>
-</tr>
+
 
 <tr>
 <td style="background:#efdcf0;text-align:right;">BOLETOS DE AVIÓN</td>
@@ -539,65 +580,96 @@ EVENTO SIN IMPUESTOS  <a style="color:red;font:12px">&nbsp;(INFORMATIVO)</a></td
     ?>
   </td>
 </tr>
+<tr>
+<td style="background:#efdcf0">  </td>
+<td style="background:#efdcf0">  </td>
 
+</tr>
 
 <tr>
-<td style="background:#efdcf0;text-align:right;">--</td>   
 
-<td style="background:#efdcf0">  <?php ECHO '-- '; ?></td>
+<td style="background:#e0e4f4;text-align:right;"></td>   
+
+<td style="background:#e0e4f4">      <div style="display:flex;justify-content:space-between;width:60%;">
+      <span> <?php ECHO 'REAL'; ?></span>
+      <span style="color:#868686;">  <?php ECHO 'ESTIMADO'; ?></span>
+    </div></td>   
 </tr>
+
+
+<?php
+$TOTAL_EGRESOS = $GTotalAvioComSube + $PorfaltaDeFactura12;
+?>
 <tr>
-<td style="background:#f5c691;text-align:right;">TOTAL EGRESOS</td>
-<td style="background:#f5c691">  <?php ECHO '$ '. number_format($GTotalAvioComSube,2,'.',','); ?></td>
+  <td style="background:#f5c691;text-align:right;">TOTAL EGRESOS</td>   
+  <td style="background:#f5c691">
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span><?php echo '$ '.number_format($TOTAL_EGRESOS,2,'.',','); ?></span>
+      <span style="color:#868686;"><?php echo '$ '.number_format($TOTAL_EGRESOS,2,'.',','); ?></span>
+    </div>
+  </td>
 </tr>
+
 <tr>
-<td style="background:#91f5ab;text-align:right;">TOTAL INGRESOS </td>
-<td style="background:#91f5ab">  <?php ECHO '$ '. number_format($INGRESOS,2,'.',','); ?></td>
+  <td style="background:#91f5ab;text-align:right;">TOTAL INGRESOS </td>
+  <td style="background:#91f5ab">
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span><?php echo '$ '.number_format($INGRESOS,2,'.',','); ?></span>
+      <span style="color:#868686;"><?php echo '$ '.number_format($INGRESOS2,2,'.',','); ?></span>
+    </div>
+  </td>
 </tr>
-
 
 <tr>
-<td style="background:#DAF7A6;text-align:right;">UTILIDAD</td>
-<td style="background:#DAF7A6">  <?php ECHO '$ '. number_format($utilidad,2,'.',','); ?></td>
+  <td style="background:#DAF7A6;text-align:right;">UTILIDAD</td>
+  <td style="background:#DAF7A6">
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span><?php echo '$ '.number_format($utilidad,2,'.',','); ?></span>
+      <span style="color:#868686;"><?php echo '$ '.number_format($utilidad2,2,'.',','); ?></span>
+    </div>
+  </td>
 </tr>
 
-
-
-
-
-
-
+<tr style="background:#e0e4f4;text-align:left">
+  <td>% UTILIDAD</td>
+  <td>
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span><?php echo number_format($PorUtilidad,2,'.',','); ?>%</span>
+      <span style="color:#868686;"><?php echo number_format($PorUtilidad2,2,'.',','); ?>%</span>
+    </div>
+  </td>
 </tr>
 
-<tr style='background:#e0e4f4;text-align:left'>
-<td  >% UTILIDAD</td>
-<td  ><?php echo number_format($PorUtilidad,2,'.',','); ?>%</td>
+<tr style="background:#f5f9fc;text-align:left">
+  <td>COMISIÓN DEL VENDEDOR</td>
+  <td>
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span>$ <?php echo number_format($comisionVendedor,2,'.',','); ?></span>
+      <span style="color:#868686;">$ <?php echo number_format($comisionVendedor2,2,'.',','); ?></span>
+    </div>
+  </td>
 </tr>
 
-
-
-<tr style='background:#f5f9fc;text-align:left'>
-<td  >COMISIÓN DEL VENDEDOR</td>
-<td  >$ <?php echo number_format($comisionVendedor,2,'.',','); ?></td>
+<tr style="background:#e0e4f4;text-align:left">
+  <td>UTILIDAD EMPRESA</td>
+  <td>
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span>$ <?php echo number_format($utilidadEmpresa,2,'.',','); ?></span>
+      <span style="color:#868686;">$ <?php echo number_format($utilidadEmpresa2,2,'.',','); ?></span>
+    </div>
+  </td>
 </tr>
 
-
-<!--<tr style='background:#f5f9fc;text-align:left'>
-<td  >% COMISIÓN DEL VENDEDOR</td>
-<td  ><?php echo number_format($PorcentajeComisionVendedor,2,'.',','); ?>%</td>
-</tr>-->
-
-
-<tr style='background:#e0e4f4;text-align:left'>
-<td  >UTILIDAD EMPRESA</td>
-<td  >$ <?php echo number_format($utilidadEmpresa,2,'.',','); ?></td>
+<tr style="background:#DAF7A6;text-align:left">
+  <td>% UTILIDAD FINAL EMPRESA</td>
+  <td>
+    <div style="display:flex;justify-content:space-between;width:60%;">
+      <span><?php echo number_format($utilidadFinal,2,'.',','); ?>%</span>
+      <span style="color:#868686;"><?php echo number_format($utilidadFinal2,2,'.',','); ?>%</span>
+    </div>
+  </td>
 </tr>
 
-
-<tr style='background:#DAF7A6;text-align:left'>
-<td  >% UTILIDAD FINAL EMPRESA</td>
-<td  ><?php echo number_format($utilidadFinal,2,'.',','); ?>%</td>
-</tr>
 
 	
 	</table>	<button onclick="refreshSection()" class="btn btn-sm btn-primary" style="float:right;border-radius: 20px;">

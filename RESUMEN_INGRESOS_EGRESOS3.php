@@ -75,14 +75,13 @@ $fondos = array(
 	$cuenta++;
 ?>
 <tr style='background:#<?php echo $fondos[$num]; ?>; text-align:left'>   
-<td ><?php echo $cuenta; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo $rowIngreso2['DOCUMENTO_INGRESOS']; ?></td>
+<td ><?php echo $cuenta; ?></td>
 <td >MONTO POR FACTURAR</td>
-<td ><?php echo number_format($montoTotalEvento - $montoTotalRestado,2,'.',','); ?></td>
+<td ><?php echo number_format($montoTotalEvento - $montoTotalFacturado,2,'.',','); ?></td>
 <td ></td>
 </tr>
-
 <tr style='background:#<?php echo $fondos[$num]; ?>;text-align:left'>
-<td  ><?php echo $cuenta; ?></td>
+<td  ><?php echo $cuenta; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo $rowIngreso2['DOCUMENTO_INGRESOS']; ?></td>
 <td  >MONTO FACTURADO</td>
 <td  ><?php echo number_format($rowIngreso2['MONTOCON_IVA'],2,'.',','); ?></td>
 <td  ><?php echo $rowIngreso2['FECHA_INGRESOS']; ?></td>
@@ -118,8 +117,9 @@ $fondos = array(
 </tr>
 <?php 
 
-$montoTotalRestado += ($monto_x_pagar); 
-	}
+        $montoTotalFacturado += $rowIngreso2['MONTOCON_IVA']; 
+        $montoTotalRestado += ($monto_x_pagar);
+        }
 ?>
 
 <tr style='background: #fff ;text-align:left'>

@@ -143,7 +143,7 @@ $HMENSAJERIA = isset($_POST["HMENSAJERIA"])?$_POST["HMENSAJERIA"]:"";
 $enviarMENSAJERIA = isset($_POST["enviarMENSAJERIA"])?$_POST["enviarMENSAJERIA"]:"";
 $borra_MENSAJERIA = isset($_POST["borra_MENSAJERIA"])?$_POST["borra_MENSAJERIA"]:"";
 $EMAIL_MENSAJERIA = isset($_POST["EMAIL_MENSAJERIA"])?$_POST["EMAIL_MENSAJERIA"]:"";
-
+$IpVEHICULOSEVE = isset($_POST["IpVEHICULOSEVE"])?$_POST["IpVEHICULOSEVE"]:"";
 
                                      
 
@@ -2615,6 +2615,8 @@ echo $altaeventos->actualiza_autorizado_vehiculo($autoriza_vehiculo_id , $autori
 }
 
 
+$enviarVEHICULOSEVEFOTO = isset($_POST["enviarVEHICULOSEVEFOTO"])?$_POST["enviarVEHICULOSEVEFOTO"]:"";
+
 
 
 
@@ -2647,7 +2649,7 @@ $PLACASV = isset($_POST["PLACASV"])?$_POST["PLACASV"]:"";
 $IpVEHICULOSEVE = isset($_POST["IpVEHICULOSEVE"])?$_POST["IpVEHICULOSEVE"]:""; 
 
 	
-	   echo $altaeventos->VEHICULO($VEHICULOSEVE_VEHICULO , $VEHICULOSEVE_CANTIDAD , $VEHICULOSEVE_ENTREGA ,$VEHICULOSEVE_FOTO, $VEHICULOSEVE_LUGAR , $VEHICULOSEVE_HORA , $VEHICULOSEVE_DEVOLU , $VEHICULOSEVE_LUDEVO , $VEHICULOSEVE_HORADEVO , $VEHICULOSEVE_SOLICITUD , $VEHICULOSEVE_DIAS , $VEHICULOSEVE_COSTO , $VEHICULOSEVE_IVA ,$VEHICULOSEVE_SUB , $PRECIOPESOS_SOFTWARE , $VEHICULOSEVE_OBSERVA ,$COLORV,$PLACASV,$nombreingresov,$OBSERVACIONFOTO,$nombreocupov, $HVEHICULOSEVE,$enviarVEHICULOSEVE,$IpVEHICULOSEVE);
+	   echo $altaeventos->VEHICULO($VEHICULOSEVE_VEHICULO , $VEHICULOSEVE_CANTIDAD , $VEHICULOSEVE_ENTREGA ,$VEHICULOSEVE_FOTO, $VEHICULOSEVE_LUGAR , $VEHICULOSEVE_HORA , $VEHICULOSEVE_DEVOLU , $VEHICULOSEVE_LUDEVO , $VEHICULOSEVE_HORADEVO , $VEHICULOSEVE_SOLICITUD , $VEHICULOSEVE_DIAS , $VEHICULOSEVE_COSTO , $VEHICULOSEVE_IVA, $VEHICULOSEVE_SUB , $PRECIOPESOS_SOFTWARE , $VEHICULOSEVE_OBSERVA ,$COLORV,$PLACASV,$nombreingresov,$OBSERVACIONFOTO,$nombreocupov, $HVEHICULOSEVE,$enviarVEHICULOSEVE,$IpVEHICULOSEVE);
   	
    	   //include_once (__ROOT1__."/includes/crea_funciones.php");  
 
@@ -3100,12 +3102,27 @@ foreach($_FILES AS $ETQIETA => $VALOR){
 }
 
 
-/*	if($IpVEHICULOSEVE== true and ( $_FILES["VEHICULOSEVE_FOTO"] == true ) ){
-foreach($_FILES AS $ETQIETA => $VALOR){
-	echo $conexion->cargar($ETQIETA,'04vehiculoevento','3',$IpVEHICULOSEVE);
-}	
-
-}*/	   
+if($IpVEHICULOSEVE && isset($_FILES["FOTOVEHIEVENUEVA"]) && $_FILES["FOTOVEHIEVENUEVA"]["error"] !== UPLOAD_ERR_NO_FILE){
+	$nuevoAdjunto = $conexion->solocargar("FOTOVEHIEVENUEVA");
+	if($nuevoAdjunto === '2' || $nuevoAdjunto === '' || $nuevoAdjunto === '1'){
+		echo $nuevoAdjunto;
+	}else{
+		$conn = $altaeventos->db();
+		$idVehiculo = (int)$IpVEHICULOSEVE;
+		$adjuntosActuales = '';
+		$consultaAdjuntos = mysqli_query($conn, "select FOTOVEHIEVENUEVA from 04vehiculoevento where id = ".$idVehiculo." limit 1");
+		if($consultaAdjuntos && ($filaAdjuntos = mysqli_fetch_array($consultaAdjuntos, MYSQLI_ASSOC))){
+			$adjuntosActuales = isset($filaAdjuntos["FOTOVEHIEVENUEVA"]) ? $filaAdjuntos["FOTOVEHIEVENUEVA"] : '';
+		}
+		$listaAdjuntos = array_values(array_filter(array_map('trim', explode(',', $adjuntosActuales))));
+		if(!in_array($nuevoAdjunto, $listaAdjuntos, true)){
+			$listaAdjuntos[] = $nuevoAdjunto;
+		}
+		$valorAdjuntos = mysqli_real_escape_string($conn, implode(',', $listaAdjuntos));
+		mysqli_query($conn, "update 04vehiculoevento set FOTOVEHIEVENUEVA = '".$valorAdjuntos."' where id = ".$idVehiculo." limit 1") or die('P156'.mysqli_error($conn));
+		echo $nuevoAdjunto;
+	}
+}   
 	   
 if($IpCOTIPRO== true and ( $_FILES["ADJUNTO_COTIPRO"] == true ) ){
 foreach($_FILES AS $ETQIETA => $VALOR){
