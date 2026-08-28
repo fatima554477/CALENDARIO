@@ -6450,6 +6450,7 @@ $('#dataModal14').modal('toggle');
 			$('#target30').hide("linear");
 			$('#target31').hide("linear");
 			$('#target32').hide("linear");
+			$('#targetObservacionesCierre').hide("linear");
 			$('#target33').hide("linear");
 			$('#target34').hide("linear");
 			$('#target35').hide("linear");
@@ -6663,11 +6664,11 @@ $('#dataModal14').modal('toggle');
 				$('#target30').hide("linear");
 				
 			});
-					$("#mostrar31").click(function(){
-				$('#target31').show("swing");
+					$("#mostrar31, #mostrarObservacionesCierre").click(function(){
+				$('#target31, #targetObservacionesCierre').show("swing");
 		 	});
-			$("#ocultar31").click(function(){
-				$('#target31').hide("linear");
+		$("#ocultar31, #ocultarObservacionesCierre").click(function(){
+				$('#target31, #targetObservacionesCierre').hide("linear");
 				
 			});
 					$("#mostrar32").click(function(){
@@ -6845,6 +6846,7 @@ $('#dataModal14').modal('toggle');
 				$('#target29').show("swing");
 				$('#target30').show("swing");
 				$('#target31').show("swing");
+					$('#targetObservacionesCierre').show("swing");
 				$('#target32').show("swing");
 				$('#target33').show("swing");
 				$('#target34').show("swing");
