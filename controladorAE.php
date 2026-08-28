@@ -47,6 +47,9 @@ $enviarROOMINGLISTOV = isset($_POST["enviarROOMINGLISTOV"])?$_POST["enviarROOMIN
 $hCRONOTERRESTRE = isset($_POST["hCRONOTERRESTRE"])?$_POST["hCRONOTERRESTRE"]:"";
 $hCRONOVUELOS1 = isset($_POST["hCRONOVUELOS1"])?$_POST["hCRONOVUELOS1"]:"";
 $enviarCRONOSVUELOS = isset($_POST["enviarCRONOSVUELOS"])?$_POST["enviarCRONOSVUELOS"]:"";$borra_CRONOSV = isset($_POST["borra_CRONOSV"])?$_POST["borra_CRONOSV"]:""; 
+$hOBSERVACIONESCIERRE = isset($_POST["hOBSERVACIONESCIERRE"])?$_POST["hOBSERVACIONESCIERRE"]:"";
+$enviarOBSERVACIONESCIERRE = isset($_POST["enviarOBSERVACIONESCIERRE"])?$_POST["enviarOBSERVACIONESCIERRE"]:"";
+$borra_OBSERVACIONESCIERRE = isset($_POST["borra_OBSERVACIONESCIERRE"])?$_POST["borra_OBSERVACIONESCIERRE"]:"";
 $enviarcronoterre = isset($_POST["enviarcronoterre"])?$_POST["enviarcronoterre"]:"";$borra_CRONOSTERRRE = isset($_POST["borra_CRONOSTERRRE"])?$_POST["borra_CRONOSTERRRE"]:""; 
 $hCOBROSCLIENTE = isset($_POST["hCOBROSCLIENTE"])?$_POST["hCOBROSCLIENTE"]:""; 
 $enviarcobroscliente = isset($_POST["enviarcobroscliente"])?$_POST["enviarcobroscliente"]:""; 
@@ -1696,6 +1699,41 @@ echo $conexion2->email($EMAILnombre, $html, $adjuntos, $embebida, $Subject,$smtp
 
  //include_once (__ROOT1__."/includes/crea_funciones.php"); 
    
+
+
+if($hOBSERVACIONESCIERRE == 'hOBSERVACIONESCIERRE' OR $enviarOBSERVACIONESCIERRE == 'enviarOBSERVACIONESCIERRE'){
+
+    $imagen = '';
+
+    if(isset($_FILES['IMAGEN_OBSERVACIONESCIERRE']) && $_FILES['IMAGEN_OBSERVACIONESCIERRE']['error'] !== UPLOAD_ERR_NO_FILE){
+
+        $imagenCargada = $conexion->solocargar('IMAGEN_OBSERVACIONESCIERRE');
+
+        if($imagenCargada != '1' && $imagenCargada != '2'){ $imagen = $imagenCargada; }
+
+    }
+
+    $observaciones = isset($_POST['OBSERVACIONES_CIERRE']) ? $_POST['OBSERVACIONES_CIERRE'] : '';
+
+    $idObservacion = isset($_POST['idOBSERVACIONESCIERRE']) ? $_POST['idOBSERVACIONESCIERRE'] : '';
+
+    echo $altaeventos->guardar_observacion_cierre($observaciones, $imagen, $idObservacion, $enviarOBSERVACIONESCIERRE);
+
+    exit;
+
+}
+
+
+
+if($borra_OBSERVACIONESCIERRE == 'borra_OBSERVACIONESCIERRE'){
+
+    $idObservacion = isset($_POST['id_observacion_cierre']) ? $_POST['id_observacion_cierre'] : '';
+
+    echo $altaeventos->borra_observacion_cierre($idObservacion);
+
+    exit;
+
+}
 
 
 

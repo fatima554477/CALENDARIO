@@ -1044,7 +1044,74 @@ public function CRONOVUELOS($DOCUMENTO_CRONOVUELOS ,$OBSERVACIONES_CRONOVUELOS,$
 	}
 
 
+///////////////////////// OBSERVACIONES DEL CIERRE /////////////////////////
 
+	private function tabla_observaciones_cierre($conn){
+		$sql = "CREATE TABLE IF NOT EXISTS `04observacionescierre` (
+			`id` INT NOT NULL AUTO_INCREMENT,
+			`OBSERVACIONES_CIERRE` TEXT NOT NULL,
+			`IMAGEN_OBSERVACIONESCIERRE` VARCHAR(255) NOT NULL DEFAULT '',
+			`QUIEN_INGRESO` VARCHAR(255) NOT NULL,
+			`FECHA_INGRESO` DATETIME NOT NULL,
+			`idRelacion` INT NOT NULL,
+			PRIMARY KEY (`id`),
+			KEY `idRelacion` (`idRelacion`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+		mysqli_query($conn, $sql) or die('No fue posible crear el módulo de observaciones: '.mysqli_error($conn));
+	}
+
+	public function nombre_completo_usuario($idUsuario){
+		$usuario = $this->variablesusuario((int) $idUsuario);
+		$partesNombre = array(
+			isset($usuario['NOMBRE_1']) ? $usuario['NOMBRE_1'] : '',
+			isset($usuario['NOMBRE_2']) ? $usuario['NOMBRE_2'] : '',
+			isset($usuario['APELLIDO_PATERNO']) ? $usuario['APELLIDO_PATERNO'] : '',
+			isset($usuario['APELLIDO_MATERNO']) ? $usuario['APELLIDO_MATERNO'] : ''
+		);
+		$partesNombre = array_filter(array_map('trim', $partesNombre));
+		return implode(' ', $partesNombre);
+	}
+
+	public function guardar_observacion_cierre($observaciones, $imagen, $id, $actualizar){
+		$conn = $this->db();
+		$this->tabla_observaciones_cierre($conn);
+		$idEvento = isset($_SESSION['idevento']) ? (int) $_SESSION['idevento'] : 0;
+		$idUsuario = isset($_SESSION['idem']) ? (int) $_SESSION['idem'] : 0;
+		if(!$idEvento){ return 'TU SESIÓN HA TERMINADO'; }
+
+		$quienIngreso = $this->nombre_completo_usuario($idUsuario);
+		if($quienIngreso === ''){ $quienIngreso = (string) $idUsuario; }
+		$observaciones = mysqli_real_escape_string($conn, trim($observaciones));
+		$imagen = mysqli_real_escape_string($conn, $imagen);
+		$quienIngreso = mysqli_real_escape_string($conn, $quienIngreso);
+
+		if($actualizar == 'enviarOBSERVACIONESCIERRE' && (int) $id){
+			$sqlImagen = $imagen !== '' ? ", IMAGEN_OBSERVACIONESCIERRE = '".$imagen."'" : '';
+			$sql = "UPDATE 04observacionescierre SET OBSERVACIONES_CIERRE = '".$observaciones."'".$sqlImagen." WHERE id = ".(int)$id." AND idRelacion = ".$idEvento;
+			mysqli_query($conn, $sql) or die('No fue posible actualizar: '.mysqli_error($conn));
+			return 'Actualizado';
+		}
+
+		$sql = "INSERT INTO 04observacionescierre (OBSERVACIONES_CIERRE, IMAGEN_OBSERVACIONESCIERRE, QUIEN_INGRESO, FECHA_INGRESO, idRelacion) VALUES ('".$observaciones."', '".$imagen."', '".$quienIngreso."', NOW(), ".$idEvento.")";
+		mysqli_query($conn, $sql) or die('No fue posible guardar: '.mysqli_error($conn));
+		return 'Ingresado';
+	}
+
+	public function Listado_observaciones_cierre($id = ''){
+		$conn = $this->db();
+		$this->tabla_observaciones_cierre($conn);
+		$idEvento = isset($_SESSION['idevento']) ? (int) $_SESSION['idevento'] : 0;
+		$whereId = $id !== '' ? ' AND id = '.(int)$id : '';
+		return mysqli_query($conn, 'SELECT * FROM 04observacionescierre WHERE idRelacion = '.$idEvento.$whereId.' ORDER BY id DESC');
+	}
+
+	public function borra_observacion_cierre($id){
+		$conn = $this->db();
+		$this->tabla_observaciones_cierre($conn);
+		$idEvento = isset($_SESSION['idevento']) ? (int) $_SESSION['idevento'] : 0;
+		mysqli_query($conn, 'DELETE FROM 04observacionescierre WHERE id = '.(int)$id.' AND idRelacion = '.$idEvento) or die('No fue posible borrar: '.mysqli_error($conn));
+		return 'ELEMENTO BORRADO';
+	}
 
      ///////////////////////////// CRONOS TERRESTRE/////////////////////////
 

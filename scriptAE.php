@@ -7035,3 +7035,44 @@ $('#dataModal14').modal('toggle');
 		});
 		
 	</script>
+<script>
+//////////////////////// OBSERVACIONES DEL CIERRE ////////////////////////
+$(document).on('click', '#GUARDAR_OBSERVACIONESCIERRE', function(){
+    var form = document.getElementById('observacionesCierreForm');
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    $.ajax({
+        url: 'calendariodeeventos2/controladorAE.php', type: 'POST', data: new FormData(form),
+        contentType: false, processData: false,
+        beforeSend: function(){ $('#mensajeObservacionesCierre').html('CARGANDO'); },
+        success: function(data){
+            $('#mensajeObservacionesCierre').html(data).fadeIn().delay(2000).fadeOut();
+            $('#reset_observaciones_cierre').load(location.href + ' #reset_observaciones_cierre > *');
+            form.reset();
+        }
+    });
+});
+
+$(document).on('click', '.view_dataObservacionCierre', function(){
+    var observacion = window.prompt('Modifica la observación:', $(this).data('observacion'));
+    if(observacion === null || $.trim(observacion) === ''){ return; }
+    $.post('calendariodeeventos2/controladorAE.php', {
+        idOBSERVACIONESCIERRE: $(this).data('id'),
+        OBSERVACIONES_CIERRE: observacion,
+        enviarOBSERVACIONESCIERRE: 'enviarOBSERVACIONESCIERRE'
+    }, function(data){
+        $('#mensajeObservacionesCierre').html(data);
+        $('#reset_observaciones_cierre').load(location.href + ' #reset_observaciones_cierre > *');
+    });
+});
+
+$(document).on('click', '.borrarObservacionCierre', function(){
+    if(!window.confirm('¿Deseas borrar esta observación del cierre?')){ return; }
+    $.post('calendariodeeventos2/controladorAE.php', {
+        id_observacion_cierre: $(this).data('id'),
+        borra_OBSERVACIONESCIERRE: 'borra_OBSERVACIONESCIERRE'
+    }, function(data){
+        $('#mensajeObservacionesCierre').html(data);
+        $('#reset_observaciones_cierre').load(location.href + ' #reset_observaciones_cierre > *');
+    });
+});
+</script>
