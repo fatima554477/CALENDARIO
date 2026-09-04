@@ -307,7 +307,7 @@ if ($consultaEventosPersonal2) {
          
 
           <?php
-          $querycontras = $altaeventos->listado_personal3();
+          $querycontras = $altaeventos->listado_personal45();
           ?>
           
           <br />
