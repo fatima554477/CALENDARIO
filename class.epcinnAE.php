@@ -1890,12 +1890,15 @@ public function borra_CONTRATO($id){
      }
 
      public function listado_personal45(){
-     
-
      $conn = $this->db();
-     $variablequery = "select * from 04personal2 WHERE idRelacion = '".$session."' order by id desc ";
+     $variablequery = "SELECT personal.*, eventos.NUMERO_EVENTO, eventos.NOMBRE_EVENTO
+                       FROM 04personal2 AS personal
+                       LEFT JOIN 04altaeventos AS eventos ON eventos.id = personal.idRelacion
+                       ORDER BY personal.id DESC";
      return $arrayquery = mysqli_query($conn,$variablequery);
-     }	 
+     }
+
+	 
 
 
      public function listado_personal33($id){

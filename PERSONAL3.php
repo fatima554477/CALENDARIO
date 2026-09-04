@@ -336,7 +336,9 @@ if ($consultaEventosPersonal2) {
   <th width="15%"style="background:#c9e8e8">RECHAZAR<br>PAGO BONO</th>
 
   <?php } ?>			   
-               <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
+          <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
+			   <th width="20%" style="background:#c9e8e8">NÚMERO DE<br>EVENTO</th>
+			   <th width="20%" style="background:#c9e8e8">NOMBRE DEL<br>EVENTO</th>
 			   <th width="20%" style="background:#c9e8e8">NOMBRE DEL <br>SOLICITANTE</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
                <th width="20%"style="background:#c9e8e8">PUESTO</th>
@@ -430,8 +432,10 @@ $montoBonoTotalAjustado2 = $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO_TOTAL
 
 		  <?php } ?>
           <td style="text-align:center" >
-          <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td> 
-		  
+          <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td>
+
+		  <td><?php echo htmlspecialchars((string) $row["NUMERO_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
+		  <td><?php echo htmlspecialchars((string) $row["NOMBRE_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
        <td><?php echo $row["NOMBRE_DELINGRESO2"]; ?></td>
 		  
 
