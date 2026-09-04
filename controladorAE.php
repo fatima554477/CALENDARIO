@@ -1039,6 +1039,51 @@ $PERSONAL2_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL2_FECHA_ULTIMA_CARGA"])?$_
 $hDatosPERSONAL2 = isset($_POST["hDatosPERSONAL2"])?$_POST["hDatosPERSONAL2"]:"";
 $IPpersonal2 = isset($_POST["IPpersonal2"])?$_POST["IPpersonal2"]:"";
 
+$ID_EVENTO_PERSONAL2 = isset($_POST["ID_EVENTO_PERSONAL2"]) ? (int) $_POST["ID_EVENTO_PERSONAL2"] : 0;
+
+$NUMERO_EVENTO_PERSONAL2 = isset($_POST["NUMERO_EVENTO_PERSONAL2"]) ? trim($_POST["NUMERO_EVENTO_PERSONAL2"]) : "";
+
+
+
+// La selección sólo se acepta cuando el id y el número pertenecen al mismo evento.
+
+if ($ID_EVENTO_PERSONAL2 > 0 && $NUMERO_EVENTO_PERSONAL2 !== "") {
+
+    $conexionPersonal2 = $altaeventos->db();
+
+    $consultaEventoPersonal2 = mysqli_prepare(
+
+        $conexionPersonal2,
+
+        "SELECT id FROM 04altaeventos WHERE id = ? AND NUMERO_EVENTO = ? LIMIT 1"
+
+    );
+
+
+
+    if ($consultaEventoPersonal2) {
+
+        mysqli_stmt_bind_param($consultaEventoPersonal2, "is", $ID_EVENTO_PERSONAL2, $NUMERO_EVENTO_PERSONAL2);
+
+        mysqli_stmt_execute($consultaEventoPersonal2);
+
+        mysqli_stmt_store_result($consultaEventoPersonal2);
+
+
+
+        if (mysqli_stmt_num_rows($consultaEventoPersonal2) === 1) {
+
+            $_SESSION['idevento'] = $ID_EVENTO_PERSONAL2;
+
+        }
+
+
+
+        mysqli_stmt_close($consultaEventoPersonal2);
+
+    }
+
+}
 
 	
 	if($IPpersonal2 != "" && $ADJUNTO_COMPROBANTE1 == ""){

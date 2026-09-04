@@ -20,7 +20,7 @@ $eventosPersonal2 = array();
 $conexionEventosPersonal2 = $altaeventos->db();
 $consultaEventosPersonal2 = mysqli_query(
     $conexionEventosPersonal2,
-    "SELECT id, NUMERO_EVENTO, NOMBRE_EVENTO
+      "SELECT id, NUMERO_EVENTO, NOMBRE_EVENTO, FECHA_INICIO_EVENTO, FECHA_FINAL_EVENTO
      FROM 04altaeventos
      WHERE NUMERO_EVENTO IS NOT NULL AND NUMERO_EVENTO <> ''
      ORDER BY NUMERO_EVENTO"
@@ -83,7 +83,12 @@ if ($consultaEventosPersonal2) {
                 value="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'].' - '.$eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
                 data-evento-numero="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
                 data-evento-id="<?php echo (int) $eventoPersonal2['id']; ?>"
-                data-evento-nombre="<?php echo htmlspecialchars($eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>">
+                               data-evento-nombre="<?php echo htmlspecialchars($eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
+
+                data-evento-fecha-inicio="<?php echo htmlspecialchars((string) $eventoPersonal2['FECHA_INICIO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
+
+                data-evento-fecha-final="<?php echo htmlspecialchars((string) $eventoPersonal2['FECHA_FINAL_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>">
+
             </option>
         <?php } ?>
     </datalist>
@@ -180,12 +185,14 @@ if ($consultaEventosPersonal2) {
 
     <tr>
     <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE INICIO DE COORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
-    <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_INICIO1; ?>" name="FECHA_INICIO1"></td>
+      <td  style="background:#f7edf8"><input type="date" class="form-control" id="FECHA_INICIO_PERSONAL2" required="" value="<?php echo htmlspecialchars((string) $FECHA_INICIO1, ENT_QUOTES, 'UTF-8'); ?>" name="FECHA_INICIO1"></td>
+
 
     </tr>
     <tr>
     <th style="background:#f7edf8; text-align:left" scope="col">FECHA FINAL DE COORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
-    <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_FINAL1; ?>" name="FECHA_FINAL1"></td>
+   <td  style="background:#f7edf8"><input type="date" class="form-control" id="FECHA_FINAL_PERSONAL2" required="" value="<?php echo htmlspecialchars((string) $FECHA_FINAL1, ENT_QUOTES, 'UTF-8'); ?>" name="FECHA_FINAL1"></td>
+
 
     </tr>
 	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
@@ -226,7 +233,7 @@ if ($consultaEventosPersonal2) {
 
     <tr>
     <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE PROGRAMACIÓN PAGO DE BONO:</th>
-    <td  style="background:#f7edf8"><input type="date" class="form-control" id="validationCustom03" required=""  value="<?php echo $FECHA_PPAGO1; ?>" name="FECHA_PPAGO1"></td>
+    <td  style="background:#f7edf8"><input type="date" class="form-control" id="fecha_ppago" required=""  value="<?php echo $FECHA_PPAGO1; ?>" name="FECHA_PPAGO1"></td>
 
     </tr>
 
@@ -257,7 +264,7 @@ if ($consultaEventosPersonal2) {
 
 <table>
   <tr> 
-<?php if($conexion->variablespermisos('','PERSONALNUEVO','guardar')=='si' and $var_bloquea_fecha=='no'){ ?>  
+
 <th>
          
 
@@ -278,7 +285,7 @@ if ($consultaEventosPersonal2) {
     1px 18px 6px rgba(16,16,16,0.4),
     1px 22px 10px rgba(16,16,16,0.2),
     1px 25px 35px rgba(16,16,16,0.2),
-    1px 30px 60px rgba(16,16,16,0.4);"id="mensajePERSONAL2"> </th><?php } ?>   </tr>
+    1px 30px 60px rgba(16,16,16,0.4);"id="mensajePERSONAL2"> </th>  </tr>
            
            
             </table>
@@ -459,10 +466,10 @@ $montoBonoTotalAjustado2 = $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO_TOTAL
 			    <?php } ?>
           <td ><?php echo $row["PERSONAL2_FECHA_ULTIMA_CARGA"]; ?></td>                        
           <td>
-          <?php if($conexion->variablespermisos('','PERSONALNUEVO','modificar')=='si' and $var_bloquea_fecha=='no'){ ?><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2modifica" />
-<?php } ?></td>    
-          <td><?php if($conexion->variablespermisos('','PERSONALNUEVO','borrar')=='si' and $var_bloquea_fecha=='no'){ ?><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2borrar" />
-</td>  <?php } ?>
+         <input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2modifica" />
+</td>    
+          <td><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2borrar" />
+</td>  
           </tr>
           <?php
 		   $MONTO_BONO12  += $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO1"];
@@ -520,6 +527,10 @@ $NUMERO_DIAS12 += $filaRechazoBono2 ? 0 : (int)$row["NUMERO_DIAS1"];
     var numero = document.getElementById('NUMERO_EVENTO_PERSONAL2');
     var nombre = document.getElementById('NOMBRE_EVENTO_PERSONAL2');
     var eventoId = document.getElementById('ID_EVENTO_PERSONAL2');
+	    var fechaInicio = document.getElementById('FECHA_INICIO_PERSONAL2');
+
+    var fechaFinal = document.getElementById('FECHA_FINAL_PERSONAL2');
+
     var formulario = document.getElementById('PERSONAL2form');
 
     if (!buscador || !lista || !numero || !nombre || !eventoId) {
@@ -544,7 +555,18 @@ $NUMERO_DIAS12 += $filaRechazoBono2 ? 0 : (int)$row["NUMERO_DIAS1"];
         numero.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-numero') || '') : '';
         nombre.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-nombre') || '') : '';
         eventoId.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-id') || '') : '';
+		     fechaInicio.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-inicio') || '') : '';
+
+        fechaFinal.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-final') || '') : '';
+
         buscador.setCustomValidity(opcionEncontrada ? '' : 'Selecciona un evento de los resultados de búsqueda.');
+  if (opcionEncontrada && typeof totalfechas8 === 'function') {
+
+            totalfechas8();
+
+        }
+
+
 
         return opcionEncontrada !== null;
     }
