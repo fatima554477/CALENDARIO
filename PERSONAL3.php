@@ -65,20 +65,30 @@ if ($consultaEventosPersonal2) {
                     
                            
                                </tr>
- <tr style="background:#fcf3cf">
-<th scope="row"><label for="NUMERO_EVENTO_PERSONAL2" class="form-label">NÚMERO DE EVENTO:</label></th>
+<tr style="background:#fcf3cf">
+<th scope="row"><label for="BUSCADOR_EVENTO_PERSONAL2" class="form-label">BUSCAR EVENTO:</label></th>
 <td>
-    <select class="form-select mb-3" id="NUMERO_EVENTO_PERSONAL2" name="NUMERO_EVENTO_PERSONAL2" required>
-        <option value="">SELECCIONA UNA OPCIÓN</option>
+    <input
+        type="search"
+        class="form-control mb-3"
+        id="BUSCADOR_EVENTO_PERSONAL2"
+        list="LISTA_EVENTOS_PERSONAL2"
+        placeholder="ESCRIBE EL NÚMERO O NOMBRE DEL EVENTO"
+        autocomplete="off"
+        required
+    >
+    <datalist id="LISTA_EVENTOS_PERSONAL2">
         <?php foreach ($eventosPersonal2 as $eventoPersonal2) { ?>
             <option
-                value="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
+                value="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'].' - '.$eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
+                data-evento-numero="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
                 data-evento-id="<?php echo (int) $eventoPersonal2['id']; ?>"
                 data-evento-nombre="<?php echo htmlspecialchars($eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>">
-                <?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>
             </option>
         <?php } ?>
-    </select>
+    </datalist>
+    <div class="invalid-feedback">Selecciona un evento de los resultados de búsqueda.</div>
+    <input type="hidden" id="NUMERO_EVENTO_PERSONAL2" name="NUMERO_EVENTO_PERSONAL2" value="">
     <input type="hidden" id="ID_EVENTO_PERSONAL2" name="ID_EVENTO_PERSONAL2" value="">
 </td>
 </tr>
@@ -505,18 +515,50 @@ $NUMERO_DIAS12 += $filaRechazoBono2 ? 0 : (int)$row["NUMERO_DIAS1"];
 
 <script type="text/javascript">
 (function () {
-    var selector = document.getElementById('NUMERO_EVENTO_PERSONAL2');
+    var buscador = document.getElementById('BUSCADOR_EVENTO_PERSONAL2');
+    var lista = document.getElementById('LISTA_EVENTOS_PERSONAL2');
+    var numero = document.getElementById('NUMERO_EVENTO_PERSONAL2');
     var nombre = document.getElementById('NOMBRE_EVENTO_PERSONAL2');
     var eventoId = document.getElementById('ID_EVENTO_PERSONAL2');
+    var formulario = document.getElementById('PERSONAL2form');
 
-    if (!selector || !nombre || !eventoId) {
+    if (!buscador || !lista || !numero || !nombre || !eventoId) {
         return;
     }
 
-    selector.addEventListener('change', function () {
-        var opcion = selector.options[selector.selectedIndex];
-        nombre.value = opcion ? (opcion.getAttribute('data-evento-nombre') || '') : '';
-        eventoId.value = opcion ? (opcion.getAttribute('data-evento-id') || '') : '';
-    });
+    function seleccionarEvento() {
+        var valorBuscado = buscador.value.trim().toLocaleLowerCase();
+        var opciones = lista.options;
+        var opcionEncontrada = null;
+
+        for (var indice = 0; indice < opciones.length; indice += 1) {
+            var opcion = opciones[indice];
+            var numeroEvento = opcion.getAttribute('data-evento-numero') || '';
+
+            if (opcion.value.toLocaleLowerCase() === valorBuscado || numeroEvento.toLocaleLowerCase() === valorBuscado) {
+                opcionEncontrada = opcion;
+                break;
+            }
+        }
+
+        numero.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-numero') || '') : '';
+        nombre.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-nombre') || '') : '';
+        eventoId.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-id') || '') : '';
+        buscador.setCustomValidity(opcionEncontrada ? '' : 'Selecciona un evento de los resultados de búsqueda.');
+
+        return opcionEncontrada !== null;
+    }
+
+    buscador.addEventListener('input', seleccionarEvento);
+    buscador.addEventListener('change', seleccionarEvento);
+
+    if (formulario) {
+        formulario.addEventListener('submit', function (evento) {
+            if (!seleccionarEvento()) {
+                evento.preventDefault();
+                buscador.reportValidity();
+            }
+        });
+    }
 }());
 </script>
