@@ -41,7 +41,11 @@ $queryVISTAPREV = $conexion->listado_personal33($identioficador);
         }					
              $output .= '
 	
+		 			 <tr>
+			 <td width="30%" style="font-weight:bold;">NOMBRE DEL SOLICITANTE</label></td>
+			 <td width="70%"><input type="text" name="NOMBRE_DELINGRESO2" readonly=»readonly»  style="background:#d7bde2"  value="'.$row["NOMBRE_DELINGRESO2"].'"></td>
 
+			 </tr>
 			 <tr>
 			 <td width="30%" style="font-weight:bold;">NOMBRE</label></td>
 			 <td width="70%">

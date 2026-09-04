@@ -7055,15 +7055,30 @@ $(document).on('click', '#GUARDAR_OBSERVACIONESCIERRE', function(){
 });
 
 $(document).on('click', '.view_dataObservacionCierre', function(){
-    var observacion = window.prompt('Modifica la observación:', $(this).data('observacion'));
-    if(observacion === null || $.trim(observacion) === ''){ return; }
-    $.post('calendariodeeventos2/controladorAE.php', {
-        idOBSERVACIONESCIERRE: $(this).data('id'),
-        OBSERVACIONES_CIERRE: observacion,
-        enviarOBSERVACIONESCIERRE: 'enviarOBSERVACIONESCIERRE'
-    }, function(data){
-        $('#mensajeObservacionesCierre').html(data);
-        $('#reset_observaciones_cierre').load(location.href + ' #reset_observaciones_cierre > *');
+    $.ajax({
+        url: 'calendariodeeventos2/VistaPreviaOBSERVACIONESCIERRE.php',
+        type: 'POST',
+        data: {observacion_id: $(this).data('id')},
+        beforeSend: function(){ $('#detalleObservacionCierre').html('CARGANDO'); },
+        success: function(data){
+            $('#detalleObservacionCierre').html(data);
+            $('#modalObservacionCierre').modal('show');
+        }
+    });
+});
+
+$(document).on('click', '#guardarActualizacionObservacionCierre', function(){
+    var form = document.getElementById('actualizarObservacionCierreForm');
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    $.ajax({
+        url: 'calendariodeeventos2/controladorAE.php', type: 'POST', data: new FormData(form),
+        contentType: false, processData: false,
+        beforeSend: function(){ $('#mensajeActualizarObservacionCierre').html('CARGANDO'); },
+        success: function(data){
+            $('#mensajeObservacionesCierre').html(data).fadeIn().delay(2000).fadeOut();
+            $('#reset_observaciones_cierre').load(location.href + ' #reset_observaciones_cierre > *');
+            $('#modalObservacionCierre').modal('hide');
+        }
     });
 });
 

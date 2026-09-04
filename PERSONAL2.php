@@ -47,9 +47,11 @@ $puedeModificarRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 
                     
                            
                                </tr>
-
+ <tr style="background:#ebf8fa"> 
 	
-	
+<th scope="row"> <label  for="validationCustom03" class="form-label">NOMBRE DEL SOLICITANTE:</label></th>
+<td><input type="text" class="form-control" id="validationCustom03" required=""  value="<?php echo $_SESSION["NOMBREUSUARIO"]; ?>" name="NOMBRE_DELINGRESO2" placeholder="NOMBRE DEL EJECUTIVO QUE INGRESO" readonly="readonly"></td>
+</tr>	
 	
 	
 <tr style="background:#ebf8fa">
@@ -279,6 +281,7 @@ $puedeModificarRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 
 
   <?php } ?>			   
                <th width="15%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
+			   <th width="20%" style="background:#c9e8e8">NOMBRE DEL <br>SOLICITANTE</th>
                <th width="20%"style="background:#c9e8e8">NOMBRE</th>
                <th width="20%"style="background:#c9e8e8">PUESTO</th>
                <th width="20%"style="background:#c9e8e8">TELEFONO DE OFICINA</th>
@@ -373,7 +376,7 @@ $montoBonoTotalAjustado2 = $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO_TOTAL
           <td style="text-align:center" >
           <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td> 
 		  
-  
+       <td><?php echo $row["NOMBRE_DELINGRESO2"]; ?></td>
 		  
 
 		  
@@ -425,7 +428,7 @@ $NUMERO_DIAS12 += $filaRechazoBono2 ? 0 : (int)$row["NUMERO_DIAS1"];
 <?php if($conexion->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si') {
     $verBono = ($conexion->variablespermisos('','PERSOVERBONO','ver') == 'si');
 
-    $columnasPreviasTotalesPersonal2 = 9
+    $columnasPreviasTotalesPersonal2 = 10
         + ($puedeVerVYO2 ? 1 : 0)
         + ($puedeVerDIRECCION2 ? 1 : 0)
         + ($puedeVerAdmin2 ? 1 : 0)
