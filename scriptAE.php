@@ -6469,6 +6469,8 @@ $('#dataModal14').modal('toggle');
 			$('#target48').hide("linear");
 			$('#target49').hide("linear");
 			$('#target50').hide("linear");
+			$('#target51').hide("linear");
+			$('#target52').hide("linear");
 			$('#targetVIDEO').hide("linear");
 			
 			$("#mostrar1").click(function(){
@@ -6804,6 +6806,20 @@ $('#dataModal14').modal('toggle');
 			$("#ocultar50").click(function(){
 				$('#target50').hide("linear");
 				
+			});
+			 $("#mostrar51").click(function(){
+				$('#target51').show("swing");
+		 	});			
+						$("#ocultar51").click(function(){
+				$('#target51').hide("linear");
+				
+			});	
+						 $("#mostrar52").click(function(){
+				$('#target52').show("swing");
+		 	});
+						$("#ocultar52").click(function(){
+				$('#target52').hide("linear");
+				
 			});	
 			
 			$("#mostrarVIDEO").click(function(){
@@ -6866,6 +6882,8 @@ $('#dataModal14').modal('toggle');
 				$('#target48').show("swing");
 				$('#target49').show("swing");
 				$('#target50').show("swing");
+				$('#target51').show("swing");
+				$('#target52').show("swing");
 				$('#targetVIDEO').show("swing");
 		 	});
 			
@@ -6921,6 +6939,8 @@ $('#dataModal14').modal('toggle');
 				$('#target48').hide("swing");
 				$('#target49').hide("swing");
 				$('#target50').hide("swing");
+				$('#target51').hide("swing");
+				$('#target52').hide("swing");
 				$('#targetVIDEO').hide("linear");
 			});
 
@@ -6976,6 +6996,8 @@ $('#dataModal14').modal('toggle');
 				$('#target48').show("swing");
 				$('#target49').show("swing");
 				$('#target50').show("swing");
+				$('#target51').show("swing");
+				$('#target52').show("swing");
 				$('#targetVIDEO').show("swing");
 		 	});
 			
@@ -7031,6 +7053,8 @@ $('#dataModal14').modal('toggle');
 				$('#target48').hide("swing");
 				$('#target49').hide("swing");
 				$('#target50').hide("swing");
+				$('#target51').hide("swing");
+				$('#target52').hide("swing");
 				$('#targetVIDEO').hide("linear");
 			});
 
