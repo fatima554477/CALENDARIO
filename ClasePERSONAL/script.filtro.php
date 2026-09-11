@@ -4,21 +4,25 @@
 
 /* iniciaB1*/
 
-        $(function() {
-                const triggerSearch = () => load(1);
-
-                $('#target52').on('keydown', 'thead input, thead select', function(event) {
-                        if (event.key === 'Enter' || event.which === 13) {
-                                event.preventDefault();
-                                triggerSearch();
-                        }
-                });
-
-                load(1);
+     $(function() {
+                loadpersonal(1);
         });
-		
+
+		// La tabla se reemplaza en cada respuesta AJAX, por eso el evento debe
+		// delegarse desde document. No se limita a un contenedor concreto porque
+		// ClasePERSONAL se utiliza desde vistas con identificadores diferentes.
+		$(document)
+			.off('keydown.filtroPersonal', '.filtro-input')
+			.on('keydown.filtroPersonal', '.filtro-input', function(event) {
+				if (event.which === 13 || event.keyCode === 13 || event.key === 'Enter') {
+					event.preventDefault();
+					loadpersonal(1);
+					return false;
+				}
+			});
+
 		/*termina copiar y pegar buscar con enter B4*/
-		function load(page){
+		function loadpersonal(page){
 			var query=$("#NOMBRE_EVENTO").val();
 			var DEPARTAMENTO2=$("#DEPARTAMENTO2WE").val();var NUMERO_EVENTO_PERSONAL2=$("#NUMERO_EVENTO_PERSONAL2_1").val();
 var ID_EVENTO_PERSONAL2=$("#ID_EVENTO_PERSONAL2_1").val();
