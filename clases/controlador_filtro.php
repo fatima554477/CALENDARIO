@@ -584,7 +584,7 @@ if($database->plantilla_filtro($nombreTabla,"DESCUENTO",$altaeventos,$DEPARTAMEN
 
 <?php 
 if($database->plantilla_filtro($nombreTabla,"TOTAL_IMPUESTOS_TRASLADADOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
-<th style="background:#f9f3a1;text-align:center">TOTAL DE IMPUESTOS TRANSLADADOS</th>
+<th style="background:#f9f3a1;text-align:center">IVA</th>
 <?php } ?>
 
 <?php 
@@ -1130,7 +1130,7 @@ echo $propina; ?>"></td>
 <?php  
 if($database->plantilla_filtro($nombreTabla,"DESCUENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
 <td style="background:#f9f3a1;text-align:center"><input type="text" class="form-control" id="DESCUENTO" value="<?php
-echo $DESCUENTO; ?>"></td>
+echo $Descuentos; ?>"></td>
 <?php } ?>
 
 
@@ -2120,10 +2120,10 @@ $resultadoEstadoCuenta = $database->resultadoTemproal($idactual,$identificadorPr
     <td style="text-align:center">
         <?php 
         if ($mostrarXML) {
-            echo number_format($row['Descuento'],2,'.',',');
+            echo number_format($row['descuentos'],2,'.',',');
             // ✅ Solo acumular descuento si NO está rechazado
             if (!isset($esRechazado) || !$esRechazado) {
-                $Descuento12 += $row['Descuento'];
+                $Descuento12 += $row['descuentos'];
             }
             $totales2 = 'si';
         }
@@ -2628,7 +2628,7 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
 <?php } ?>
 
 <?php  if($database->plantilla_filtro($nombreTabla,"TOTAL_IMPUESTOS_TRASLADADOS",$altaeventos,$DEPARTAMENTO)=="si"){  ?>
-<td style="text-align:center" ><strong style="font-size:16px" >$<?php echo number_format($TImpuestosTrasladados12,2,'.',','); ?></strong></td>
+<td style="text-align:center" ><strong style="font-size:16px" >$<?php echo number_format($IVA12,2,'.',','); ?></strong></td>
 <?php } ?>
 
 
@@ -2717,9 +2717,7 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
    $<?php echo number_format(($subTotalCIERRE + $subTotalCIERRE2), 2, '.', ','); ?>
 </td>
 <?php } ?>
-<?php if($database->plantilla_filtro($nombreTabla,"propina",$altaeventos,$DEPARTAMENTO)=="si"){ ?>
-<td class="celda-total"><strong>$ <?php echo number_format($propina123,2,'.',','); ?></strong></td>
-<?php } ?>
+
 
 
 
