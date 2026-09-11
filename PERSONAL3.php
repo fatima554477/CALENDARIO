@@ -301,10 +301,10 @@ if ($consultaEventosPersonal2) {
           <tr>
                   
           <td><textarea placeholder="ESCRIBE AQUÍ TUS CORREOS SEPARADOS POR PUNTO Y COMA EJEMPLO: NOMBRE@CORREO.ES;NOMBRE@CORREO.ES"  style="width:500px;px;" name="PERSONAL2_ENVIAR_IMAIL" id="PERSONAL2_ENVIAR_IMAIL" class="form-control" aria-label="With textarea"><?php echo $PERSONAL2_ENVIAR_IMAIL; ?></textarea></td><br></br>
-          <th> <button class="btn btn-sm btn-outline-success px-5"  type="button" id="enviarimailPERSONAL2">ENVIAR POR EMAIL</button></th>  <?php } ?>  
-                   
+         <th> <button class="btn btn-sm btn-outline-success px-5"  type="button" id="enviarimailPERSONAL2">ENVIAR POR EMAIL</button></th>
           </tr>
-         
+            </form>
+<?php } ?>
 
          
 
@@ -372,3 +372,9 @@ if ($consultaEventosPersonal2) {
     }
 }());
 </script>
+
+</div>
+</div>
+</div>
+</div>
+</div>
