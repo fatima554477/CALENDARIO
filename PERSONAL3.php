@@ -65,7 +65,7 @@ if ($consultaEventosPersonal2) {
                     
                            
                                </tr>
-<tr style="background:#fcf3cf">
+<tr style="background:#eff9eb">
 <th scope="row"><label for="BUSCADOR_EVENTO_PERSONAL2" class="form-label">BUSCAR EVENTO:</label></th>
 <td>
     <input
@@ -97,7 +97,7 @@ if ($consultaEventosPersonal2) {
     <input type="hidden" id="ID_EVENTO_PERSONAL2" name="ID_EVENTO_PERSONAL2" value="">
 </td>
 </tr>
-<tr style="background:#fcf3cf">
+<tr style="background:#eff9eb">
 <th scope="row"><label for="NOMBRE_EVENTO_PERSONAL2" class="form-label">NOMBRE DEL EVENTO:</label></th>
 <td><input type="text" class="form-control" id="NOMBRE_EVENTO_PERSONAL2" name="NOMBRE_EVENTO_PERSONAL2" value="" readonly="readonly"></td>
 </tr>
@@ -434,7 +434,7 @@ $montoBonoTotalAjustado2 = $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO_TOTAL
           <td style="text-align:center" >
           <input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2" value="<?php echo $row["id"]; ?>"/> </td>
 
-		  <td><?php echo htmlspecialchars((string) $row["NUMERO_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
+	  <td style="color:#17215E;font-weight:bold;"><?php echo htmlspecialchars((string) $row["NUMERO_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
 		  <td><?php echo htmlspecialchars((string) $row["NOMBRE_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
        <td><?php echo $row["NOMBRE_DELINGRESO2"]; ?></td>
 		  
