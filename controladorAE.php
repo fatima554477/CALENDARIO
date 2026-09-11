@@ -1045,7 +1045,7 @@ $NUMERO_EVENTO_PERSONAL2 = isset($_POST["NUMERO_EVENTO_PERSONAL2"]) ? trim($_POS
 
 
 
-// La selección sólo se acepta cuando el id y el número pertenecen al mismo evento.
+
 
 if ($ID_EVENTO_PERSONAL2 > 0 && $NUMERO_EVENTO_PERSONAL2 !== "") {
 
