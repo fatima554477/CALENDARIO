@@ -233,7 +233,7 @@ if ($consultaEventosPersonal2) {
 
     <tr>
     <th style="background:#f7edf8; text-align:left" scope="col">FECHA DE PROGRAMACIÓN PAGO DE BONO:</th>
-    <td  style="background:#f7edf8"><input type="date" class="form-control" id="fecha_ppago" required=""  value="<?php echo $FECHA_PPAGO1; ?>" name="FECHA_PPAGO1"></td>
+    <td  style="background:#f7edf8"><input type="date" class="form-control" id="fecha_ppago" required="" value="<?php echo htmlspecialchars((string) $FECHA_PPAGO1, ENT_QUOTES, 'UTF-8'); ?>" name="FECHA_PPAGO1" ></td>
 
     </tr>
 
@@ -319,10 +319,42 @@ if ($consultaEventosPersonal2) {
 
     var fechaFinal = document.getElementById('FECHA_FINAL_PERSONAL2');
 
+    var fechaPagoBono = document.getElementById('fecha_ppago');
+
     var formulario = document.getElementById('PERSONAL2form');
 
-    if (!buscador || !lista || !numero || !nombre || !eventoId) {
+   if (!buscador || !lista || !numero || !nombre || !eventoId) {
         return;
+    }
+
+    function calcularFechaPagoBono(fechaFinalEvento) {
+        if (!fechaFinalEvento) {
+            return '';
+        }
+
+        var partesFecha = fechaFinalEvento.split('-');
+
+        if (partesFecha.length !== 3) {
+            return '';
+        }
+
+        var fechaPago = new Date(
+            Number(partesFecha[0]),
+            Number(partesFecha[1]) - 1,
+            Number(partesFecha[2])
+        );
+
+        if (isNaN(fechaPago.getTime())) {
+            return '';
+        }
+
+        fechaPago.setDate(fechaPago.getDate() + 15);
+
+        var anio = fechaPago.getFullYear();
+        var mes = String(fechaPago.getMonth() + 1).padStart(2, '0');
+        var dia = String(fechaPago.getDate()).padStart(2, '0');
+
+        return anio + '-' + mes + '-' + dia;
     }
 
     function seleccionarEvento() {
@@ -345,7 +377,13 @@ if ($consultaEventosPersonal2) {
         eventoId.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-id') || '') : '';
 		     fechaInicio.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-inicio') || '') : '';
 
-        fechaFinal.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-final') || '') : '';
+              var fechaFinalEvento = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-final') || '') : '';
+
+        fechaFinal.value = fechaFinalEvento;
+
+        if (fechaPagoBono) {
+            fechaPagoBono.value = calcularFechaPagoBono(fechaFinalEvento);
+        }
 
         buscador.setCustomValidity(opcionEncontrada ? '' : 'Selecciona un evento de los resultados de búsqueda.');
   if (opcionEncontrada && typeof totalfechas8 === 'function') {
