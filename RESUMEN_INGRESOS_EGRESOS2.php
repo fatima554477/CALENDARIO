@@ -38,7 +38,7 @@ resumenChannel.onmessage = (event) => {
 
 			<hr/>
 			<strong>  <p class="mb-0 text-uppercase">
-<img src="includes/contraer31.png" onclick="refreshSection()" id="mostrar31" style="cursor:pointer;"/>
+<img src="includes/contraer31.png" onclick="refreshSection()" id="mostrar31" onclick="refreshSection()" style="cursor:pointer;"/>
 <img src="includes/contraer41.png" id="ocultar31" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;CIERRE DEL EVENTO</p><div  id="mensajeRESUMEN"><div class="progress" style="width: 25%;">
 									</div>
 								</div></div></strong>
