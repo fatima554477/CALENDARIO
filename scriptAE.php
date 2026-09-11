@@ -4262,6 +4262,7 @@ $("#guardaPERSONAL2").click(function () {
 
             $("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
             $("#reset_totales").load(location.href + " #reset_totales");
+			loadpersonal(1);
 
             $("#mensajePERSONAL2")
                 .html("<span id='ACTUALIZADO'>" + data + "</span>")
@@ -4288,6 +4289,7 @@ $(document).on('click', '.view_dataDATOSpersonal2modifica', function(){
     $('#personal_detalles').html(data);
     $('#personal_detalles').html(data);
     $('#dataModal').modal('show');
+	loadpersonal(1);
    }
   });
  })
@@ -4303,6 +4305,7 @@ $(document).on('click', '.view_dataDATOSpersonal2borrar', function(){
     $('#personal2_detalles3').html();
     $('#dataModal3').modal('show');
   $('#btnYes').click(function() {
+	  loadpersonal(1);
   //AGREGAR
 
   
@@ -4320,6 +4323,7 @@ $(document).on('click', '.view_dataDATOSpersonal2borrar', function(){
 			$("#reset_personal2").load(location.href + " #reset_personal2");
 			$("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
 					$("#reset_totales").load(location.href + " #reset_totales");
+					loadpersonal(1);
    }
   });
   
