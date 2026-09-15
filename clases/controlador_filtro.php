@@ -2495,38 +2495,27 @@ $VIATICOSOPRO = isset($row['VIATICOSOPRO'])?$row['VIATICOSOPRO']:'' ;
 <td>
 <?php
 $UUID_row           = isset($row['UUID']) ? trim($row['UUID']) : '';
-$STATUS_DE_PAGO_row  = isset($row['STATUS_DE_PAGO']) ? strtoupper(trim($row['STATUS_DE_PAGO'])) : '';
-$PFORMADE_PAGO_row   = isset($row['PFORMADE_PAGO']) ? trim($row['PFORMADE_PAGO']) : '';
-$VIATICOSOPRO_row2   = isset($row['VIATICOSOPRO']) ? strtoupper(trim($row['VIATICOSOPRO'])) : '';
-$esViaticoEspecial   = in_array($VIATICOSOPRO_row2, ['VIATICOS','REEMBOLSO','PAGO A PROVEEDOR CON DOS O MAS FACTURAS'], true);
-$ocultarSubirF       = ($esViaticoEspecial && $STATUS_DE_PAGO_row === 'PAGADO');
+$STATUS_DE_PAGO_row = isset($row['STATUS_DE_PAGO']) ? strtoupper(trim($row['STATUS_DE_PAGO'])) : '';
+$PFORMADE_PAGO_row  = isset($row['PFORMADE_PAGO']) ? trim($row['PFORMADE_PAGO']) : '';
+$VIATICOSOPRO_row2  = isset($row['VIATICOSOPRO']) ? strtoupper(trim($row['VIATICOSOPRO'])) : '';
+$esViaticoEspecial  = in_array($VIATICOSOPRO_row2, ['VIATICOS','REEMBOLSO','PAGO A PROVEEDOR CON DOS O MAS FACTURAS'], true);
+$ocultarSubirF      = ($esViaticoEspecial && $STATUS_DE_PAGO_row === 'PAGADO');
 ?>
-
-<!-- BOTÓN COMPLEMENTO -->
-<?php if (
-    $UUID_row !== '' &&
-    $PFORMADE_PAGO_row !== '03' &&
-    !$tieneComplemento &&
-    $database->variablespermisos('', 'CALE_SUBE_PAGOVYO', 'ver') === 'si'
-): ?>
-    <button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRCOMP boton-centro">SUBIR COMPLEMENTO</button>
+<?php if ($UUID_row !== '' && $PFORMADE_PAGO_row !== '03' && !$tieneComplemento && $p_cale_sube_ver): ?>
+	<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRCOMP boton-centro">SUBIR COMPLEMENTO</button>
 <?php endif; ?>
-
-<!-- BOTÓN FACTURA o MODIFICAR -->
-<?php if (!$ocultarSubirF && $database->variablespermisos('', 'CALE_SUBE_PAGOVYO', 'ver') === 'si'): ?>
-
-    <?php if ($UUID_row !== '' && ($STATUS_DE_PAGO_row === 'APROBADO' || $STATUS_DE_PAGO_row === 'PAGADO')): ?>
-        <!-- SIN BOTÓN -->
-    <?php elseif ($STATUS_DE_PAGO_row === 'SOLICITADO'): ?>
-        <button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">MODIFICAR</button>
-    <?php elseif ($UUID_row === '' && ($STATUS_DE_PAGO_row === 'APROBADO' || $STATUS_DE_PAGO_row === 'PAGADO')): ?>
-        <?php if ($esViaticoEspecial): ?>
-            <button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">MODIFICAR</button>
-        <?php else: ?>
-            <button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">SUBIR FACTURA</button>
-        <?php endif; ?>
-    <?php endif; ?>
-
+<?php if (!$ocultarSubirF && $p_cale_sube_ver): ?>
+	<?php if ($UUID_row !== '' && ($STATUS_DE_PAGO_row === 'APROBADO' || $STATUS_DE_PAGO_row === 'PAGADO')): ?>
+		<!-- sin botón -->
+	<?php elseif ($STATUS_DE_PAGO_row === 'SOLICITADO'): ?>
+		<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">MODIFICAR</button>
+	<?php elseif ($UUID_row === '' && ($STATUS_DE_PAGO_row === 'APROBADO' || $STATUS_DE_PAGO_row === 'PAGADO')): ?>
+		<?php if ($esViaticoEspecial): ?>
+			<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">MODIFICAR</button>
+		<?php else: ?>
+			<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">SUBIR FACTURA</button>
+		<?php endif; ?>
+	<?php endif; ?>
 <?php endif; ?>
 </td>
 
