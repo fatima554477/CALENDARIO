@@ -58,7 +58,13 @@ if ($consultaEventosPersonal2) {
 
                         
               <table class="table mb-0 table-striped">
+			  <div class="text-center mb-3">
+	<a href="CALENDARIO_PERSONAL.php" target="_blank" class="btn btn-sm btn-outline-primary px-5">
+		📅 CALENDARIO DE COORDINACIÓN
+	</a>
+</div>
                     <tr>  
+					
                                
                                <th style="text-align:center" scope="col"></th>
                                <th style="text-align:center" scope="col">INFORMACIÓN</th>
