@@ -319,13 +319,14 @@ $per_page=intval($_POST["per_page"]);
 <td><?php echo $row["PERSONAL2_FECHA_ULTIMA_CARGA"]; ?></td>
 <?php /*termina copiar y terminaA5*/ ?>
 			<td>
-<?php if($database->variablespermisos('','ALTA_EVENTOS','modificar')=='si'){ ?>
-<input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataaltaeventosmodifica" />			
-<?php } ?>
+<?php if($database->variablespermisos('','COLACOR_FILTRO','modificar')=='si'){ ?>
+<input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2modifica" />
+<?php } ?>		
+
 			</td>
 			<td>
-<?php if($database->variablespermisos('','ALTA_EVENTOS','borrar')=='si'){ ?>
-<input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataaltaeventosborrar" />
+<?php if($database->variablespermisos('','COLACOR_FILTRO','borrar')=='si'){ ?>
+<input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2borrar" />
 <?php } ?>
 			</td>			
 		</tr>
