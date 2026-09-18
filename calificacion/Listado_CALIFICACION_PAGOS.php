@@ -75,12 +75,30 @@ function formatearFechaCargaConHora($valor)
     #calificacion-proveedores-pagos .tabla-calificacion-proveedores tbody tr:nth-child(even) {
         background: #d4f1d3;
     }
-    #calificacion-proveedores-pagos .tabla-calificacion-proveedores td {
+   #calificacion-proveedores-pagos .tabla-calificacion-proveedores td {
         vertical-align: middle;
     }
+    #calificacion-proveedores-pagos .bandera-evaluacion {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        min-width: 120px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 12px;
+        text-align: center;
+        white-space: nowrap;
+    }
+    #calificacion-proveedores-pagos .bandera-no-evaluado { background: #fff; color: #000; border: 1px solid #999; }
+    #calificacion-proveedores-pagos .bandera-de-casa { background: #28a745; color: #fff; }
+    #calificacion-proveedores-pagos .bandera-segunda-opcion { background: #ffc107; color: #000; }
+    #calificacion-proveedores-pagos .bandera-tercera-opcion { background: #ffb6c1; color: #000; }
+    #calificacion-proveedores-pagos .bandera-vetado { background: #dc3545; color: #fff; }
     /* Columna OBSERVACIONES: ancho fijo para controlar el salto de línea */
-    #calificacion-proveedores-pagos .tabla-calificacion-proveedores th:nth-child(6),
-    #calificacion-proveedores-pagos .tabla-calificacion-proveedores td:nth-child(6) {
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores th:nth-child(7),
+    #calificacion-proveedores-pagos .tabla-calificacion-proveedores td:nth-child(7) {
         width: 400px; /* ajusta este valor al ancho que necesites */
     }
     /* Texto de OBSERVACIONES: justificado y limitado a 4 renglones */
@@ -153,6 +171,7 @@ function formatearFechaCargaConHora($valor)
                     <thead>
                         <tr>
                             <th>ID DEL PROVEEDOR</th>
+							   <th>CLASIFICACIÓN</th>
                             <th>NOMBRE COMERCIAL</th>
                             <th>NOMBRE FISCAL O RAZÓN SOCIAL</th>
 							 <th>MOTIVO DE LA CALIFICACIÓN</th>
@@ -168,11 +187,30 @@ function formatearFechaCargaConHora($valor)
                     <?php if ($calificacionPagosResultado && mysqli_num_rows($calificacionPagosResultado) > 0) { ?>
                         <?php while ($proveedorCalificacion = mysqli_fetch_assoc($calificacionPagosResultado)) { ?>
                             <?php
-                            $tieneCalificacion = !empty($proveedorCalificacion['calificacion_id']);
+                           $tieneCalificacion = !empty($proveedorCalificacion['calificacion_id']);
                             $puedeAbrir = $tieneCalificacion ? $puedeModificarCalificacion : $puedeGuardarCalificacion;
+                            $clasificacion = isset($proveedorCalificacion['clasificacion'])
+                                ? trim((string) $proveedorCalificacion['clasificacion'])
+                                : '';
+                            $presentacionesClasificacion = array(
+                                'DE_CASA' => array('bandera-de-casa', 'DE CASA'),
+                                'SEGUNDA_OPCION' => array('bandera-segunda-opcion', 'SEGUNDA OPCIÓN'),
+                                'TERCERA_OPCION' => array('bandera-tercera-opcion', 'TERCERA OPCIÓN'),
+                                'VETADO' => array('bandera-vetado', 'VETADO'),
+                            );
+                            $presentacionClasificacion = isset($presentacionesClasificacion[$clasificacion])
+                                ? $presentacionesClasificacion[$clasificacion]
+                                : array('bandera-no-evaluado', 'SIN CLASIFICAR');
                             ?>
                             <tr style="text-align:center">
                                 <td><?php echo (int) $proveedorCalificacion['proveedor_id']; ?></td>
+                                <td>
+                                    <span class="bandera-evaluacion <?php echo escaparCalificacionProveedor($presentacionClasificacion[0]); ?>"
+                                          title="<?php echo escaparCalificacionProveedor($presentacionClasificacion[1]); ?>">
+                                        <i class="fa fa-flag" aria-hidden="true"></i>
+                                        <span><?php echo escaparCalificacionProveedor($presentacionClasificacion[1]); ?></span>
+                                    </span>
+                                </td>
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['nombre_comercial']); ?></td>
                                 <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['nombre_fiscal']); ?></td>
 								  <td><?php echo escaparCalificacionProveedor($proveedorCalificacion['motivo_calificacion']); ?></td>
@@ -194,7 +232,7 @@ function formatearFechaCargaConHora($valor)
                             </tr>
                         <?php } ?>
                     <?php } else { ?>
-                        <tr><td colspan="9" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
+                        <tr><td colspan="10" class="text-center">NO HAY PROVEEDORES CON PAGOS REGISTRADOS PARA ESTE EVENTO.</td></tr>
                     <?php } ?>
                     </tbody>
                 </table>

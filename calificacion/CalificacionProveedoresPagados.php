@@ -1,11 +1,8 @@
 <?php
  
 /**
- * Consultas del listado de proveedores con pagos y de su calificacion actual.
- *
- * La relacion existente es:
- * 02SUBETUFACTURA.idRelacion -> 02usuarios.id -> 02direccionproveedor1.idRelacion
- * y 02CALIFICACION.idRelacion -> 02usuarios.id.
+PROGRAMER: FATIMA ARELLANO
+FECHA:17/08/2026
  */
 class CalificacionProveedoresPagados
 {
@@ -42,7 +39,8 @@ class CalificacionProveedoresPagados
         }
         $numeroEvento = mysqli_real_escape_string($this->conexion, $numeroEvento);
  
-          $sql = "SELECT pago.proveedor_id,
+         $sql = "SELECT pago.proveedor_id,
+                       usuarios.EVALUACION AS clasificacion,
                        pago.NOMBRE_COMERCIAL AS nombre_comercial,
                        pago.RAZON_SOCIAL AS nombre_fiscal,
                        calificacion.id AS calificacion_id,
@@ -83,6 +81,8 @@ class CalificacionProveedoresPagados
                       GROUP BY datos.idRelacion
 
                 ) AS pago
+                LEFT JOIN 02usuarios AS usuarios
+                       ON usuarios.id = pago.proveedor_id
                 LEFT JOIN 02CALIFICACION AS calificacion
                        ON calificacion.id = (
                            SELECT MAX(calificacion_actual.id)
