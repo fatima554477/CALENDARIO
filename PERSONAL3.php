@@ -37,15 +37,15 @@ if ($consultaEventosPersonal2) {
 <div id="content">   
 			<hr/>
 			<strong>  <p class="mb-0 text-uppercase">
-<img src="includes/contraer31.png" id="mostrar180" style="cursor:pointer;"/>
-<img src="includes/contraer41.png" id="ocultar180" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;PERSONAL QUE ASISTE AL EVENTO</p>
+<img src="includes/contraer31.png" id="mostrar51" style="cursor:pointer;"/>
+<img src="includes/contraer41.png" id="ocultar51" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;PERSONAL QUE ASISTE AL EVENTO</p>
 <div  id="mensajePERSONAL22"><div class="progress" style="width: 25%;">
 
 									<div class="progress-bar" role="progressbar" style="width: <?php echo $ROWCONTACTOSBODE; ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><?php echo $ROWCONTACTOSBODE; ?>%</div>
 									
 								</div></div>
 								</strong>
-	        <div id="target180" style="display:block;"  class="content2">
+	        <div id="target51" style="display:block;"  class="content2">
         <div class="card">
       <div  id='actualizabonos2'>
             

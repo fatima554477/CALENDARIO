@@ -565,6 +565,23 @@ $("#reset_totales").load(location.href + " #reset_totales");
 
 }
 
+function actualizarListadoPersonal2(){
+
+
+
+	if(typeof loadpersonal === 'function' && $('.datos_ajax').length){
+
+		loadpersonal(1);
+
+		return;
+
+	}
+
+
+
+	$("#reset_personal2").load(location.href + " #reset_personal2");
+
+}
 
 
 function STATUS_BONORECHAZO(STATUS_BONORECHAZO_id){
@@ -579,13 +596,12 @@ function STATUS_BONORECHAZO(STATUS_BONORECHAZO_id){
 	}else{
 	STATUS_BONORECHAZO_text = "no";
 	}
-	var esPersonal2 = document.getElementById("reset_personal2") !== null;
-	var targetTabla = esPersonal2 ? "#reset_personal2" : "#reset_personal";
-	$("#reset_totales").load(location.href + " #reset_totales");	
-	var targetMensaje = esPersonal2 ? "#mensajePERSONAL2" : "#mensajePERSONAL";
-	var dataPost = esPersonal2
-		? {STATUS_BONORECHAZO_id:STATUS_BONORECHAZO_id,STATUS_BONORECHAZO_text:STATUS_BONORECHAZO_text}
-		: {STATUS_RECHAZOBONO_id:STATUS_BONORECHAZO_id,STATUS_RECHAZOBONO_text:STATUS_BONORECHAZO_text};
+$("#reset_totales").load(location.href + " #reset_totales");
+
+	var targetMensaje = "#mensajePERSONAL2";
+
+	var dataPost = {STATUS_BONORECHAZO_id:STATUS_BONORECHAZO_id,STATUS_BONORECHAZO_text:STATUS_BONORECHAZO_text};
+
 	  $.ajax({
 		url:'calendariodeeventos2/controladorAE.php',
 		method:'POST',
@@ -594,9 +610,11 @@ function STATUS_BONORECHAZO(STATUS_BONORECHAZO_id){
 		$(targetMensaje).html('cargando');
 	},
 	success:function(data){
-		actualizarBotonesRechazoPersonal(STATUS_BONORECHAZO_id, esPersonal2 ? 'personal2' : 'personal', STATUS_BONORECHAZO_text);
+		actualizarBotonesRechazoPersonal(STATUS_BONORECHAZO_id, 'personal2', STATUS_BONORECHAZO_text);
+
 			
-	$(targetTabla).load(location.href + " " + targetTabla);				
+	actualizarListadoPersonal2();
+			
 			
 		$(targetMensaje).html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
@@ -735,7 +753,7 @@ function pasara1_personal2ADMIN(pasara1_personal2ADMIN_id){
 	},
 		success:function(data){
 			
-	$("#reset_personal2").load(location.href + " #reset_personal2");			
+	actualizarListadoPersonal2();		
 			
 		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
@@ -762,7 +780,7 @@ function pasara1_personal2VYO(pasara1_personal2VYO_id){
 	},
 		success:function(data){
 			
-	$("#reset_personal2").load(location.href + " #reset_personal2");			
+	actualizarListadoPersonal2();		
 			
 		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
@@ -788,7 +806,7 @@ function pasara1_personal2DIRECCION(pasara1_personal2DIRECCION_id){
 	},
 		success:function(data){
 			
-	$("#reset_personal2").load(location.href + " #reset_personal2");			
+	actualizarListadoPersonal2();		
 			
 		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
@@ -822,7 +840,7 @@ function pasara1_personal2(pasara1_personal2_id){
 	},
 		success:function(data){
 			
-	$("#reset_personal2").load(location.href + " #reset_personal2");			
+	actualizarListadoPersonal2();		
 			
 		$('#mensajePERSONAL2').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
 	}
