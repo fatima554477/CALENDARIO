@@ -2304,7 +2304,22 @@ $('#mensajecierre').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().del
 
 
 $("#GUARDAR_CIERRE").click(function(){
-const formData = new FormData($('#cierreEVENTOSform')[0]);
+const formularioCierre = $('#cierreEVENTOSform')[0];
+
+
+
+if (!formularioCierre.checkValidity()) {
+
+    formularioCierre.reportValidity();
+
+    return;
+
+}
+
+
+
+const formData = new FormData(formularioCierre);
+
 
 $.ajax({
     url: 'calendariodeeventos2/controladorAE.php',
@@ -2321,6 +2336,18 @@ $.ajax({
    success:function(data){
 			$("#mensajecierre").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();			
 	$("#reset_cierre").load(location.href + " #reset_cierre");
+	// Deja listos los campos para capturar un nuevo documento de cierre.
+
+	const cierreForm = $('#cierreEVENTOSform')[0];
+
+	if (cierreForm) {
+
+		cierreForm.reset();
+
+		$('#cierreEVENTOSform').find('input[type="text"], input[type="file"], select').val('');
+
+	}
+
 
    }
    
@@ -4315,41 +4342,38 @@ $(document).on('click', '.view_dataDATOSpersonal2modifica', function(){
 
 
 $(document).on('click', '.view_dataDATOSpersonal2borrar', function(){
+  var borra_perso2 = $(this).attr('id');
 
-  var borra_perso2 = $(this).attr("id");
-  var borra_PERSONAL2 = "borra_PERSONAL2";
+  // El modal general comparte el botón #btnYes con todas las secciones de la
+  // página. Cada apertura agregaba otro evento click y podía ejecutar una
+  // acción distinta (o varias) al confirmar. La confirmación nativa mantiene
+  // esta eliminación aislada y sólo envía una solicitud por registro.
+  if (!window.confirm('¿ESTÁS SEGURO DE BORRAR ESTE REGISTRO?')) {
+    return;
+  }
 
-  //AGREGAR
-    $('#personal2_detalles3').html();
-    $('#dataModal3').modal('show');
-  $('#btnYes').click(function() {
-	  loadpersonal(1);
-  //AGREGAR
-
-  
   $.ajax({
-   url:'calendariodeeventos2/controladorAE.php',
-   method:"POST",
-   data:{borra_perso2:borra_perso2,borra_PERSONAL2:borra_PERSONAL2},
-   
-    beforeSend:function(){  
-    $('#mensajePERSONAL2').html('CARGANDO'); 
-    },    
-   success:function(data){
-	   			$('#dataModal3').modal('hide');	   
-			$("#mensajePERSONAL2").html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();			
-			$("#reset_personal2").load(location.href + " #reset_personal2");
-			$("#reset_personal_resumen").load(location.href + " #reset_personal_resumen");
-					$("#reset_totales").load(location.href + " #reset_totales");
-					loadpersonal(1);
-   }
+    url: 'calendariodeeventos2/controladorAE.php',
+    method: 'POST',
+    data: {
+      borra_perso2: borra_perso2,
+      borra_PERSONAL2: 'borra_PERSONAL2'
+    },
+    beforeSend: function(){
+      $('#mensajePERSONAL2').html('CARGANDO');
+    },
+    success: function(data){
+      $('#mensajePERSONAL2').html("<span id='ACTUALIZADO'>" + data + '</span>').fadeIn().delay(2000).fadeOut();
+      $('#reset_personal2').load(location.href + ' #reset_personal2');
+      $('#reset_personal_resumen').load(location.href + ' #reset_personal_resumen');
+      $('#reset_totales').load(location.href + ' #reset_totales');
+      loadpersonal(1);
+    },
+    error: function(){
+      $('#mensajePERSONAL2').html("<span class='text-danger'>NO SE PUDO BORRAR EL REGISTRO</span>");
+    }
   });
-  
-    //AGREGAR	
-	});
-  //AGREGAR	 
-  
- });	
+});	
 
 /////////////EMAIL/////////////////
 $(document).on('click', '#enviarimailPERSONAL2', function(){

@@ -20,34 +20,47 @@
                       <div class="col-md-4"style="background:#fef5e7">
  
 
-   <strong><label for="validationCustom02" class="form-label">DOCUMENTO:</label></strong>
-   
+   <strong><label for="validationCustom02" class="form-label">NOMBRE DEL DOCUMENTO:</label></strong>
+
 	<span id="despleResetCierre">
 	<?php
 	/*linea para multiples colores*/
 	$fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
 	$num = 0;
 	/*linea para multiples colores*/
-	
-	$queryper = $altaeventos->Listado_nuevocierre();
-	$encabezado = '<select class="form-select mb-3" aria-label="Default select example" id="DOCUMENTO_cierre" required="" name="DOCUMENTO_cierre">
-	<option value="">SELECCIONA UNA OPCIÓN</option>';	
-	while($row1 = mysqli_fetch_array($queryper))
-	{ 
-	$select='';
-	if($DOCUMENTO_cierre==$row1['nuevo_documento_cierre']){$select = "selected";};
-	
-	/*linea para multiples colores*/
-	if($num==8){$num=0;}else{$num++;}
-	/*linea para multiples colores*/
 
-	$option3 .= '<option style="background: #'.$fondos[$num].'" '.$select.' value="'.$row1['nuevo_documento_cierre'].'">'.$row1['nuevo_documento_cierre'].'</option>';
+	$queryper = $altaeventos->Listado_nuevocierre();
+
+	$opcionesDatalist = '';
+	while($row1 = mysqli_fetch_array($queryper))
+	{
+		/*linea para multiples colores*/
+		if($num==8){$num=0;}else{$num++;}
+		/*linea para multiples colores*/
+
+		$opcionesDatalist .= '<option data-color="#'.$fondos[$num].'" value="'.htmlspecialchars($row1['nuevo_documento_cierre']).'">';
 	}
-	echo $encabezado.$option3.'</select>';			
 	?>
+	<input
+		type="text"
+		class="form-control"
+		id="DOCUMENTO_cierre"
+		name="DOCUMENTO_cierre"
+		list="lista_DOCUMENTO_cierre"
+		value="<?php echo $DOCUMENTO_cierre; ?>"
+		placeholder="ESCRIBE O SELECCIONA UNA OPCIÓN"
+		required
+		autocomplete="off"
+		oninvalid="this.setCustomValidity('FALTA SELECCIONAR O ESCRIBIR EL NOMBRE DEL DOCUMENTO.')"
+		oninput="this.setCustomValidity('')"
+	/>
+	<datalist id="lista_DOCUMENTO_cierre">
+		<?php echo $opcionesDatalist; ?>
+	</datalist>
 	</span>
 
-   <div class="valid-feedback">Bien!</div>
+  <div class="invalid-feedback">FALTA INGRESAR EL NOMBRE DEL DOCUMENTO.</div>
+
    </div>
 
                         <div class="col-md-4"style="background:#d4f6c8">

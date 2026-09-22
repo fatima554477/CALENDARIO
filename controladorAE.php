@@ -2197,6 +2197,16 @@ $IPCIERRENUEVO = isset($_POST["IPCIERRENUEVO"])?$_POST["IPCIERRENUEVO"]:"";
 
 
 if($hCIERRE == 'hCIERRE' or $enviarCIERRE=='enviarCIERRE'){
+	$DOCUMENTO_cierre = isset($_POST["DOCUMENTO_cierre"])?trim($_POST["DOCUMENTO_cierre"]):"";
+
+	if($DOCUMENTO_cierre === ''){
+
+		echo "FALTA SELECCIONAR EL DOCUMENTO DE CIERRE.";
+
+		exit;
+
+	}
+
 	
 	if( $_FILES["adjunto_cierre"] == true){
  $adjunto_cierre = $conexion->solocargar("adjunto_cierre");
@@ -2208,7 +2218,7 @@ if($hCIERRE == 'hCIERRE' or $enviarCIERRE=='enviarCIERRE'){
 
 
 
-$DOCUMENTO_cierre = isset($_POST["DOCUMENTO_cierre"])?$_POST["DOCUMENTO_cierre"]:"";
+
 $OBSERVACIONES_cierre = isset($_POST["OBSERVACIONES_cierre"])?$_POST["OBSERVACIONES_cierre"]:"";
 $fecha_cierre = isset($_POST["fecha_cierre"])?$_POST["fecha_cierre"]:"";
 $IPCIERRE2 = isset($_POST["IPCIERRE2"])?$_POST["IPCIERRE2"]:"";
