@@ -13,7 +13,7 @@
 	        <div id="target3" style="display:block;" class="content2">
         <div class="card">
           <div class="card-body">
-          <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','guardar')=='si'  and $var_bloquea_fecha=='no'){ ?>
+          <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','guardar')=='si'){ ?>
                       <form class="row g-3 needs-validation was-validated" id="cierreEVENTOSform"  novalidate="" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
  
 
@@ -72,9 +72,8 @@
 						
                         <div class="col-md-4"style="background:#fbeee6">
 
-                        <strong>   <label for="validationCustom01" class="form-label">OBSERVACIONES:</label></strong>
-                          <input type="text" class="form-control" id="validationCustom01" value="<?php echo $OBSERVACIONES_cierre; ?>" required="" name="OBSERVACIONES_cierre">
-                          <div class="valid-feedback">Bien!</div>
+                         <strong>   <label for="OBSERVACIONES_cierre" class="form-label">OBSERVACIONES:</label></strong>
+                          <input type="text" class="form-control" id="OBSERVACIONES_cierre" value="<?php echo $OBSERVACIONES_cierre; ?>" name="OBSERVACIONES_cierre">
                         
                           </div>
 <div><tr>
@@ -133,7 +132,7 @@ id="mensajecierre"/></th></tr>
 
 
 
-                  <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','email')=='si'  and $var_bloquea_fecha=='no'){ ?>
+                  <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','email')=='si'){ ?>
                   <form name="form_emai_cierre" id="form_emai_cierre">
 			  
 		  <tr>
@@ -176,8 +175,19 @@ $querycontras = $altaeventos->Listado_cierre();
 <?php
 $urladjunto_cierre ='';
 while($row = mysqli_fetch_array($querycontras))
-{	
-	$urladjunto_cierre = $conexion->descargararchivo($row["adjunto_cierre"]);
+{
+	$archivo_cierre = $row["adjunto_cierre"];
+	$extension_cierre = strtolower(pathinfo($archivo_cierre, PATHINFO_EXTENSION));
+
+	if ($archivo_cierre !== '' && in_array($extension_cierre, array('xls', 'xlsx', 'xlsm'), true)) {
+		$protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+		$ruta_base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+		$url_archivo = $protocolo.'://'.$_SERVER['HTTP_HOST'].$ruta_base.'/includes/archivos/'.rawurlencode($archivo_cierre);
+		$url_visualizador = 'https://view.officeapps.live.com/op/view.aspx?src='.rawurlencode($url_archivo);
+		$urladjunto_cierre = '<a target="_blank" rel="noopener noreferrer" href="'.htmlspecialchars($url_visualizador, ENT_QUOTES, 'UTF-8').'">Visualizar!</a><br/>';
+	} else {
+		$urladjunto_cierre = $conexion->descargararchivo($archivo_cierre);
+	}
 ?>
 
 
@@ -188,9 +198,9 @@ while($row = mysqli_fetch_array($querycontras))
 <td ><?php echo $urladjunto_cierre; ?></td>
 <td ><?php echo $row["OBSERVACIONES_cierre"]; ?></td>
 <td ><?php echo $row["fecha_cierre"]; ?></td>
-<td><?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','modificar')=='si'  and $var_bloquea_fecha=='no'){ ?><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierremodifica" /><?php } ?></td>
-<td><?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','borrar')=='si'  and $var_bloquea_fecha=='no'){ ?><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierreborrar" />
-<?php } ?></td>
+<?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','modificar')=='si'){ ?><td><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierremodifica" /></td><?php } ?>
+<?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','borrar')=='si'){ ?><td><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierreborrar" /></td>
+<?php } ?>
 </tr>
 <?php
 }
