@@ -2,7 +2,6 @@
 
 /**
     --------------------------
-    Autor: Sandor Matamoros
     Programer: Fatima Arellano
     Propietario: EPC
     ----------------------------
@@ -278,7 +277,16 @@ $per_page=intval($_POST["per_page"]);
 		$numrows=0;
 	}	
 	$total_pages = ceil($numrows/$per_page);
-	
+	// Permisos de las acciones mostradas en cada fila del listado.
+
+	$p_pagos_egresos_modificar = $database->variablespermisos('', 'PAGOS_EGRESOSPP', 'modificar') == 'si';
+
+	$p_cale_sube_ver           = $database->variablespermisos('', 'CALE_SUBE_PAGOVYO', 'ver') == 'si';
+
+	$p_cale_sube_guardar       = $database->variablespermisos('', 'CALE_SUBE_PAGOVYO', 'guardar') == 'si';
+
+	$p_cale_sube_modificar     = $database->variablespermisos('', 'CALE_SUBE_PAGOVYO', 'modificar') == 'si';
+
 	
 	//Recorrer los datos recuperados
 		?>
@@ -2480,8 +2488,8 @@ $VIATICOSOPRO = isset($row['VIATICOSOPRO'])?$row['VIATICOSOPRO']:'' ;
 
 <?php /*termina copiar y terminaA5*/ ?> 
 
-<td>
-<?php if($database->variablespermisos('','PAGOS_EGRESOSPP','modificar')=='si'){ ?>
+<td><?php if($p_pagos_egresos_modificar){ ?>
+
     <input 
         type="button" 
         name="view" 
@@ -2501,18 +2509,22 @@ $VIATICOSOPRO_row2  = isset($row['VIATICOSOPRO']) ? strtoupper(trim($row['VIATIC
 $esViaticoEspecial  = in_array($VIATICOSOPRO_row2, ['VIATICOS','REEMBOLSO','PAGO A PROVEEDOR CON DOS O MAS FACTURAS'], true);
 $ocultarSubirF      = ($esViaticoEspecial && $STATUS_DE_PAGO_row === 'PAGADO');
 ?>
-<?php if ($UUID_row !== '' && $PFORMADE_PAGO_row !== '03' && !$tieneComplemento && $p_cale_sube_ver): ?>
+<?php if ($UUID_row !== '' && $PFORMADE_PAGO_row !== '03' && !$tieneComplemento && $p_cale_sube_ver && $p_cale_sube_guardar): ?>
+
 	<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRCOMP boton-centro">SUBIR COMPLEMENTO</button>
 <?php endif; ?>
 <?php if (!$ocultarSubirF && $p_cale_sube_ver): ?>
 	<?php if ($UUID_row !== '' && ($STATUS_DE_PAGO_row === 'APROBADO' || $STATUS_DE_PAGO_row === 'PAGADO')): ?>
 		<!-- sin botón -->
-	<?php elseif ($STATUS_DE_PAGO_row === 'SOLICITADO'): ?>
+		<?php elseif ($STATUS_DE_PAGO_row === 'SOLICITADO' && $p_cale_sube_modificar): ?>
+
 		<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">MODIFICAR</button>
 	<?php elseif ($UUID_row === '' && ($STATUS_DE_PAGO_row === 'APROBADO' || $STATUS_DE_PAGO_row === 'PAGADO')): ?>
-		<?php if ($esViaticoEspecial): ?>
+		<?php if ($esViaticoEspecial && $p_cale_sube_modificar): ?>
+
 			<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">MODIFICAR</button>
-		<?php else: ?>
+		<?php elseif (!$esViaticoEspecial && $p_cale_sube_guardar): ?>
+
 			<button type="button" id="<?php echo $row['02SUBETUFACTURAid']; ?>" class="btn btn-info btn-xs view_dataSUBIRF boton-centro">SUBIR FACTURA</button>
 		<?php endif; ?>
 	<?php endif; ?>
@@ -2718,7 +2730,7 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
 </style>
 
 <td class="celda-total">
-   $<?php echo number_format(($subTotalCIERRE + $subTotalCIERRE2), 2, '.', ','); ?>
+   $<?php echo number_format(($subTotalCIERRE ), 2, '.', ','); ?>
 </td>
 <?php } ?>
 
@@ -2765,8 +2777,8 @@ if($database->plantilla_filtro($nombreTabla,"MONTO_TOTAL_COTIZACION_ADEUDO",$alt
   }
 </style>
 
-<td class="celda-total">
-   $<?php echo number_format(($subTotalCIERRE + $subTotalCIERRE2 - $Descuento12), 2, '.', ','); ?>
+<td class="celda-total" title="Esto más la suma de TOTAL XML CON DESCUENTO de Resumen de viáticos, reembolsos, etc. es lo que va al cierre">
+   $<?php echo number_format(($subTotalCIERRE  - $Descuento12), 2, '.', ','); ?>
 </td>
 
 

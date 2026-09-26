@@ -198,7 +198,7 @@ class orders extends accesoclase {
             $sWhere3campo = substr($sWhere3campo, 0, -2);
         }
 
-        $sWhere3 .= " ORDER BY $sWhere3campo";
+        $sWhere3 .= " ORDER BY FECHA_DE_LLENADO DESC";
 
         // -----------------------------
         // SQL FINAL
