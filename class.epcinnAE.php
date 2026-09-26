@@ -710,7 +710,7 @@ $variablequery = mysqli_query($conn,$variable);
 		return $row['id'];
 	}
 
-	public function guardar_cierre(  $DOCUMENTO_cierre , $OBSERVACIONES_cierre , $fecha_cierre,$adjunto_cierre , $hCIERRE, $IPCIERRE,$enviarCIERRE){
+	public function guardar_cierre(  $DOCUMENTO_cierre , $OBSERVACIONES_cierre , $fecha_cierre,$nombreI_cierre,$adjunto_cierre , $hCIERRE, $IPCIERRE,$enviarCIERRE){
 		
 		$conn = $this->db();
 		$existe = $this->revisar_guardar_cierre($IPCIERRE);
@@ -720,12 +720,14 @@ $variablequery = mysqli_query($conn,$variable);
 		$var1 = "update 04cierre set 
 		DOCUMENTO_cierre = '".$DOCUMENTO_cierre."' , 
 		OBSERVACIONES_cierre = '".$OBSERVACIONES_cierre."' , 
+		nombreI_cierre = '".$nombreI_cierre."' , 
 
 		hCIERRE = '".$hCIERRE."'  where id = '".$IPCIERRE."' ; ";
 	
-		 $var2 = " insert into 04cierre ( DOCUMENTO_cierre, OBSERVACIONES_cierre, fecha_cierre,adjunto_cierre, hCIERRE, idRelacion) values ( 
+		 $var2 = " insert into 04cierre ( DOCUMENTO_cierre, OBSERVACIONES_cierre, fecha_cierre,nombreI_cierre, adjunto_cierre, hCIERRE, idRelacion) values ( 
 		 '".$DOCUMENTO_cierre."' , '".$OBSERVACIONES_cierre."' ,
-		 '".$fecha_cierre."' , '".$adjunto_cierre."' , 
+		 '".$fecha_cierre."' ,
+		 '".$nombreI_cierre."' , '".$adjunto_cierre."' , 
 		 '".$hCIERRE."' , '".$session."' ); ";		
 			
 	    if($enviarCIERRE=='enviarCIERRE'){

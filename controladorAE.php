@@ -2221,9 +2221,10 @@ if($hCIERRE == 'hCIERRE' or $enviarCIERRE=='enviarCIERRE'){
 
 $OBSERVACIONES_cierre = isset($_POST["OBSERVACIONES_cierre"])?$_POST["OBSERVACIONES_cierre"]:"";
 $fecha_cierre = isset($_POST["fecha_cierre"])?$_POST["fecha_cierre"]:"";
+$nombreI_cierre = isset($_POST["nombreI_cierre"])?$_POST["nombreI_cierre"]:"";
 $IPCIERRE2 = isset($_POST["IPCIERRE2"])?$_POST["IPCIERRE2"]:"";
 
-	echo $altaeventos->guardar_cierre(  $DOCUMENTO_cierre , $OBSERVACIONES_cierre , $fecha_cierre ,$adjunto_cierre1, $hCIERRE, $IPCIERRE2,$enviarCIERRE);
+	echo $altaeventos->guardar_cierre(  $DOCUMENTO_cierre , $OBSERVACIONES_cierre , $fecha_cierre ,$nombreI_cierre,$adjunto_cierre1, $hCIERRE, $IPCIERRE2,$enviarCIERRE);
 		// include_once (__ROOT1__."/includes/crea_funciones.php");
 //echo "entro";
 }

@@ -3,7 +3,26 @@
 if (!isset($_SESSION)) {
     session_start();
 }
-$PorfaltaDeFacturaSession = isset($_SESSION['PorfaltaDeFactura12']) ? $_SESSION['PorfaltaDeFactura12'] : 0;
+
+require_once __DIR__ . '/clases/calculo_por_falta_factura.php';
+
+$conexionResumen = $altaeventos->db();
+$idEventoResumen = isset($_SESSION['idevento']) ? (int) $_SESSION['idevento'] : 0;
+$numeroEventoResumen = '';
+
+if ($idEventoResumen > 0) {
+    $consultaEventoResumen = mysqli_query(
+        $conexionResumen,
+        "SELECT NUMERO_EVENTO FROM 04altaeventos WHERE id = $idEventoResumen LIMIT 1"
+    );
+    if ($consultaEventoResumen && $filaEventoResumen = mysqli_fetch_assoc($consultaEventoResumen)) {
+        $numeroEventoResumen = $filaEventoResumen['NUMERO_EVENTO'];
+    }
+}
+
+// Siempre se calcula para el evento actual; la sesión queda como caché, no como fuente obligatoria.
+$PorfaltaDeFacturaSession = calcularPorFaltaDeFacturaEvento($conexionResumen, $numeroEventoResumen);
+$_SESSION['PorfaltaDeFactura12'] = $PorfaltaDeFacturaSession;
 ?>     
 <script>
 let lastStatusChecksum = null;
@@ -38,7 +57,7 @@ resumenChannel.onmessage = (event) => {
 
 			<hr/>
 			<strong>  <p class="mb-0 text-uppercase">
-<img src="includes/contraer31.png" onclick="refreshSection()" id="mostrar31" onclick="refreshSection()" style="cursor:pointer;"/>
+<img src="includes/contraer31.png" onclick="refreshSection()" id="mostrar31"  style="cursor:pointer;"/>
 <img src="includes/contraer41.png" id="ocultar31" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp;CIERRE DEL EVENTO</p><div  id="mensajeRESUMEN"><div class="progress" style="width: 25%;">
 									</div>
 								</div></div></strong>
@@ -406,9 +425,7 @@ $INGRESOS = $TOTAINGRESOS + $TOTAINGRESOS2;
 $INGRESOS2 = $TOTAINGRESOSsinP + $TOTAINGRESOS2P;
 $subTotalPROPINAOSERVICIO = $subTotalTiketspropina + $subTotalAVIONpropina + $subTotalCOMPROBACIONpropina +$subTotalSUBETUFACTURApropina + $subTotalSUBETUFACTURApropina2;
 
-$PorfaltaDeFactura = $PorfaltaDeFacturaSession > 0
-    ? $PorfaltaDeFacturaSession
-    : ( $PorfaltaDeFacturaSession = $PorfaltaDeFactura);   
+$PorfaltaDeFactura = $PorfaltaDeFacturaSession;  
 
 // Mantiene el total actualizado en la sesión para otras vistas
 $_SESSION['PorfaltaDeFactura12'] = $PorfaltaDeFactura;
@@ -598,7 +615,7 @@ EVENTO SIN IMPUESTOS  <a style="color:red;font:12px">&nbsp;(INFORMATIVO)</a></td
 
 
 <?php
-$TOTAL_EGRESOS = $GTotalAvioComSube + $PorfaltaDeFactura12;
+$TOTAL_EGRESOS = $GTotalAvioComSube;
 ?>
 <tr>
   <td style="background:#f5c691;text-align:right;">TOTAL EGRESOS</td>   

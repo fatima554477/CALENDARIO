@@ -2303,8 +2303,17 @@ $('#mensajecierre').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().del
 
 
 
+let guardadoCierreEnProceso = false;
+
 $("#GUARDAR_CIERRE").click(function(){
 const formularioCierre = $('#cierreEVENTOSform')[0];
+const botonGuardarCierre = $(this);
+
+if (guardadoCierreEnProceso) {
+	return;
+}
+
+
 
 
 
@@ -2319,6 +2328,10 @@ if (!formularioCierre.checkValidity()) {
 
 
 const formData = new FormData(formularioCierre);
+
+// Bloquea nuevos clics hasta que el servidor termine de procesar el registro.
+guardadoCierreEnProceso = true;
+botonGuardarCierre.prop('disabled', true).attr('aria-disabled', 'true');
 
 
 $.ajax({
@@ -2349,10 +2362,14 @@ $.ajax({
 	}
 
 
-   }
-   
+  },
+	complete:function(){
+		guardadoCierreEnProceso = false;
+		botonGuardarCierre.prop('disabled', false).removeAttr('aria-disabled');
+	}
 })
 });
+
 
 
 
