@@ -19,6 +19,20 @@ $conexion = NEW colaboradores();
 $var_INICIALES = $altaeventos->var_altaeventos();
 $var_INICIALES['iniciales_evento'];
 
+$action = isset($_POST['action']) ? $_POST['action'] : '';
+
+if($action === 'bitacora_cierre'){
+
+	header('Content-Type: application/json; charset=utf-8');
+
+	$idCierre = isset($_POST['id_cierre']) ? (int)$_POST['id_cierre'] : 0;
+
+	echo json_encode($altaeventos->Listado_bitacora_cierre_array($idCierre));
+
+	exit;
+
+}
+
 $hALTAEVENTOS = isset($_POST["hALTAEVENTOS"])?$_POST["hALTAEVENTOS"]:"";
 $enviaraltaeventos = isset($_POST["enviaraltaeventos"])?$_POST["enviaraltaeventos"]:"";
 $borraraltaeventos = isset($_POST["borraraltaeventos"])?$_POST["borraraltaeventos"]:"";   

@@ -710,6 +710,85 @@ $variablequery = mysqli_query($conn,$variable);
 		$row = mysqli_fetch_array($query, MYSQLI_ASSOC);
 		return $row['id'];
 	}
+	
+	private function tabla_bitacora_cierre($conn){
+
+		$sql = "CREATE TABLE IF NOT EXISTS `04cierre_bitacora` (
+
+			`id` INT NOT NULL AUTO_INCREMENT,
+
+			`id_cierre` INT NOT NULL,
+
+			`tipo_movimiento` VARCHAR(30) NOT NULL,
+
+			`detalle` TEXT NOT NULL,
+
+			`usuario` VARCHAR(255) NOT NULL DEFAULT '',
+
+			`fecha_hora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+			PRIMARY KEY (`id`),
+
+			KEY `idx_cierre` (`id_cierre`)
+
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+
+		mysqli_query($conn, $sql) or die('No fue posible crear la bitácora de cierre: '.mysqli_error($conn));
+
+	}
+
+
+
+	private function registrar_bitacora_cierre($conn, $idCierre, $tipo, $detalle){
+
+		$this->tabla_bitacora_cierre($conn);
+
+		$usuario = isset($_SESSION['NOMBREUSUARIO']) ? $_SESSION['NOMBREUSUARIO'] : '';
+
+		$sql = "INSERT INTO `04cierre_bitacora` (`id_cierre`, `tipo_movimiento`, `detalle`, `usuario`)
+
+			VALUES (".(int)$idCierre.", '".mysqli_real_escape_string($conn, $tipo)."', '".mysqli_real_escape_string($conn, $detalle)."', '".mysqli_real_escape_string($conn, $usuario)."')";
+
+		mysqli_query($conn, $sql) or die('No fue posible registrar la bitácora de cierre: '.mysqli_error($conn));
+
+	}
+
+
+
+	public function Listado_bitacora_cierre_array($idCierre){
+
+		$conn = $this->db();
+
+		$this->tabla_bitacora_cierre($conn);
+
+		$idEvento = isset($_SESSION['idevento']) ? (int)$_SESSION['idevento'] : 0;
+
+		$resultado = array();
+
+		$sql = "SELECT b.tipo_movimiento, b.detalle, b.usuario,
+
+			DATE_FORMAT(b.fecha_hora, '%d/%m/%Y %H:%i:%s') AS fecha_hora
+
+			FROM `04cierre_bitacora` b
+
+			INNER JOIN `04cierre` c ON c.id = b.id_cierre
+
+			WHERE b.id_cierre = ".(int)$idCierre." AND c.idRelacion = ".$idEvento."
+
+			ORDER BY b.id DESC";
+
+		$query = mysqli_query($conn, $sql) or die('No fue posible consultar la bitácora de cierre: '.mysqli_error($conn));
+
+		while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)){
+
+			$resultado[] = $row;
+
+		}
+
+		return $resultado;
+
+	}
+
 
 	public function guardar_cierre(  $DOCUMENTO_cierre , $OBSERVACIONES_cierre , $fecha_cierre,$nombreI_cierre,$adjunto_cierre , $hCIERRE, $IPCIERRE,$enviarCIERRE){
 		
@@ -732,11 +811,39 @@ $variablequery = mysqli_query($conn,$variable);
 		 '".$hCIERRE."' , '".$session."' ); ";		
 			
 	    if($enviarCIERRE=='enviarCIERRE'){
+				$anteriorQuery = mysqli_query($conn, "SELECT DOCUMENTO_cierre, OBSERVACIONES_cierre, nombreI_cierre FROM 04cierre WHERE id = ".(int)$IPCIERRE." AND idRelacion = ".(int)$session." LIMIT 1");
+
+		$anterior = $anteriorQuery ? mysqli_fetch_array($anteriorQuery, MYSQLI_ASSOC) : array();
+
 		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+			$cambios = array();
+
+		$campos = array('DOCUMENTO_cierre' => 'Nombre del documento', 'OBSERVACIONES_cierre' => 'Observaciones', 'nombreI_cierre' => 'Ejecutivo');
+
+		$nuevos = array('DOCUMENTO_cierre' => $DOCUMENTO_cierre, 'OBSERVACIONES_cierre' => $OBSERVACIONES_cierre, 'nombreI_cierre' => $nombreI_cierre);
+
+		foreach($campos as $campo => $etiqueta){
+
+			$valorAnterior = isset($anterior[$campo]) ? $anterior[$campo] : '';
+
+			if((string)$valorAnterior !== (string)$nuevos[$campo]){
+
+				$cambios[] = $etiqueta.': "'.$valorAnterior.'" → "'.$nuevos[$campo].'"';
+
+			}
+
+		}
+
+		$detalle = count($cambios) ? implode('; ', $cambios) : 'Se guardó el registro sin cambios en los datos generales.';
+
+		$this->registrar_bitacora_cierre($conn, $IPCIERRE, 'ACTUALIZACIÓN', $detalle);
+
 		return "Actualizado";
 					
 		}else{
 		mysqli_query($conn,$var2) or die('P160'.mysqli_error($conn));
+			$this->registrar_bitacora_cierre($conn, mysqli_insert_id($conn), 'INGRESO', 'Se ingresó el documento de cierre "'.$DOCUMENTO_cierre.'".');
+
 		return "Ingresado";
 		}
 			

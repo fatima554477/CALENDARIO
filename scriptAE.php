@@ -3219,6 +3219,78 @@ $.ajax({
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+function escaparBitacoraCierre(valor) {
+
+  return $('<div>').text(valor == null ? '' : valor).html();
+
+}
+
+
+
+$(document).on('click', '.view_datacierrebitacora', function(){
+
+  var idCierre = $(this).attr('id');
+
+  $('#personal_detalles').html('<div class="text-center p-4">Cargando bitácora...</div>');
+
+  $('#dataModal').modal('show');
+
+
+
+  $.ajax({
+
+    url: 'calendariodeeventos2/controladorAE.php',
+
+    method: 'POST',
+
+    dataType: 'json',
+
+    data: {action: 'bitacora_cierre', id_cierre: idCierre},
+
+    success: function(registros){
+
+      var contenido = '<h5>BITÁCORA DEL DOCUMENTO DE CIERRE</h5>';
+
+      if(!registros || registros.length === 0){
+
+        contenido += '<div class="alert alert-info">Este documento todavía no tiene movimientos registrados.</div>';
+
+      }else{
+
+        contenido += '<div class="table-responsive"><table class="table table-striped table-bordered">' +
+
+          '<thead><tr><th>FECHA Y HORA</th><th>MOVIMIENTO</th><th>DETALLE</th><th>USUARIO</th></tr></thead><tbody>';
+
+        $.each(registros, function(_, registro){
+
+          contenido += '<tr><td>' + escaparBitacoraCierre(registro.fecha_hora) + '</td>' +
+
+            '<td>' + escaparBitacoraCierre(registro.tipo_movimiento) + '</td>' +
+
+            '<td>' + escaparBitacoraCierre(registro.detalle) + '</td>' +
+
+            '<td>' + escaparBitacoraCierre(registro.usuario || '-') + '</td></tr>';
+
+        });
+
+        contenido += '</tbody></table></div>';
+
+      }
+
+      $('#personal_detalles').html(contenido);
+
+    },
+
+    error: function(){
+
+      $('#personal_detalles').html('<div class="alert alert-danger">No fue posible consultar la bitácora.</div>');
+
+    }
+
+  });
+
+});
+
 $(document).on('click', '.view_datacierremodifica', function(){
 var personal_id = $(this).attr('id');
 $.ajax({
