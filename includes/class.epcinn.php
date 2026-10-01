@@ -221,10 +221,17 @@ public function lectorxml($valor){
     $xmlString = file_get_contents($valor);
     $xmlString = preg_replace('/^\xEF\xBB\xBF/', '', $xmlString);
     
-    libxml_use_internal_errors(true);
-    $xmlDoc = simplexml_load_string($xmlString);
-    
-    if($xmlDoc === false) return array();
+libxml_use_internal_errors(true);
+$xmlDoc = simplexml_load_string($xmlString);
+
+if($xmlDoc === false) {
+    error_log('lectorxml FALLO en: ' . $valor);
+    foreach (libxml_get_errors() as $error) {
+        error_log('libxml: ' . trim($error->message));
+    }
+    libxml_clear_errors();
+    return array();
+}
     
     $regreso = array();
     
@@ -1115,7 +1122,26 @@ public function revisar_usuario($conn,$USUARIO_CRM,$id){
 		
 		
 		$query = mysqli_query($conn,$var);
-		$var_html1 =  "<table class='table mb-0 table-striped'>
+$var_html1 = "<div class='mb-3'>
+    <label for='buscadorNombreColaborador' class='form-label small fw-bold text-muted mb-1'>
+        <ion-icon name='search-outline' class='align-middle'></ion-icon> BUSCAR POR NOMBRE
+    </label>
+    <div class='input-group input-group-sm shadow-sm' style='max-width: 320px;'>
+        <span class='input-group-text bg-white border-end-0'>
+            <ion-icon name='person-outline'></ion-icon>
+        </span>
+        <input type='search' 
+               class='form-control buscador-nombre-colaborador border-start-0 ps-0' 
+               id='buscadorNombreColaborador' 
+               placeholder='Nombre o apellido...' 
+               autocomplete='off' 
+               aria-controls='listadoColaboradoresTable'
+               style='font-size: 0.85rem;'>
+    </div>
+    <div class='form-text' aria-live='polite' id='resultadoBusquedaColaborador' style='font-size: 0.75rem;'></div>
+
+
+		<table class='table mb-0 table-striped' id='listadoColaboradoresTable'>
 		<tr>
 		
 		<td>NOMBRE</td>
@@ -1171,7 +1197,29 @@ public function revisar_usuario($conn,$USUARIO_CRM,$id){
 		}
 		$var_html .= '</tr>';
 	}
-	$var_html .= "</table>";
+	$var_html .= "</table>
+	<script>
+	(function () {
+		var buscador = document.getElementById('buscadorNombreColaborador');
+		var tabla = document.getElementById('tablaListadoColaboradores');
+
+		if (!buscador || !tabla) {
+			return;
+		}
+
+		buscador.addEventListener('input', function () {
+			var busqueda = buscador.value.toLocaleLowerCase().trim();
+			var filas = tabla.querySelectorAll('tr:not(:first-child)');
+
+			filas.forEach(function (fila) {
+				var celdas = fila.querySelectorAll('td');
+				var nombreCompleto = ((celdas[0] ? celdas[0].textContent : '') + ' ' +
+					(celdas[1] ? celdas[1].textContent : '')).toLocaleLowerCase();
+				fila.style.display = nombreCompleto.indexOf(busqueda) !== -1 ? '' : 'none';
+			});
+		});
+	}());
+	</script>";
 	echo 	$var_html ;	
 	}	
 
@@ -1444,27 +1492,26 @@ public function revisar_usuario($conn,$USUARIO_CRM,$id){
 /**//**//**//**//*FUNCION PARA EXCEL*//**//**//**//**/
 
 	public function descargararchivo($archivoadjunto){
-		
-		$extension = explode('.',$archivoadjunto);
-		$cuenta = count($extension) - 1;
-		//$nuevonombre =  $archivo.'_'.date('Y_m_d_h_i_s').'.'.
-		
-	if($extension[$cuenta]=='xlsx' or $extension[$cuenta]=='csv' or $extension[$cuenta]=='txt' or $extension[$cuenta]=='xls'){
+
+		if($archivoadjunto === '' || $archivoadjunto === null || $archivoadjunto == '2'){
+			return "";
+		}
+
+		$extension = strtolower(pathinfo($archivoadjunto, PATHINFO_EXTENSION));
+
+		if(in_array($extension, array('xlsx','csv','txt','xls'), true)){
 			$urldescarga = 'descargar.php?archivo='.$archivoadjunto;
-	}else{
-			$urldescarga = $archivoadjunto;	
-	}
-	
-	if($archivoadjunto=='2' or $archivoadjunto==2){
-		return "";
-	}
-	
-	if($archivoadjunto!=""){
-		return $urladjunto_PROGRAMA = "<a target='_blank'  href='includes/archivos/".$urldescarga."'>Visualizar!</a><br/>";
-	}else{
-		return $urladjunto_PROGRAMA="";
-	}
-	
+		}else{
+			$urldescarga = $archivoadjunto;
+		}
+
+		// Correos de Outlook (.msg): el navegador no los puede mostrar, se leen en el servidor
+		if($extension === 'msg'){
+			return "<a target='_blank' rel='noopener noreferrer' href='ver_msg.php?archivo=".rawurlencode($archivoadjunto)."'>Ver correo</a><br/>"
+				."<a href='includes/archivos/".rawurlencode($archivoadjunto)."'>Descargar</a><br/>";
+		}
+
+		return "<a target='_blank'  href='includes/archivos/".$urldescarga."'>Visualizar!</a><br/>";
 	}
 
 
@@ -1760,7 +1807,7 @@ private function sanitizarNombreArchivo($nombrebase) {
 			$ext == 'docx' || $ext == 'doc'  || $ext == 'xml'  ||
 			$ext == 'xlsx' || $ext == 'xls'  || $ext == 'ppt'  ||
 			$ext == 'pptx' || $ext == 'txt'  || $ext == 'htm'  ||
-			$ext == 'webp' || $ext == 'xlsm'
+			$ext == 'webp' || $ext == 'msg' || $ext == 'xlsm'
 		){
 			if(move_uploaded_file($nombretemp, $nombre_carpeta.'/'.$nuevonombre)){
 				chmod($nombre_carpeta.'/'.$nuevonombre, 0755);
@@ -1794,7 +1841,7 @@ $nuevonombre = $nombrebase . '_' . uniqid() . '.' . $ext;
 			$ext == 'docx' || $ext == 'doc'  || $ext == 'xml'  ||
 			$ext == 'txt'  || $ext == 'xlsx' || $ext == 'xls'  ||
 			$ext == 'ppt'  || $ext == 'pptx' || $ext == 'htm'  ||
-			$ext == 'webp' || $ext == 'xlsm'  
+			$ext == 'webp' || $ext == 'msg' ||$ext == 'xlsm'  
 		){
 			if(move_uploaded_file($nombretemp, $nombre_carpeta.'/'.$nuevonombre)){
 				chmod($nombre_carpeta.'/'.$nuevonombre, 0755);
@@ -1844,7 +1891,7 @@ $nuevonombre = $nombrebase . '_' . uniqid() . '.' . $ext;
 			$ext == 'jpg'  || $ext == 'png'  || $ext == 'mp4'  ||
 			$ext == 'docx' || $ext == 'doc'  || $ext == 'xml'  ||
 			$ext == 'xlsx' || $ext == 'xls'  || $ext == 'ppt'  ||
-			$ext == 'pptx' || $ext == 'htm'  || $ext == 'webp'  || $ext == 'xlsm'
+			$ext == 'pptx' || $ext == 'msg' ||$ext == 'htm'  || $ext == 'webp'  || $ext == 'xlsm'
 		){
 			if(move_uploaded_file($nombretemp, $nombre_carpeta.'/'.$nuevonombre)){
 				chmod($nombre_carpeta.'/'.$nuevonombre, 0755);
@@ -2075,21 +2122,23 @@ FECHA_INGRESO_IMSS, JEFE_DIRECTO_1, JEFE_DIRECTO_2, JEFE_DIRECTO_3,PERMISOS, idR
 		return $row['id'];
 	}
 
-	public function guardar_dircasa1($AUTORIZA_1, $EDIFICIO , $calledir1, $NUMERO_EXTERIOR , $NUMERO_INTERIOR , $NUMERO_INTERIOR_2 , $COLONIA , $ALCALDIA , $C_P , $CIUDAD , $ESTADO , $PAIS , $dircasa11 , $DIRECCION_DE_CASA_1_UBICACION_MAPA){
+public function guardar_dircasa1($AUTORIZA_1, $EDIFICIO , $calledir1, $NUMERO_EXTERIOR , $NUMERO_INTERIOR , $NUMERO_INTERIOR_2 , $COLONIA , $ALCALDIA , $C_P , $CIUDAD , $ESTADO , $PAIS , $dircasa11 , $DIRECCION_DE_CASA_1_UBICACION_MAPA, $registro_id = 0){
+
 		$conn = $this->db();
-		$existe = $this->revisar_dircasa1();
 		$session = isset($_SESSION['id'])?$_SESSION['id']:'';
+		$registro_id = (int)$registro_id;
 		if($session != ''){
 			
 		$var1 = "update 01dircasa1 set EDIFICIO = '".$EDIFICIO."' , calledir1 = '".$calledir1."' , NUMERO_EXTERIOR = '".$NUMERO_EXTERIOR."' , NUMERO_INTERIOR = '".$NUMERO_INTERIOR."' ,
 		 AUTORIZA_1 = '".$AUTORIZA_1."' ,
 
 
-		NUMERO_INTERIOR_2 = '".$NUMERO_INTERIOR_2."' , COLONIA = '".$COLONIA."' , ALCALDIA = '".$ALCALDIA."' , C_P = '".$C_P."' , CIUDAD = '".$CIUDAD."' , ESTADO = '".$ESTADO."' , PAIS = '".$PAIS."' , dircasa11 = '".$dircasa11."' , DIRECCION_DE_CASA_1_UBICACION_MAPA = '".$DIRECCION_DE_CASA_1_UBICACION_MAPA."' where idRelacion = '".$session."' ; ";
+			NUMERO_INTERIOR_2 = '".$NUMERO_INTERIOR_2."' , COLONIA = '".$COLONIA."' , ALCALDIA = '".$ALCALDIA."' , C_P = '".$C_P."' , CIUDAD = '".$CIUDAD."' , ESTADO = '".$ESTADO."' , PAIS = '".$PAIS."' , dircasa11 = '".$dircasa11."' , DIRECCION_DE_CASA_1_UBICACION_MAPA = '".$DIRECCION_DE_CASA_1_UBICACION_MAPA."' where id = '".$registro_id."' and idRelacion = '".$session."' ; ";
+
 		
 		$var2 = "insert into 01dircasa1 ( EDIFICIO, calledir1, NUMERO_EXTERIOR, NUMERO_INTERIOR, NUMERO_INTERIOR_2, COLONIA, ALCALDIA, C_P, CIUDAD, ESTADO, PAIS, dircasa11, DIRECCION_DE_CASA_1_UBICACION_MAPA, idRelacion,AUTORIZA_1) values ( '".$EDIFICIO."' , '".$calledir1."' , '".$NUMERO_EXTERIOR."' , '".$NUMERO_INTERIOR."' , '".$NUMERO_INTERIOR_2."' , '".$COLONIA."' , '".$ALCALDIA."' , '".$C_P."' , '".$CIUDAD."' , '".$ESTADO."' , '".$PAIS."' , '".$dircasa11."' , '".$DIRECCION_DE_CASA_1_UBICACION_MAPA."' , '".$session."' , '".$AUTORIZA_1."'); ";			
 			
-		if($existe>=1){	
+		if($registro_id > 0){	
 
 		mysqli_query($conn,$var1) or die('P233'.mysqli_error($conn));
 		return "ACTUALIZADO";
@@ -2102,6 +2151,28 @@ FECHA_INGRESO_IMSS, JEFE_DIRECTO_1, JEFE_DIRECTO_2, JEFE_DIRECTO_3,PERMISOS, idR
 		}		
 	}
 
+
+	public function listado_dircasa1(){
+
+		$conn = $this->db();
+
+		return mysqli_query($conn,"select * from 01dircasa1 where idRelacion='".$_SESSION['id']."' order by id desc");
+
+	}
+
+
+
+	public function borrar_dircasa1($id){
+
+		$conn = $this->db();
+
+		$id = (int)$id;
+
+		mysqli_query($conn,"delete from 01dircasa1 where id='".$id."' and idRelacion='".$_SESSION['id']."'");
+
+		return "ELEMENTO BORRADO";
+
+	}
 
 
 /**//**//**//**//*DIRECCION CASA 2*//**//**//**//**/
@@ -2164,17 +2235,21 @@ FECHA_INGRESO_IMSS, JEFE_DIRECTO_1, JEFE_DIRECTO_2, JEFE_DIRECTO_3,PERMISOS, idR
 		return $row['id'];
 	}
 
-	public function guardar_f1cercano(  $FAMILIAR_1_PARENTESCO , $FAMILIAR_1_NOMBRE_1 , $FAMILIAR_1_NOMBRE_2 , $FAMILIAR_1_APELLIDO_MATERNO , $FAMILIAR_1_APELLIDO_PATERNO , $FAMILIAR_1_CELULAR_1 , $FAMILIAR_1_CELULAR_2 , $FAMILIAR_1_TELEFONO_DE_CASA_I , $FAMILIAR_1_CORREO_ELECTRONICO , $FAMILIAR_1_EDIFICIO , $FAMILIAR_1_NUMERO_CALLE , $FAMILIAR_1_NUMERO_EXTERIOR , $FAMILIAR_1_NUMERO_INTERIOR , $FAMILIAR_1_NUMER__INTERIOR_2 , $FAMILIAR_1_COLONIA , $FAMILIAR_1_ALCALDIA , $FAMILIAR_1_C_P , $FAMILIAR_1_CIUDAD , $FAMILIAR_1_ESTADO , $FAMILIAR_1_PAIS , $F1CERCANO1 , $FAMILIAR_1_UBICACION__EN_EL_MAPA){
+public function guardar_f1cercano(  $FAMILIAR_1_PARENTESCO , $FAMILIAR_1_NOMBRE_1 , $FAMILIAR_1_NOMBRE_2 , $FAMILIAR_1_APELLIDO_MATERNO , $FAMILIAR_1_APELLIDO_PATERNO , $FAMILIAR_1_CELULAR_1 , $FAMILIAR_1_CELULAR_2 , $FAMILIAR_1_TELEFONO_DE_CASA_I , $FAMILIAR_1_CORREO_ELECTRONICO , $FAMILIAR_1_EDIFICIO , $FAMILIAR_1_NUMERO_CALLE , $FAMILIAR_1_NUMERO_EXTERIOR , $FAMILIAR_1_NUMERO_INTERIOR , $FAMILIAR_1_NUMER__INTERIOR_2 , $FAMILIAR_1_COLONIA , $FAMILIAR_1_ALCALDIA , $FAMILIAR_1_C_P , $FAMILIAR_1_CIUDAD , $FAMILIAR_1_ESTADO , $FAMILIAR_1_PAIS , $F1CERCANO1 , $FAMILIAR_1_UBICACION__EN_EL_MAPA, $registro_id = 0){
+
 		$conn = $this->db();
-		$existe = $this->revisar_f1cercano();
+		
 		$session = isset($_SESSION['id'])?$_SESSION['id']:'';
+		$registro_id = (int)$registro_id;
+
 		if($session != ''){
 			
-		$var1 = "update 001familiar1mascercano set FAMILIAR_1_PARENTESCO = '".$FAMILIAR_1_PARENTESCO."' , FAMILIAR_1_NOMBRE_1 = '".$FAMILIAR_1_NOMBRE_1."' , FAMILIAR_1_NOMBRE_2 = '".$FAMILIAR_1_NOMBRE_2."' , FAMILIAR_1_APELLIDO_MATERNO = '".$FAMILIAR_1_APELLIDO_MATERNO."' , FAMILIAR_1_APELLIDO_PATERNO = '".$FAMILIAR_1_APELLIDO_PATERNO."' , FAMILIAR_1_CELULAR_1 = '".$FAMILIAR_1_CELULAR_1."' , FAMILIAR_1_CELULAR_2 = '".$FAMILIAR_1_CELULAR_2."' , FAMILIAR_1_TELEFONO_DE_CASA_I = '".$FAMILIAR_1_TELEFONO_DE_CASA_I."' , FAMILIAR_1_CORREO_ELECTRONICO = '".$FAMILIAR_1_CORREO_ELECTRONICO."' , FAMILIAR_1_EDIFICIO = '".$FAMILIAR_1_EDIFICIO."' , FAMILIAR_1_NUMERO_CALLE = '".$FAMILIAR_1_NUMERO_CALLE."' , FAMILIAR_1_NUMERO_EXTERIOR = '".$FAMILIAR_1_NUMERO_EXTERIOR."' , FAMILIAR_1_NUMERO_INTERIOR = '".$FAMILIAR_1_NUMERO_INTERIOR."' , FAMILIAR_1_NUMER__INTERIOR_2 = '".$FAMILIAR_1_NUMER__INTERIOR_2."' , FAMILIAR_1_COLONIA = '".$FAMILIAR_1_COLONIA."' , FAMILIAR_1_ALCALDIA = '".$FAMILIAR_1_ALCALDIA."' , FAMILIAR_1_C_P = '".$FAMILIAR_1_C_P."' , FAMILIAR_1_CIUDAD = '".$FAMILIAR_1_CIUDAD."' , FAMILIAR_1_ESTADO = '".$FAMILIAR_1_ESTADO."' , FAMILIAR_1_PAIS = '".$FAMILIAR_1_PAIS."' , F1CERCANO1 = '".$F1CERCANO1."' , FAMILIAR_1_UBICACION__EN_EL_MAPA = '".$FAMILIAR_1_UBICACION__EN_EL_MAPA."' where idRelacion = '".$session."' ; ";
+	$var1 = "update 001familiar1mascercano set FAMILIAR_1_PARENTESCO = '".$FAMILIAR_1_PARENTESCO."' , FAMILIAR_1_NOMBRE_1 = '".$FAMILIAR_1_NOMBRE_1."' , FAMILIAR_1_NOMBRE_2 = '".$FAMILIAR_1_NOMBRE_2."' , FAMILIAR_1_APELLIDO_MATERNO = '".$FAMILIAR_1_APELLIDO_MATERNO."' , FAMILIAR_1_APELLIDO_PATERNO = '".$FAMILIAR_1_APELLIDO_PATERNO."' , FAMILIAR_1_CELULAR_1 = '".$FAMILIAR_1_CELULAR_1."' , FAMILIAR_1_CELULAR_2 = '".$FAMILIAR_1_CELULAR_2."' , FAMILIAR_1_TELEFONO_DE_CASA_I = '".$FAMILIAR_1_TELEFONO_DE_CASA_I."' , FAMILIAR_1_CORREO_ELECTRONICO = '".$FAMILIAR_1_CORREO_ELECTRONICO."' , FAMILIAR_1_EDIFICIO = '".$FAMILIAR_1_EDIFICIO."' , FAMILIAR_1_NUMERO_CALLE = '".$FAMILIAR_1_NUMERO_CALLE."' , FAMILIAR_1_NUMERO_EXTERIOR = '".$FAMILIAR_1_NUMERO_EXTERIOR."' , FAMILIAR_1_NUMERO_INTERIOR = '".$FAMILIAR_1_NUMERO_INTERIOR."' , FAMILIAR_1_NUMER__INTERIOR_2 = '".$FAMILIAR_1_NUMER__INTERIOR_2."' , FAMILIAR_1_COLONIA = '".$FAMILIAR_1_COLONIA."' , FAMILIAR_1_ALCALDIA = '".$FAMILIAR_1_ALCALDIA."' , FAMILIAR_1_C_P = '".$FAMILIAR_1_C_P."' , FAMILIAR_1_CIUDAD = '".$FAMILIAR_1_CIUDAD."' , FAMILIAR_1_ESTADO = '".$FAMILIAR_1_ESTADO."' , FAMILIAR_1_PAIS = '".$FAMILIAR_1_PAIS."' , F1CERCANO1 = '".$F1CERCANO1."' , FAMILIAR_1_UBICACION__EN_EL_MAPA = '".$FAMILIAR_1_UBICACION__EN_EL_MAPA."' where id = '".$registro_id."' and idRelacion = '".$session."' ; ";
+
 		
 		$var2 = "insert into 001familiar1mascercano ( FAMILIAR_1_PARENTESCO, FAMILIAR_1_NOMBRE_1, FAMILIAR_1_NOMBRE_2, FAMILIAR_1_APELLIDO_MATERNO, FAMILIAR_1_APELLIDO_PATERNO, FAMILIAR_1_CELULAR_1, FAMILIAR_1_CELULAR_2, FAMILIAR_1_TELEFONO_DE_CASA_I, FAMILIAR_1_CORREO_ELECTRONICO, FAMILIAR_1_EDIFICIO, FAMILIAR_1_NUMERO_CALLE, FAMILIAR_1_NUMERO_EXTERIOR, FAMILIAR_1_NUMERO_INTERIOR, FAMILIAR_1_NUMER__INTERIOR_2, FAMILIAR_1_COLONIA, FAMILIAR_1_ALCALDIA, FAMILIAR_1_C_P, FAMILIAR_1_CIUDAD, FAMILIAR_1_ESTADO, FAMILIAR_1_PAIS, F1CERCANO1, FAMILIAR_1_UBICACION__EN_EL_MAPA, idRelacion) values ( '".$FAMILIAR_1_PARENTESCO."' , '".$FAMILIAR_1_NOMBRE_1."' , '".$FAMILIAR_1_NOMBRE_2."' , '".$FAMILIAR_1_APELLIDO_MATERNO."' , '".$FAMILIAR_1_APELLIDO_PATERNO."' , '".$FAMILIAR_1_CELULAR_1."' , '".$FAMILIAR_1_CELULAR_2."' , '".$FAMILIAR_1_TELEFONO_DE_CASA_I."' , '".$FAMILIAR_1_CORREO_ELECTRONICO."' , '".$FAMILIAR_1_EDIFICIO."' , '".$FAMILIAR_1_NUMERO_CALLE."' , '".$FAMILIAR_1_NUMERO_EXTERIOR."' , '".$FAMILIAR_1_NUMERO_INTERIOR."' , '".$FAMILIAR_1_NUMER__INTERIOR_2."' , '".$FAMILIAR_1_COLONIA."' , '".$FAMILIAR_1_ALCALDIA."' , '".$FAMILIAR_1_C_P."' , '".$FAMILIAR_1_CIUDAD."' , '".$FAMILIAR_1_ESTADO."' , '".$FAMILIAR_1_PAIS."' , '".$F1CERCANO1."' , '".$FAMILIAR_1_UBICACION__EN_EL_MAPA."' , '".$session."' ); ";			
 			
-		if($existe>=1){	
+		if($registro_id > 0){	
 
 		mysqli_query($conn,$var1) or die('P276'.mysqli_error($conn));
 		return "ACTUALIZADO";
@@ -2186,6 +2261,30 @@ FECHA_INGRESO_IMSS, JEFE_DIRECTO_1, JEFE_DIRECTO_2, JEFE_DIRECTO_3,PERMISOS, idR
 		echo "NO HAY UN USUARIO SELECCIONADO";	
 		}		
 	}
+	public function listado_f1cercano(){
+
+		$conn = $this->db();
+
+		return mysqli_query($conn,"select * from 001familiar1mascercano where idRelacion='".$_SESSION['id']."' order by id desc");
+
+	}
+
+
+
+	public function borrar_f1cercano($id){
+
+		$conn = $this->db();
+
+		$id = (int)$id;
+
+		mysqli_query($conn,"delete from 001familiar1mascercano where id='".$id."' and idRelacion='".$_SESSION['id']."'");
+
+		return "ELEMENTO BORRADO";
+
+	}
+
+
+
 
 /**//**//**//**//*02familiar2mascercano *//**//**//**//**/
 
@@ -2228,7 +2327,36 @@ FECHA_INGRESO_IMSS, JEFE_DIRECTO_1, JEFE_DIRECTO_2, JEFE_DIRECTO_3,PERMISOS, idR
 		}		
 	}
 
+	/* ═════════════════════════════════════════════════════════════
+	   CONTACTOS COLABORADOR
+	   ═════════════════════════════════════════════════════════════ */
 
+
+	public function enviarNOMBRECONTACTO($NOMBRE_CONTACTO_COLAB,$CEL_CONTACTO_COLAB,$TELEFONO_CONTACCOLAB,$NUMERO_EXTENSION_COLAB,$EMAIL_CONTACTO_COLAB,$OBSERVACIONES_COLAB,$FECHA_CONTACTOS_COLAB,$TARJETA_COLAB,$validaNOMBRECONTACTO,$IPcontactosCOLAB,$enviarimailCONT,$ENVIACONTACTOCOLAB){
+		$conn    = $this->db();
+		$session = isset($_SESSION['id'])?$_SESSION['id']:'';    
+		if($session != ''){
+			$var1 = "update 01CONTACTOSCOLAB set NOMBRE_CONTACTO_COLAB='".$NOMBRE_CONTACTO_COLAB."',CEL_CONTACTO_COLAB='".$CEL_CONTACTO_COLAB."',TELEFONO_CONTACCOLAB='".$TELEFONO_CONTACCOLAB."',EMAIL_CONTACTO_COLAB='".$EMAIL_CONTACTO_COLAB."',NUMERO_EXTENSION_COLAB='".$NUMERO_EXTENSION_COLAB."',OBSERVACIONES_COLAB='".$OBSERVACIONES_COLAB."',FECHA_CONTACTOS_COLAB='".$FECHA_CONTACTOS_COLAB."',TARJETA_COLAB='".$TARJETA_COLAB."',validaNOMBRECONTACTO='".$validaNOMBRECONTACTO."' where id='".$IPcontactosCOLAB."' ;";
+			$var2 = "insert into 01CONTACTOSCOLAB (NOMBRE_CONTACTO_COLAB,CEL_CONTACTO_COLAB,TELEFONO_CONTACCOLAB,EMAIL_CONTACTO_COLAB,NUMERO_EXTENSION_COLAB,OBSERVACIONES_COLAB,FECHA_CONTACTOS_COLAB,TARJETA_COLAB,validaNOMBRECONTACTO,idRelacion) values('".$NOMBRE_CONTACTO_COLAB."','".$CEL_CONTACTO_COLAB."','".$TELEFONO_CONTACCOLAB."','".$EMAIL_CONTACTO_COLAB."','".$NUMERO_EXTENSION_COLAB."','".$OBSERVACIONES_COLAB."','".$FECHA_CONTACTOS_COLAB."','".$TARJETA_COLAB."','".$validaNOMBRECONTACTO."','".$_SESSION['id']."');";
+
+	if($ENVIACONTACTOCOLAB=='ENVIACONTACTOCOLAB'){
+		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+		return "Actualizado";
+	}else{
+		mysqli_query($conn,$var2) or die('P160'.mysqli_error($conn));
+		return "Ingresado";
+			}
+		}else{ echo '<p class="fs-4">NO HAY UN PROVEEDOR SELECCIONADO</p>'; }
+    }
+
+	public function listadocontactocola(){ $conn=$this->db(); return mysqli_query($conn,"select * from 01CONTACTOSCOLAB where idRelacion='".$_SESSION['id']."' order by id desc "); }
+	public function listadocontactocola2($id){ $conn=$this->db(); return mysqli_query($conn,"select * from 01CONTACTOSCOLAB where id='".$id."' "); }
+
+	public function borracontactoCOLAB($id){
+		$conn = $this->db();
+		mysqli_query($conn,"delete from 01CONTACTOSCOLAB where id='".$id."' ");
+		return "<P style='color:green; font-size:25px;'>ELEMENTO BORRADO</P>";
+	}
 
 /**//**//**//**//*03familiar2mascercano *//**//**//**//**/
 
