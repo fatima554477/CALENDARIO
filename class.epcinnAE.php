@@ -2417,13 +2417,15 @@ public function actualizapersonalDIRECCION($pasara1_personalDIRECCION_id, $pasap
 	$conn = $this->db();
 	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
 	if($session != ''){
-		$paraFACTURAR_id = (int)$paraFACTURAR_id;
+		$idCierre = (int)$paraFACTURAR_id;
+
 		$valor = ($paraFACTURAR_text === 'si') ? 'si' : 'no';
 
 		$var1 = "
 			UPDATE 04cierre
 			SET paraFACTURAR = '".$conn->real_escape_string($valor)."'
-			WHERE id = ".$id."
+			WHERE id = ".$idCierre."
+
 			LIMIT 1
 		";
 		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));

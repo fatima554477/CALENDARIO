@@ -1050,7 +1050,32 @@ function autoriza_vehiculo(autoriza_vehiculo_id){
 }
 
 
+function actualizarParaFacturarCierre(paraFACTURAR_id){
 
+	var checkBox = document.getElementById("paraFACTURAR"+paraFACTURAR_id);
+	if(!checkBox){
+		return;
+	}
+	var paraFACTURAR_text = checkBox.checked ? "si" : "no";
+
+	$.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{paraFACTURAR_id:paraFACTURAR_id,paraFACTURAR_text:paraFACTURAR_text},
+		beforeSend:function(){
+			$('#mensajecierre').html('cargando');
+		},
+		success:function(data){
+			$("#reset_cierre").load(location.href + " #reset_cierre");
+			$('#mensajecierre').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+		},
+		error:function(){
+			// Regresa el checkbox a su estado anterior si falló
+			checkBox.checked = !checkBox.checked;
+			$('#mensajecierre').html("<span style='color:red;'>NO SE PUDO ACTUALIZAR</span>").fadeIn().delay(2000).fadeOut();
+		}
+	});
+}
 
 ///////////////////////PARA FECHAS Y MULTIOLICACION DE LOS MODULOS NUEVOS//////////////////
 
@@ -2246,31 +2271,6 @@ $('#A'+borra_fotoid).load(location.href + ' #A'+borra_fotoid);
 
 
 
-function actualizarParaFacturarCierre(paraFACTURAR_id){
-
-	var checkBox = document.getElementById("paraFACTURAR"+paraFACTURAR_id);
-	var paraFACTURAR_text = "";
-	if (checkBox.checked == true){
-	paraFACTURAR_text = "si";
-	}else{
-	paraFACTURAR_text = "no";
-	}
-	  $.ajax({
-		url:'calendariodeeventos2/controladorAE.php',
-		method:'POST',
-		data:{paraFACTURAR_id:paraFACTURAR_id,paraFACTURAR_text:paraFACTURAR_text},
-		beforeSend:function(){
-		$('#mensajecierre').html('cargando');
-	},
-		success:function(data){
-			
-	$("#reset_cierre").load(location.href + " #reset_cierre");			
-			
-		$('#mensajecierre').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
-	}
-	});
-
-}
 /////////////////////SCRIPT enviar EMAIL///CRONOS VUELOS/////
 $(document).on('click', '#BUTTON_email_cierre', function(){
 var EMAIL_cierre_e = $('#EMAIL_cierre_e').val();

@@ -208,7 +208,7 @@ while($row = mysqli_fetch_array($querycontras))
 
 
 <td style="text-align:center" >
-<input type="checkbox" style="width:15%" class="form-check-input" name="paraFACTURAR[]" id="paraFACTURAR" value="<?php echo $row["id"]; ?>"/> </td>
+<input type="checkbox" style="width:15%" class="form-check-input" name="cierre[]" id="cierre" value="<?php echo $row["id"]; ?>"/> </td>
 <?php if ($puedeVerParaFacturar) { ?>
 <td style="text-align:center">
 <input type="checkbox" style="width:25px;" class="form-check-input"
