@@ -2244,6 +2244,33 @@ $('#A'+borra_fotoid).load(location.href + ' #A'+borra_fotoid);
 /*CIERRE*/
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 
+
+
+function actualizarParaFacturarCierre(paraFACTURAR_id){
+
+	var checkBox = document.getElementById("paraFACTURAR"+paraFACTURAR_id);
+	var paraFACTURAR_text = "";
+	if (checkBox.checked == true){
+	paraFACTURAR_text = "si";
+	}else{
+	paraFACTURAR_text = "no";
+	}
+	  $.ajax({
+		url:'calendariodeeventos2/controladorAE.php',
+		method:'POST',
+		data:{paraFACTURAR_id:paraFACTURAR_id,paraFACTURAR_text:paraFACTURAR_text},
+		beforeSend:function(){
+		$('#mensajecierre').html('cargando');
+	},
+		success:function(data){
+			
+	$("#reset_cierre").load(location.href + " #reset_cierre");			
+			
+		$('#mensajecierre').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().delay(2000).fadeOut();
+	}
+	});
+
+}
 /////////////////////SCRIPT enviar EMAIL///CRONOS VUELOS/////
 $(document).on('click', '#BUTTON_email_cierre', function(){
 var EMAIL_cierre_e = $('#EMAIL_cierre_e').val();

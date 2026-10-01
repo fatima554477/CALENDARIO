@@ -2411,6 +2411,27 @@ public function actualizapersonalDIRECCION($pasara1_personalDIRECCION_id, $pasap
 	}
 }
 
+/////////////////////////////////////////PARA FACTURAR CIERRE/////////////////////////////////////
+     public function actualizarParaFacturarCierre($paraFACTURAR_id, $paraFACTURAR_text){
+
+	$conn = $this->db();
+	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';
+	if($session != ''){
+		$paraFACTURAR_id = (int)$paraFACTURAR_id;
+		$valor = ($paraFACTURAR_text === 'si') ? 'si' : 'no';
+
+		$var1 = "
+			UPDATE 04cierre
+			SET paraFACTURAR = '".$conn->real_escape_string($valor)."'
+			WHERE id = ".$id."
+			LIMIT 1
+		";
+		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+		return "Actualizado";
+
+	}
+} 
+
 /////////////////////////////////////////PARA ADMIN/////////////////////////////////////
      public function actualizapersonal2ADMIN($pasara1_personal2ADMIN_id, $pasapersonal2ADMIN_text){
 

@@ -1,4 +1,9 @@
-<div id="content">     
+<?php
+$puedeVerParaFacturar = ($conexion->variablespermisos('', 'paraFACTURAR', 'ver') === 'si');
+$puedeGuardarParaFacturar = ($conexion->variablespermisos('', 'paraFACTURAR', 'guardar') === 'si');
+$puedeModificarParaFacturar = ($conexion->variablespermisos('', 'paraFACTURAR', 'modificar') === 'si');
+?>
+<div id="content">    
 			<hr/>
 		<strong>	  <p class="mb-0 text-uppercase" ><img src="includes/contraer31.png" id="mostrar3" style="cursor:pointer;"/>
 <img src="includes/contraer41.png" id="ocultar3" style="cursor:pointer;"/>&nbsp;&nbsp;&nbsp; DOCUMENTOS DEL  CIERRE </p></strong>
@@ -170,7 +175,10 @@ $querycontras = $altaeventos->Listado_cierre();
 <tbody= 'font-style:italic;'>
 <table class="table table-striped table-bordered" style="width:100%" id='reset_cierre' name='reset_cierre'>
 <tr style='background:#f5f9fc;text-align:center'>
-<th width="10%"style="background:#c9e8e8">ENVIAR POR EMAIL</th>  
+<th width="10%"style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
+<?php if ($puedeVerParaFacturar) { ?>
+<th width="10%" style="background:#c9e8e8">ENVIO PARA<br> FACTURAR</th>
+<?php } ?>
 <th width="20%"style="background:#c9e8e8">NOMBRE DEL DOCUMENTO</th>
 <th width="20%"style="background:#c9e8e8">DOCUMENTO</th>
 <th width="20%"style="background:#c9e8e8">OBSERVACIONES</th>
@@ -199,9 +207,19 @@ while($row = mysqli_fetch_array($querycontras))
 ?>
 
 
-<tr style='background:#f5f9fc;text-align:center'>
 <td style="text-align:center" >
-<input type="checkbox" style="width:15%" class="form-check-input" name="cierre[]" id="cierre" value="<?php echo $row["id"]; ?>"/> </td>
+<input type="checkbox" style="width:15%" class="form-check-input" name="paraFACTURAR[]" id="paraFACTURAR" value="<?php echo $row["id"]; ?>"/> </td>
+<?php if ($puedeVerParaFacturar) { ?>
+<td style="text-align:center">
+<input type="checkbox" style="width:25px;" class="form-check-input"
+	name="paraFACTURAR[]" id="paraFACTURAR<?php echo $row["id"]; ?>"
+	value="<?php echo $row["id"]; ?>"
+	onclick="actualizarParaFacturarCierre(<?php echo $row["id"]; ?>)"
+	<?php if (isset($row["paraFACTURAR"]) && $row["paraFACTURAR"] === 'si') echo 'checked'; ?>
+	<?php if (!$puedeGuardarParaFacturar || ((isset($row["paraFACTURAR"]) && $row["paraFACTURAR"] === 'si') && !$puedeModificarParaFacturar)) echo 'disabled'; ?>
+/>
+</td>
+<?php } ?>
 <td ><?php echo $row["DOCUMENTO_cierre"]; ?></td>
 <td ><?php echo $urladjunto_cierre; ?></td>
 <td ><?php echo $row["OBSERVACIONES_cierre"]; ?></td>

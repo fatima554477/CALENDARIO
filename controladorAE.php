@@ -1352,6 +1352,14 @@ $pasapersonalDIRECCION_text= isset($_POST["pasapersonalDIRECCION_text"])?$_POST[
 if($pasara1_personalDIRECCION_id!='' and ($pasapersonalDIRECCION_text=='si' or $pasapersonalDIRECCION_text=='no') ){
 echo $altaeventos->actualizapersonalDIRECCION ($pasara1_personalDIRECCION_id , $pasapersonalDIRECCION_text  );
 }
+
+///////////////////////////////PARA FACTURAR CIERRE////////////////////////
+$paraFACTURAR_id = isset($_POST['paraFACTURAR_id']) ? $_POST['paraFACTURAR_id'] : '';
+$paraFACTURAR_text = isset($_POST['paraFACTURAR_text']) ? $_POST['paraFACTURAR_text'] : '';
+
+if($paraFACTURAR_id !== '' && ($paraFACTURAR_text === 'si' || $paraFACTURAR_text === 'no')){
+echo $altaeventos->actualizarParaFacturarCierre($paraFACTURAR_id, $paraFACTURAR_text);
+}
 ///////////////////////////////ADMIN2////////////////////////
 $pasara1_personal2ADMIN_id= isset($_POST["pasara1_personal2ADMIN_id"])?$_POST["pasara1_personal2ADMIN_id"]:"";
 $pasapersonal2ADMIN_text= isset($_POST["pasapersonal2ADMIN_text"])?$_POST["pasapersonal2ADMIN_text"]:"";
