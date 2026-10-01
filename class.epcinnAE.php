@@ -749,10 +749,24 @@ $variablequery = mysqli_query($conn,$variable);
 
 			VALUES (".(int)$idCierre.", '".mysqli_real_escape_string($conn, $tipo)."', '".mysqli_real_escape_string($conn, $detalle)."', '".mysqli_real_escape_string($conn, $usuario)."')";
 
-		mysqli_query($conn, $sql) or die('No fue posible registrar la bitácora de cierre: '.mysqli_error($conn));
+	mysqli_query($conn, $sql) or die('No fue posible registrar la bitácora de cierre: '.mysqli_error($conn));
 
 	}
 
+	public function registrar_cambio_adjunto_cierre($idCierre, $adjuntoAnterior, $adjuntoNuevo){
+		$conn = $this->db();
+		$idEvento = isset($_SESSION['idevento']) ? (int)$_SESSION['idevento'] : 0;
+		$idCierre = (int)$idCierre;
+		$consulta = mysqli_query($conn, "SELECT id FROM `04cierre` WHERE id = ".$idCierre." AND idRelacion = ".$idEvento." LIMIT 1");
+
+		if(!$consulta || !mysqli_fetch_array($consulta, MYSQLI_ASSOC)){
+			return false;
+		}
+
+		$detalle = 'Documento adjunto: "'.$adjuntoAnterior.'" → "'.$adjuntoNuevo.'"';
+		$this->registrar_bitacora_cierre($conn, $idCierre, 'ACTUALIZACIÓN', $detalle);
+		return true;
+	}
 
 
 	public function Listado_bitacora_cierre_array($idCierre){
@@ -797,62 +811,55 @@ $variablequery = mysqli_query($conn,$variable);
 		$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:'';  
 		if($session != ''){
 			
-		$var1 = "update 04cierre set 
-		DOCUMENTO_cierre = '".$DOCUMENTO_cierre."' , 
-		OBSERVACIONES_cierre = '".$OBSERVACIONES_cierre."' , 
-		nombreI_cierre = '".$nombreI_cierre."' , 
-
-		hCIERRE = '".$hCIERRE."'  where id = '".$IPCIERRE."' ; ";
-	
-		 $var2 = " insert into 04cierre ( DOCUMENTO_cierre, OBSERVACIONES_cierre, fecha_cierre,nombreI_cierre, adjunto_cierre, hCIERRE, idRelacion) values ( 
-		 '".$DOCUMENTO_cierre."' , '".$OBSERVACIONES_cierre."' ,
-		 '".$fecha_cierre."' ,
-		 '".$nombreI_cierre."' , '".$adjunto_cierre."' , 
-		 '".$hCIERRE."' , '".$session."' ); ";		
-			
-	    if($enviarCIERRE=='enviarCIERRE'){
-				$anteriorQuery = mysqli_query($conn, "SELECT DOCUMENTO_cierre, OBSERVACIONES_cierre, nombreI_cierre FROM 04cierre WHERE id = ".(int)$IPCIERRE." AND idRelacion = ".(int)$session." LIMIT 1");
-
-		$anterior = $anteriorQuery ? mysqli_fetch_array($anteriorQuery, MYSQLI_ASSOC) : array();
-
-		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
-			$cambios = array();
-
-		$campos = array('DOCUMENTO_cierre' => 'Nombre del documento', 'OBSERVACIONES_cierre' => 'Observaciones', 'nombreI_cierre' => 'Ejecutivo');
-
-		$nuevos = array('DOCUMENTO_cierre' => $DOCUMENTO_cierre, 'OBSERVACIONES_cierre' => $OBSERVACIONES_cierre, 'nombreI_cierre' => $nombreI_cierre);
-
-		foreach($campos as $campo => $etiqueta){
-
-			$valorAnterior = isset($anterior[$campo]) ? $anterior[$campo] : '';
-
-			if((string)$valorAnterior !== (string)$nuevos[$campo]){
-
-				$cambios[] = $etiqueta.': "'.$valorAnterior.'" → "'.$nuevos[$campo].'"';
-
-			}
-
-		}
-
-		$detalle = count($cambios) ? implode('; ', $cambios) : 'Se guardó el registro sin cambios en los datos generales.';
-
-		$this->registrar_bitacora_cierre($conn, $IPCIERRE, 'ACTUALIZACIÓN', $detalle);
-
-		return "Actualizado";
-					
-		}else{
-		mysqli_query($conn,$var2) or die('P160'.mysqli_error($conn));
-			$this->registrar_bitacora_cierre($conn, mysqli_insert_id($conn), 'INGRESO', 'Se ingresó el documento de cierre "'.$DOCUMENTO_cierre.'".');
-
-		return "Ingresado";
-		}
-			
-        }else{
-		echo "TU SESIÓN HA TERMINADO";	
-		}
+			$var1 = "update 04cierre set
+			DOCUMENTO_cierre = '".$DOCUMENTO_cierre."' ,
+			OBSERVACIONES_cierre = '".$OBSERVACIONES_cierre."' ,
+			fecha_cierre = '".$fecha_cierre."' ,
+			nombreI_cierre = '".$nombreI_cierre."' ,
+			hCIERRE = '".$hCIERRE."'  where id = '".$IPCIERRE."' ; ";
 		
-	}
+			$var2 = " insert into 04cierre ( DOCUMENTO_cierre, OBSERVACIONES_cierre, fecha_cierre,nombreI_cierre, adjunto_cierre, hCIERRE, idRelacion) values ( 
+			'".$DOCUMENTO_cierre."' , '".$OBSERVACIONES_cierre."' ,
+			'".$fecha_cierre."' ,
+			'".$nombreI_cierre."' , '".$adjunto_cierre."' , 
+			'".$hCIERRE."' , '".$session."' ); ";		
+			
+			if($enviarCIERRE=='enviarCIERRE'){
 
+				$anteriorQuery = mysqli_query($conn, "SELECT DOCUMENTO_cierre, OBSERVACIONES_cierre, fecha_cierre, nombreI_cierre FROM 04cierre WHERE id = ".(int)$IPCIERRE." AND idRelacion = ".(int)$session." LIMIT 1");
+				$anterior = $anteriorQuery ? mysqli_fetch_array($anteriorQuery, MYSQLI_ASSOC) : array();
+
+				mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+
+				$cambios = array();
+				$campos = array('DOCUMENTO_cierre' => 'Nombre del documento', 'OBSERVACIONES_cierre' => 'Observaciones', 'fecha_cierre' => 'Fecha de última carga', 'nombreI_cierre' => 'Ejecutivo');
+				$nuevos = array('DOCUMENTO_cierre' => $DOCUMENTO_cierre, 'OBSERVACIONES_cierre' => $OBSERVACIONES_cierre, 'fecha_cierre' => $fecha_cierre, 'nombreI_cierre' => $nombreI_cierre);
+
+				foreach($campos as $campo => $etiqueta){
+					$valorAnterior = isset($anterior[$campo]) ? $anterior[$campo] : '';
+					if((string)$valorAnterior !== (string)$nuevos[$campo]){
+						$cambios[] = $etiqueta.': "'.$valorAnterior.'" → "'.$nuevos[$campo].'"';
+					}
+				}
+
+				$detalle = count($cambios) ? implode('; ', $cambios) : 'Se guardó el registro sin cambios en los datos generales.';
+				$this->registrar_bitacora_cierre($conn, $IPCIERRE, 'ACTUALIZACIÓN', $detalle);
+
+				return "Actualizado";
+
+			}else{
+
+				mysqli_query($conn,$var2) or die('P160'.mysqli_error($conn));
+				$idCierreInsertado = mysqli_insert_id($conn);
+				$this->registrar_bitacora_cierre($conn, $idCierreInsertado, 'INGRESO', 'Se ingresó el documento de cierre "'.$DOCUMENTO_cierre.'".');
+
+				return "Ingresado";
+			}
+			
+		}else{
+			echo "TU SESIÓN HA TERMINADO";	
+		}
+	}
 
 
 
@@ -2458,7 +2465,7 @@ public function obtener_motivo_rechazo_personal($idPersonal, $tipoPersonal){
 }
 
 
-/////////////////////////////////////////PARA ADMIN/////////////////////////////////////␊
+/////////////////////////////////////////PARA ADMIN/////////////////////////////////////
 public function actualizapersonalADMIN($pasara1_personalADMIN_id, $pasapersonalADMIN_text){
 
 	$conn = $this->db();

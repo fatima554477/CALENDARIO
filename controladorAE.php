@@ -2217,38 +2217,32 @@ $IPCIERRENUEVO = isset($_POST["IPCIERRENUEVO"])?$_POST["IPCIERRENUEVO"]:"";
 } 
 
 
-
 if($hCIERRE == 'hCIERRE' or $enviarCIERRE=='enviarCIERRE'){
+
+	$adjunto_cierre = '';
 	$DOCUMENTO_cierre = isset($_POST["DOCUMENTO_cierre"])?trim($_POST["DOCUMENTO_cierre"]):"";
 
 	if($DOCUMENTO_cierre === ''){
-
 		echo "FALTA SELECCIONAR EL DOCUMENTO DE CIERRE.";
-
 		exit;
-
 	}
 
-	
-	if( $_FILES["adjunto_cierre"] == true){
- $adjunto_cierre = $conexion->solocargar("adjunto_cierre");
-}if($adjunto_cierre=='2' or $adjunto_cierre=='' or $adjunto_cierre=='1'){
- $adjunto_cierre1 = "";	
-}else{
- $adjunto_cierre1 = $adjunto_cierre;
-}	
+	if(isset($_FILES["adjunto_cierre"]) && $_FILES["adjunto_cierre"]["error"] !== UPLOAD_ERR_NO_FILE){
+		$adjunto_cierre = $conexion->solocargar("adjunto_cierre");
+	}
 
+	if($adjunto_cierre=='2' or $adjunto_cierre=='' or $adjunto_cierre=='1'){
+		$adjunto_cierre1 = "";	
+	}else{
+		$adjunto_cierre1 = $adjunto_cierre;
+	}	
 
-
-
-$OBSERVACIONES_cierre = isset($_POST["OBSERVACIONES_cierre"])?$_POST["OBSERVACIONES_cierre"]:"";
-$fecha_cierre = isset($_POST["fecha_cierre"])?$_POST["fecha_cierre"]:"";
-$nombreI_cierre = isset($_POST["nombreI_cierre"])?$_POST["nombreI_cierre"]:"";
-$IPCIERRE2 = isset($_POST["IPCIERRE2"])?$_POST["IPCIERRE2"]:"";
+	$OBSERVACIONES_cierre = isset($_POST["OBSERVACIONES_cierre"])?$_POST["OBSERVACIONES_cierre"]:"";
+	$fecha_cierre = isset($_POST["fecha_cierre"])?$_POST["fecha_cierre"]:"";
+	$nombreI_cierre = isset($_POST["nombreI_cierre"])?$_POST["nombreI_cierre"]:"";
+	$IPCIERRE2 = isset($_POST["IPCIERRE2"])?$_POST["IPCIERRE2"]:"";
 
 	echo $altaeventos->guardar_cierre(  $DOCUMENTO_cierre , $OBSERVACIONES_cierre , $fecha_cierre ,$nombreI_cierre,$adjunto_cierre1, $hCIERRE, $IPCIERRE2,$enviarCIERRE);
-		// include_once (__ROOT1__."/includes/crea_funciones.php");
-//echo "entro";
 }
 
 elseif($EMAIL_cierre_e ==true){
@@ -3249,10 +3243,21 @@ foreach($_FILES AS $ETQIETA => $VALOR){
 
 
 
-if($IPCIERRE2 == true and ( $_FILES["adjunto_cierre"] == true ) ){
+if($IPCIERRE2 == true && isset($_FILES["adjunto_cierre"]) && $_FILES["adjunto_cierre"]["error"] !== UPLOAD_ERR_NO_FILE){
 foreach($_FILES AS $ETQIETA => $VALOR){
-	echo $conexion->cargar($ETQIETA,'04cierre','3',$IPCIERRE2);
-}	
+	$conn = $altaeventos->db();
+	$idEvento = isset($_SESSION['idevento']) ? (int)$_SESSION['idevento'] : 0;
+	$adjuntoAnterior = '';
+	$consultaAdjunto = mysqli_query($conn, "SELECT adjunto_cierre FROM `04cierre` WHERE id = ".(int)$IPCIERRE2." AND idRelacion = ".$idEvento." LIMIT 1");
+	if($consultaAdjunto && ($filaAdjunto = mysqli_fetch_array($consultaAdjunto, MYSQLI_ASSOC))){
+		$adjuntoAnterior = $filaAdjunto['adjunto_cierre'];
+	}
+	$adjuntoNuevo = $conexion->cargar($ETQIETA,'04cierre','3',$IPCIERRE2);
+	if($adjuntoNuevo != '1' && $adjuntoNuevo != '2' && $adjuntoNuevo != '' && $adjuntoNuevo != $adjuntoAnterior){
+		$altaeventos->registrar_cambio_adjunto_cierre($IPCIERRE2, $adjuntoAnterior, $adjuntoNuevo);
+	}
+	echo $adjuntoNuevo;
+}
 
 }
 
