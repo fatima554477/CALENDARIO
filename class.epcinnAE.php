@@ -131,6 +131,7 @@ $variablequery = mysqli_query($conn,$variable);
 		strtolower($extension[$cuenta]) == 'txt' or
 		strtolower($extension[$cuenta]) == 'xlsx' or
 		strtolower($extension[$cuenta]) == 'htm' or
+		strtolower($extension[$cuenta]) == 'msg' or
 		strtolower($extension[$cuenta]) == 'xls'  		
 		){ //gif o jpg
 		/*if ($tamanyoarchivo <= $tamanyomax) { //archivo demasioado grande*/

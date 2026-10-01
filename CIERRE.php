@@ -77,12 +77,19 @@
                         
                           </div>
 <div><tr>
-                        <th style="text-align:center;background:#faebee;" scope="col">FECHA DE ÚLTIMA CARGA</th>   
-           <td  style="background:#faebee">
-           <strong>
-           <?php echo date('Y-m-d'); ?>
+                        <th style="text-align:center;background:#faebee;" scope="col">
+                   <strong>
+           QUIEN INGRESA: <?php echo htmlspecialchars($_SESSION["NOMBREUSUARIO"], ENT_QUOTES, 'UTF-8'); ?>
+           &nbsp;&nbsp;|&nbsp;&nbsp;
+           <?php echo date('d/m/Y'); ?>
            </strong>
+           <input type="hidden" id="validationCustom03" value="<?php echo htmlspecialchars($_SESSION["NOMBREUSUARIO"], ENT_QUOTES, 'UTF-8'); ?>" name="nombreI_cierre">
            <input type="hidden" style="width:200px;"  class="form-control" id="validationCustom03"   value="<?php echo date('Y-m-d'); ?>" name="fecha_cierre">
+           
+           </td></tr>
+		              <td  style="background:#faebee">
+
+          
            
            </td></tr></div>
 
@@ -167,6 +174,7 @@ $querycontras = $altaeventos->Listado_cierre();
 <th width="20%"style="background:#c9e8e8">NOMBRE DEL DOCUMENTO</th>
 <th width="20%"style="background:#c9e8e8">DOCUMENTO</th>
 <th width="20%"style="background:#c9e8e8">OBSERVACIONES</th>
+<th width="20%"style="background:#c9e8e8">EJECUTIVO QUE INGRESO</th>
 <th width="20%"style="background:#c9e8e8">FECHA DE CARGA</th>
 
 </tr>
@@ -197,6 +205,7 @@ while($row = mysqli_fetch_array($querycontras))
 <td ><?php echo $row["DOCUMENTO_cierre"]; ?></td>
 <td ><?php echo $urladjunto_cierre; ?></td>
 <td ><?php echo $row["OBSERVACIONES_cierre"]; ?></td>
+<td ><?php echo $row["nombreI_cierre"]; ?></td>
 <td ><?php echo $row["fecha_cierre"]; ?></td>
 <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','modificar')=='si'){ ?><td><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierremodifica" /></td><?php } ?>
 <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','borrar')=='si'){ ?><td><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierreborrar" /></td>
