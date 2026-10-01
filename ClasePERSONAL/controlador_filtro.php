@@ -24,46 +24,82 @@ if($action == "ajax"){
 	$query=isset($_POST["query"])?$_POST["query"]:"";
 
 	$DEPARTAMENTO = !EMPTY($_POST["DEPARTAMENTO2"])?$_POST["DEPARTAMENTO2"]:"DEFAULT";	
-	$nombreTabla = "SELECT * FROM `08altaeventosfiltroDes`, 08altaeventosfiltroPLA WHERE 08altaeventosfiltroDes.id = 08altaeventosfiltroPLA.idRelacion";
-	$altaeventos = "altaeventos";
-	$tables="04personal2";
+	$nombreTabla = "SELECT * FROM `08MENSAJERIAfiltroDes`, 08altaeventosfiltroPLA WHERE 08MENSAJERIAfiltroDes.id = 08altaeventosfiltroPLA.idRelacion";
+	$altaeventos = "MENSAJERIA";
+	$tables="04mensajeria";
+	
 
-	/*inicia copiar y pegar permisos igual que archivo 4 B0*/
-	$puedeVerAdmin2 = ($database->variablespermisos('', 'PERSO2', 'ver') === 'si');
-	$puedeVerVYO2 = ($database->variablespermisos('', 'PERSOvyo2', 'ver') === 'si');
-	$puedeGuardarVYO2 = ($database->variablespermisos('', 'PERSOvyo2', 'guardar') === 'si');
-	$puedeModificarVYO2 = ($database->variablespermisos('', 'PERSOvyo2', 'modificar') === 'si');
-	$puedeVerDIRECCION2 = ($database->variablespermisos('', 'PERSOdire2', 'ver') === 'si');
-	$puedeGuardarDIRECCION2 = ($database->variablespermisos('', 'PERSOdire2', 'guardar') === 'si');
-	$puedeModificarDIRECCION2 = ($database->variablespermisos('', 'PERSOdire2', 'modificar') === 'si');
-	$puedeGuardarAdmin2 = ($database->variablespermisos('', 'PERSO2', 'guardar') === 'si');
-	$puedeModificarAdmin2 = ($database->variablespermisos('', 'PERSO2', 'modificar') === 'si');
-	$puedeVerRechazoBono2 = ($database->variablespermisos('', 'rechazobono2', 'ver') === 'si');
-	$puedeGuardarRechazoBono2 = ($database->variablespermisos('', 'rechazobono2', 'guardar') === 'si');
-	$puedeModificarRechazoBono2 = ($database->variablespermisos('', 'rechazobono2', 'modificar') === 'si');
-	$verBono = ($database->variablespermisos('', 'PERSOVERBONO', 'ver') === 'si');
-	$puedeBorrarAdjuntoPersonal = ($database->variablespermisos('', 'PERSONALNUEVO', 'borrarAdjunto') === 'si');
-	/*termina copiar y pegar permisos igual que archivo 4 B0*/
-
-$NUMERO_EVENTO_PERSONAL2 = isset($_POST["NUMERO_EVENTO_PERSONAL2"])?$_POST["NUMERO_EVENTO_PERSONAL2"]:""; 
-$ID_EVENTO_PERSONAL2 = isset($_POST["ID_EVENTO_PERSONAL2"])?$_POST["ID_EVENTO_PERSONAL2"]:""; 
-$NOMBRE_EVENTO_PERSONAL2 = isset($_POST["NOMBRE_EVENTO_PERSONAL2"])?$_POST["NOMBRE_EVENTO_PERSONAL2"]:""; 
-$NOMBRE_DELINGRESO2 = isset($_POST["NOMBRE_DELINGRESO2"])?$_POST["NOMBRE_DELINGRESO2"]:""; 
-$NOMBRE_PERSONAL2 = isset($_POST["NOMBRE_PERSONAL2"])?$_POST["NOMBRE_PERSONAL2"]:""; 
-$FECHA_INICIO1 = isset($_POST["FECHA_INICIO1"])?$_POST["FECHA_INICIO1"]:""; 
-$FECHA_FINAL1 = isset($_POST["FECHA_FINAL1"])?$_POST["FECHA_FINAL1"]:""; 
-$NUMERO_DIAS1 = isset($_POST["NUMERO_DIAS1"])?$_POST["NUMERO_DIAS1"]:""; 
-$MONTO_BONO1 = isset($_POST["MONTO_BONO1"])?$_POST["MONTO_BONO1"]:""; 
-$MONTO_BONO_TOTAL1 = isset($_POST["MONTO_BONO_TOTAL1"])?$_POST["MONTO_BONO_TOTAL1"]:""; 
-$FECHA_PPAGO1 = isset($_POST["FECHA_PPAGO1"])?$_POST["FECHA_PPAGO1"]:""; 
-$OBSERVACIONES_PERSONAL2 = isset($_POST["OBSERVACIONES_PERSONAL2"])?$_POST["OBSERVACIONES_PERSONAL2"]:""; 
-$PERSONAL2_FECHA_ULTIMA_CARGA = isset($_POST["PERSONAL2_FECHA_ULTIMA_CARGA"])?$_POST["PERSONAL2_FECHA_ULTIMA_CARGA"]:""; 
-$hDatosPERSONAL2 = isset($_POST["hDatosPERSONAL2"])?$_POST["hDatosPERSONAL2"]:""; 
-/*inicia copiar y pegar campos agregados del listado (archivo 4) B2*/
-$FORMA_PAGO1 = isset($_POST["FORMA_PAGO1"])?$_POST["FORMA_PAGO1"]:"";
-$FECHA_EFECTIVA1 = isset($_POST["FECHA_EFECTIVA1"])?$_POST["FECHA_EFECTIVA1"]:"";
-$NOMBRE_RECIBIO1 = isset($_POST["NOMBRE_RECIBIO1"])?$_POST["NOMBRE_RECIBIO1"]:"";
-/*termina copiar y pegar campos agregados del listado (archivo 4) B2*/
+$NUMERO_EVENTO = isset($_POST["NUMERO_EVENTO"])?$_POST["NUMERO_EVENTO"]:""; 
+$MENSAJERIA_SOLICITUD = isset($_POST["MENSAJERIA_SOLICITUD"])?$_POST["MENSAJERIA_SOLICITUD"]:""; 
+$MENSAJERIA_REALIZARCE = isset($_POST["MENSAJERIA_REALIZARCE"])?$_POST["MENSAJERIA_REALIZARCE"]:""; 
+$MENSAJERIA_HORARIOS = isset($_POST["MENSAJERIA_HORARIOS"])?$_POST["MENSAJERIA_HORARIOS"]:""; 
+$MENSAJERIA_SOLICITANTE = isset($_POST["MENSAJERIA_SOLICITANTE"])?$_POST["MENSAJERIA_SOLICITANTE"]:""; 
+$MENSAJERIA_CEL_SOLICITANTE = isset($_POST["MENSAJERIA_CEL_SOLICITANTE"])?$_POST["MENSAJERIA_CEL_SOLICITANTE"]:""; 
+$MENSAJERIA_EMPRESA_LUGAR = isset($_POST["MENSAJERIA_EMPRESA_LUGAR"])?$_POST["MENSAJERIA_EMPRESA_LUGAR"]:""; 
+$MENSAJERIA_SELECCIONAR = isset($_POST["MENSAJERIA_SELECCIONAR"])?$_POST["MENSAJERIA_SELECCIONAR"]:""; 
+$MENSAJERIA_OBJETOSARECOJER = isset($_POST["MENSAJERIA_OBJETOSARECOJER"])?$_POST["MENSAJERIA_OBJETOSARECOJER"]:""; 
+$MENSAJERIA_MEDIDASAPROX = isset($_POST["MENSAJERIA_MEDIDASAPROX"])?$_POST["MENSAJERIA_MEDIDASAPROX"]:""; 
+$MENSAJERIA_CONTENIDO = isset($_POST["MENSAJERIA_CONTENIDO"])?$_POST["MENSAJERIA_CONTENIDO"]:""; 
+$MENSAJERIA_EMPRESADIRE = isset($_POST["MENSAJERIA_EMPRESADIRE"])?$_POST["MENSAJERIA_EMPRESADIRE"]:""; 
+$MENSAJERIA_EDIFICIO = isset($_POST["MENSAJERIA_EDIFICIO"])?$_POST["MENSAJERIA_EDIFICIO"]:""; 
+$MENSAJERIA_CALLE = isset($_POST["MENSAJERIA_CALLE"])?$_POST["MENSAJERIA_CALLE"]:""; 
+$MENSAJERIA_NUMEROE = isset($_POST["MENSAJERIA_NUMEROE"])?$_POST["MENSAJERIA_NUMEROE"]:""; 
+$MENSAJERIA_NINTERIOR = isset($_POST["MENSAJERIA_NINTERIOR"])?$_POST["MENSAJERIA_NINTERIOR"]:""; 
+$MENSAJERIA_NOFICINA = isset($_POST["MENSAJERIA_NOFICINA"])?$_POST["MENSAJERIA_NOFICINA"]:""; 
+$MENSAJERIA_COLONIA = isset($_POST["MENSAJERIA_COLONIA"])?$_POST["MENSAJERIA_COLONIA"]:""; 
+$MENSAJERIA_ALCALDIA = isset($_POST["MENSAJERIA_ALCALDIA"])?$_POST["MENSAJERIA_ALCALDIA"]:""; 
+$MENSAJERIA_CP = isset($_POST["MENSAJERIA_CP"])?$_POST["MENSAJERIA_CP"]:""; 
+$MENSAJERIA_CIUDAD = isset($_POST["MENSAJERIA_CIUDAD"])?$_POST["MENSAJERIA_CIUDAD"]:""; 
+$MENSAJERIA_ESTADO = isset($_POST["MENSAJERIA_ESTADO"])?$_POST["MENSAJERIA_ESTADO"]:""; 
+$MENSAJERIA_PAIS = isset($_POST["MENSAJERIA_PAIS"])?$_POST["MENSAJERIA_PAIS"]:""; 
+$MENSAJERIA_UBICACION = isset($_POST["MENSAJERIA_UBICACION"])?$_POST["MENSAJERIA_UBICACION"]:""; 
+$MENSAJERIA_TELEFONO1 = isset($_POST["MENSAJERIA_TELEFONO1"])?$_POST["MENSAJERIA_TELEFONO1"]:""; 
+$MENSAJERIA_TELEFONO2 = isset($_POST["MENSAJERIA_TELEFONO2"])?$_POST["MENSAJERIA_TELEFONO2"]:""; 
+$MENSAJERIA_NOMBREENTREGA = isset($_POST["MENSAJERIA_NOMBREENTREGA"])?$_POST["MENSAJERIA_NOMBREENTREGA"]:""; 
+$MENSAJERIA_FIRMARECIBE = isset($_POST["MENSAJERIA_FIRMARECIBE"])?$_POST["MENSAJERIA_FIRMARECIBE"]:""; 
+$MENSAJERIA_FECHAR = isset($_POST["MENSAJERIA_FECHAR"])?$_POST["MENSAJERIA_FECHAR"]:""; 
+$MENSAJERIA_HORAR = isset($_POST["MENSAJERIA_HORAR"])?$_POST["MENSAJERIA_HORAR"]:""; 
+$MENSAJERIA_LLEVARNOMBRE = isset($_POST["MENSAJERIA_LLEVARNOMBRE"])?$_POST["MENSAJERIA_LLEVARNOMBRE"]:""; 
+$MENSAJERIA_SELECCIONARB = isset($_POST["MENSAJERIA_SELECCIONARB"])?$_POST["MENSAJERIA_SELECCIONARB"]:""; 
+$MENSAJERIA_DIRECCIONB = isset($_POST["MENSAJERIA_DIRECCIONB"])?$_POST["MENSAJERIA_DIRECCIONB"]:""; 
+$MENSAJERIA_EDIFICIOB = isset($_POST["MENSAJERIA_EDIFICIOB"])?$_POST["MENSAJERIA_EDIFICIOB"]:""; 
+$MENSAJERIA_CALLEB = isset($_POST["MENSAJERIA_CALLEB"])?$_POST["MENSAJERIA_CALLEB"]:""; 
+$MENSAJERIA_NUMEROEB = isset($_POST["MENSAJERIA_NUMEROEB"])?$_POST["MENSAJERIA_NUMEROEB"]:""; 
+$MENSAJERIA_NINTERIORB = isset($_POST["MENSAJERIA_NINTERIORB"])?$_POST["MENSAJERIA_NINTERIORB"]:""; 
+$MENSAJERIA_NOFICINAB = isset($_POST["MENSAJERIA_NOFICINAB"])?$_POST["MENSAJERIA_NOFICINAB"]:""; 
+$MENSAJERIA_COLONIAB = isset($_POST["MENSAJERIA_COLONIAB"])?$_POST["MENSAJERIA_COLONIAB"]:""; 
+$MENSAJERIA_ALCALDIAB = isset($_POST["MENSAJERIA_ALCALDIAB"])?$_POST["MENSAJERIA_ALCALDIAB"]:""; 
+$MENSAJERIA_CPB = isset($_POST["MENSAJERIA_CPB"])?$_POST["MENSAJERIA_CPB"]:""; 
+$MENSAJERIA_CIUDADB = isset($_POST["MENSAJERIA_CIUDADB"])?$_POST["MENSAJERIA_CIUDADB"]:""; 
+$MENSAJERIA_ESTADOB = isset($_POST["MENSAJERIA_ESTADOB"])?$_POST["MENSAJERIA_ESTADOB"]:""; 
+$MENSAJERIA_PAISB = isset($_POST["MENSAJERIA_PAISB"])?$_POST["MENSAJERIA_PAISB"]:""; 
+$MENSAJERIA_UBICACIONB = isset($_POST["MENSAJERIA_UBICACIONB"])?$_POST["MENSAJERIA_UBICACIONB"]:""; 
+$MENSAJERIA_TELEFONO1B = isset($_POST["MENSAJERIA_TELEFONO1B"])?$_POST["MENSAJERIA_TELEFONO1B"]:""; 
+$MENSAJERIA_TELEFONO2B = isset($_POST["MENSAJERIA_TELEFONO2B"])?$_POST["MENSAJERIA_TELEFONO2B"]:""; 
+$MENSAJERIA_NOMBREPERSONAB = isset($_POST["MENSAJERIA_NOMBREPERSONAB"])?$_POST["MENSAJERIA_NOMBREPERSONAB"]:""; 
+$MENSAJERIA_NEMEROCELENTREGA = isset($_POST["MENSAJERIA_NEMEROCELENTREGA"])?$_POST["MENSAJERIA_NEMEROCELENTREGA"]:""; 
+$MENSAJERIA_NOMBREENTREGAB = isset($_POST["MENSAJERIA_NOMBREENTREGAB"])?$_POST["MENSAJERIA_NOMBREENTREGAB"]:""; 
+$MENSAJERIA_FIRMARECIBEB = isset($_POST["MENSAJERIA_FIRMARECIBEB"])?$_POST["MENSAJERIA_FIRMARECIBEB"]:""; 
+$MENSAJERIA_FECHARB = isset($_POST["MENSAJERIA_FECHARB"])?$_POST["MENSAJERIA_FECHARB"]:""; 
+$MENSAJERIA_HORARB = isset($_POST["MENSAJERIA_HORARB"])?$_POST["MENSAJERIA_HORARB"]:""; 
+$MENSAJERIA_INSTRUCCIONES = isset($_POST["MENSAJERIA_INSTRUCCIONES"])?$_POST["MENSAJERIA_INSTRUCCIONES"]:""; 
+$MENSAJERIA_OBSERVACIONES = isset($_POST["MENSAJERIA_OBSERVACIONES"])?$_POST["MENSAJERIA_OBSERVACIONES"]:""; 
+$MENSAJERIA_VEHICULOM = isset($_POST["MENSAJERIA_VEHICULOM"])?$_POST["MENSAJERIA_VEHICULOM"]:""; 
+$MENSAJERIA_REALIZADOPOR = isset($_POST["MENSAJERIA_REALIZADOPOR"])?$_POST["MENSAJERIA_REALIZADOPOR"]:""; 
+$MENSAJERIA_COSTOCAMIONETA = isset($_POST["MENSAJERIA_COSTOCAMIONETA"])?$_POST["MENSAJERIA_COSTOCAMIONETA"]:""; 
+$MENSAJERIA_COSTOGASOLINA = isset($_POST["MENSAJERIA_COSTOGASOLINA"])?$_POST["MENSAJERIA_COSTOGASOLINA"]:""; 
+$MENSAJERIA_COSTOCASETAS = isset($_POST["MENSAJERIA_COSTOCASETAS"])?$_POST["MENSAJERIA_COSTOCASETAS"]:""; 
+$MENSAJERIA_COSTOESTACIONAMIENTO = isset($_POST["MENSAJERIA_COSTOESTACIONAMIENTO"])?$_POST["MENSAJERIA_COSTOESTACIONAMIENTO"]:""; 
+$MENSAJERIA_COSTOGASTOS = isset($_POST["MENSAJERIA_COSTOGASTOS"])?$_POST["MENSAJERIA_COSTOGASTOS"]:""; 
+$MENSAJERIA_TOTAL = isset($_POST["MENSAJERIA_TOTAL"])?$_POST["MENSAJERIA_TOTAL"]:""; 
+$MENSAJERIA_OBSERVA = isset($_POST["MENSAJERIA_OBSERVA"])?$_POST["MENSAJERIA_OBSERVA"]:""; 
+$HMENSAJERIA = isset($_POST["HMENSAJERIA"])?$_POST["HMENSAJERIA"]:"";
+ 
+$MENSAJERIA_ENTREGARSOLICITUD = isset($_POST["MENSAJERIA_ENTREGARSOLICITUD"])?$_POST["MENSAJERIA_ENTREGARSOLICITUD"]:""; 
+$MENSAJERIA_FOTOS = isset($_POST["MENSAJERIA_FOTOS"])?$_POST["MENSAJERIA_FOTOS"]:""; 
+$MENSAJERIA_FIRMA = isset($_POST["MENSAJERIA_FIRMA"])?$_POST["MENSAJERIA_FIRMA"]:""; 
+$MENSAJERIA_FOTOSNECES = isset($_POST["MENSAJERIA_FOTOSNECES"])?$_POST["MENSAJERIA_FOTOSNECES"]:""; 
+$MENSAJERIA_ARCHIVORELACIONADO = isset($_POST["MENSAJERIA_ARCHIVORELACIONADO"])?$_POST["MENSAJERIA_ARCHIVORELACIONADO"]:""; 
 
 $per_page=intval($_POST["per_page"]);
 	$campos="*";
@@ -74,23 +110,77 @@ $per_page=intval($_POST["per_page"]);
 	
 	$search=array(
 
-"NUMERO_EVENTO_PERSONAL2"=>$NUMERO_EVENTO_PERSONAL2,
-"ID_EVENTO_PERSONAL2"=>$ID_EVENTO_PERSONAL2,
-"NOMBRE_EVENTO_PERSONAL2"=>$NOMBRE_EVENTO_PERSONAL2,
-"NOMBRE_DELINGRESO2"=>$NOMBRE_DELINGRESO2,
-"NOMBRE_PERSONAL2"=>$NOMBRE_PERSONAL2,
-"FECHA_INICIO1"=>$FECHA_INICIO1,
-"FECHA_FINAL1"=>$FECHA_FINAL1,
-"NUMERO_DIAS1"=>$NUMERO_DIAS1,
-"MONTO_BONO1"=>$MONTO_BONO1,
-"MONTO_BONO_TOTAL1"=>$MONTO_BONO_TOTAL1,
-"FECHA_PPAGO1"=>$FECHA_PPAGO1,
-"OBSERVACIONES_PERSONAL2"=>$OBSERVACIONES_PERSONAL2,
-"PERSONAL2_FECHA_ULTIMA_CARGA"=>$PERSONAL2_FECHA_ULTIMA_CARGA,
-"hDatosPERSONAL2"=>$hDatosPERSONAL2,
-"FORMA_PAGO1"=>$FORMA_PAGO1,
-"FECHA_EFECTIVA1"=>$FECHA_EFECTIVA1,
-"NOMBRE_RECIBIO1"=>$NOMBRE_RECIBIO1,
+"NUMERO_EVENTO"=>$NUMERO_EVENTO,
+"MENSAJERIA_SOLICITUD"=>$MENSAJERIA_SOLICITUD,
+"MENSAJERIA_REALIZARCE"=>$MENSAJERIA_REALIZARCE,
+"MENSAJERIA_HORARIOS"=>$MENSAJERIA_HORARIOS,
+"MENSAJERIA_SOLICITANTE"=>$MENSAJERIA_SOLICITANTE,
+"MENSAJERIA_CEL_SOLICITANTE"=>$MENSAJERIA_CEL_SOLICITANTE,
+"MENSAJERIA_EMPRESA_LUGAR"=>$MENSAJERIA_EMPRESA_LUGAR,
+"MENSAJERIA_SELECCIONAR"=>$MENSAJERIA_SELECCIONAR,
+"MENSAJERIA_OBJETOSARECOJER"=>$MENSAJERIA_OBJETOSARECOJER,
+"MENSAJERIA_MEDIDASAPROX"=>$MENSAJERIA_MEDIDASAPROX,
+"MENSAJERIA_CONTENIDO"=>$MENSAJERIA_CONTENIDO,
+"MENSAJERIA_EMPRESADIRE"=>$MENSAJERIA_EMPRESADIRE,
+"MENSAJERIA_EDIFICIO"=>$MENSAJERIA_EDIFICIO,
+"MENSAJERIA_CALLE"=>$MENSAJERIA_CALLE,
+"MENSAJERIA_NUMEROE"=>$MENSAJERIA_NUMEROE,
+"MENSAJERIA_NINTERIOR"=>$MENSAJERIA_NINTERIOR,
+"MENSAJERIA_NOFICINA"=>$MENSAJERIA_NOFICINA,
+"MENSAJERIA_COLONIA"=>$MENSAJERIA_COLONIA,
+"MENSAJERIA_ALCALDIA"=>$MENSAJERIA_ALCALDIA,
+"MENSAJERIA_CP"=>$MENSAJERIA_CP,
+"MENSAJERIA_CIUDAD"=>$MENSAJERIA_CIUDAD,
+"MENSAJERIA_ESTADO"=>$MENSAJERIA_ESTADO,
+"MENSAJERIA_PAIS"=>$MENSAJERIA_PAIS,
+"MENSAJERIA_UBICACION"=>$MENSAJERIA_UBICACION,
+"MENSAJERIA_TELEFONO1"=>$MENSAJERIA_TELEFONO1,
+"MENSAJERIA_TELEFONO2"=>$MENSAJERIA_TELEFONO2,
+"MENSAJERIA_NOMBREENTREGA"=>$MENSAJERIA_NOMBREENTREGA,
+"MENSAJERIA_FIRMARECIBE"=>$MENSAJERIA_FIRMARECIBE,
+"MENSAJERIA_FECHAR"=>$MENSAJERIA_FECHAR,
+"MENSAJERIA_HORAR"=>$MENSAJERIA_HORAR,
+"MENSAJERIA_LLEVARNOMBRE"=>$MENSAJERIA_LLEVARNOMBRE,
+"MENSAJERIA_SELECCIONARB"=>$MENSAJERIA_SELECCIONARB,
+"MENSAJERIA_DIRECCIONB"=>$MENSAJERIA_DIRECCIONB,
+"MENSAJERIA_EDIFICIOB"=>$MENSAJERIA_EDIFICIOB,
+"MENSAJERIA_CALLEB"=>$MENSAJERIA_CALLEB,
+"MENSAJERIA_NUMEROEB"=>$MENSAJERIA_NUMEROEB,
+"MENSAJERIA_NINTERIORB"=>$MENSAJERIA_NINTERIORB,
+"MENSAJERIA_NOFICINAB"=>$MENSAJERIA_NOFICINAB,
+"MENSAJERIA_COLONIAB"=>$MENSAJERIA_COLONIAB,
+"MENSAJERIA_ALCALDIAB"=>$MENSAJERIA_ALCALDIAB,
+"MENSAJERIA_CPB"=>$MENSAJERIA_CPB,
+"MENSAJERIA_CIUDADB"=>$MENSAJERIA_CIUDADB,
+"MENSAJERIA_ESTADOB"=>$MENSAJERIA_ESTADOB,
+"MENSAJERIA_PAISB"=>$MENSAJERIA_PAISB,
+"MENSAJERIA_UBICACIONB"=>$MENSAJERIA_UBICACIONB,
+"MENSAJERIA_TELEFONO1B"=>$MENSAJERIA_TELEFONO1B,
+"MENSAJERIA_TELEFONO2B"=>$MENSAJERIA_TELEFONO2B,
+"MENSAJERIA_NOMBREPERSONAB"=>$MENSAJERIA_NOMBREPERSONAB,
+"MENSAJERIA_NEMEROCELENTREGA"=>$MENSAJERIA_NEMEROCELENTREGA,
+"MENSAJERIA_NOMBREENTREGAB"=>$MENSAJERIA_NOMBREENTREGAB,
+"MENSAJERIA_FIRMARECIBEB"=>$MENSAJERIA_FIRMARECIBEB,
+"MENSAJERIA_FECHARB"=>$MENSAJERIA_FECHARB,
+"MENSAJERIA_HORARB"=>$MENSAJERIA_HORARB,
+"MENSAJERIA_INSTRUCCIONES"=>$MENSAJERIA_INSTRUCCIONES,
+"MENSAJERIA_OBSERVACIONES"=>$MENSAJERIA_OBSERVACIONES,
+"MENSAJERIA_VEHICULOM"=>$MENSAJERIA_VEHICULOM,
+"MENSAJERIA_REALIZADOPOR"=>$MENSAJERIA_REALIZADOPOR,
+"MENSAJERIA_COSTOCAMIONETA"=>$MENSAJERIA_COSTOCAMIONETA,
+"MENSAJERIA_COSTOGASOLINA"=>$MENSAJERIA_COSTOGASOLINA,
+"MENSAJERIA_COSTOCASETAS"=>$MENSAJERIA_COSTOCASETAS,
+"MENSAJERIA_COSTOESTACIONAMIENTO"=>$MENSAJERIA_COSTOESTACIONAMIENTO,
+"MENSAJERIA_COSTOGASTOS"=>$MENSAJERIA_COSTOGASTOS,
+"MENSAJERIA_TOTAL"=>$MENSAJERIA_TOTAL,
+"MENSAJERIA_OBSERVA"=>$MENSAJERIA_OBSERVA,
+"HMENSAJERIA"=>$HMENSAJERIA,
+
+"MENSAJERIA_ENTREGARSOLICITUD"=>$MENSAJERIA_ENTREGARSOLICITUD,
+"MENSAJERIA_FOTOS"=>$MENSAJERIA_FOTOS,
+"MENSAJERIA_FIRMA"=>$MENSAJERIA_FIRMA,
+"MENSAJERIA_FOTOSNECES"=>$MENSAJERIA_FOTOSNECES,
+"MENSAJERIA_ARCHIVORELACIONADO"=>$MENSAJERIA_ARCHIVORELACIONADO,
 
  "per_page"=>$per_page,
 	"query"=>$query,
@@ -106,23 +196,11 @@ $per_page=intval($_POST["per_page"]);
 		$numrows=0;
 	}	
 	$total_pages = ceil($numrows/$per_page);
-
-	//Número de columnas previas al bloque de bono, para el colspan de TOTALES.
-	//Fijas: #, autoriza, enviar por email, número evento, nombre evento, solicitante,
-	//nombre, puesto, teléfono, email, fecha inicio, fecha final = 12; más las
-	//columnas condicionales de permisos (VYO, DIRECCIÓN, admin, rechazo de bono).
-	$columnasPreviasTotalesPersonal2 = 12
-		+ ($puedeVerVYO2 ? 1 : 0)
-		+ ($puedeVerDIRECCION2 ? 1 : 0)
-		+ ($puedeVerAdmin2 ? 1 : 0)
-		+ ($puedeVerRechazoBono2 ? 1 : 0);
 	
 	
 	//Recorrer los datos recuperados
 		?>
 
-
-	
 
 		<div class="clearfix">
 			<?php 
@@ -132,101 +210,381 @@ $per_page=intval($_POST["per_page"]);
 				echo $pagination->paginate();
 			?>
         </div>
-		
-		
-		
-		
 	<div class="table-responsive">
-	<style>
-    thead tr:first-child th {
-        position: sticky;
-        top: 0;
-        background: #c9e8e8;
-        z-index: 10;
-    }
-
-    thead tr:nth-child(2) td {
-        position: sticky;
-        top: 60px; /* Altura del primer encabezado */
-        background: #e2f2f2;
-        z-index: 9;
-    }
-</style>
-<div style="max-height: 600px; overflow-y: auto; overflow-x: auto;">
-
-			  
-				  
 	 <table class="table table-striped table-bordered" >	
 		<thead>
-  
-            <tr style="text-align:center">
-<th style="background:#c9e8e8">#</th>
-<?php /*inicia copiar y pegar checkboxes iguales al archivo 4 iniciaA3*/ ?>
-<th width="15%" style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>VER EVENTOS</th>
-<?php if($puedeVerVYO2){ ?><th width="15%" style="background:#c9e8e8">AUTORIZACIÓN <br>POR V Y O<br>PAGO BONO</th><?php } ?>
-<?php if($puedeVerDIRECCION2){ ?><th width="15%" style="background:#c9e8e8">AUTORIZACIÓN <br>POR DIRECCIÓN<br>PAGO BONO</th><?php } ?>
-<?php if($puedeVerAdmin2){ ?><th width="15%" style="background:#c9e8e8">AUTORIZACIÓN <br>POR AUDITORÍA<br>PAGO BONO</th><?php } ?>
-<?php if($puedeVerRechazoBono2){ ?><th width="15%" style="background:#c9e8e8">RECHAZAR<br>PAGO BONO</th><?php } ?>
-<th width="15%" style="background:#c9e8e8">ENVIAR <br>POR EMAIL</th>
-<th width="20%" style="background:#c9e8e8">NÚMERO DE<br>EVENTO</th>
-<th width="20%" style="background:#c9e8e8">NOMBRE DEL<br>EVENTO</th>
-<th width="20%" style="background:#c9e8e8">NOMBRE DEL <br>SOLICITANTE</th>
-<th width="20%" style="background:#c9e8e8">NOMBRE</th>
-<th width="20%" style="background:#c9e8e8">PUESTO</th>
-<th width="20%" style="background:#c9e8e8">TELEFONO DE OFICINA</th>
-<th width="20%" style="background:#c9e8e8">EMAIL</th>
-<th width="20%" style="background:#c9e8e8">FECHA DE INICIO<br> DE COORDINACIÓN</th>
-<th width="20%" style="background:#c9e8e8">FECHA FINAL <br>DE COORDINACIÓN</th>
-<?php if($verBono){ ?>
-<th width="20%" style="background:#c9e8e8">NÚMERO <br>DE DÍAS</th>
-<th width="20%" style="background:#c9e8e8">MONTO <br>DE BONO</th>
-<th width="20%" style="background:#c9e8e8">TOTAL <br>DE BONO</th>
-<th width="20%" style="background:#c9e8e8">MOTIVO DEL BONO</th>
-<th width="20%" style="background:#c9e8e8">FECHA DE PROGRAMACIÓN<br> DE PAGO</th>
-<th width="20%" style="background:#c9e8e8">FORMA DE PAGO</th>
-<th width="20%" style="background:#c9e8e8">FORMA EFECTIVA DE PAGO</th>
-<th width="20%" style="background:#c9e8e8">COMPROBANTE DE PAGO</th>
-<th width="20%" style="background:#c9e8e8">PAX QUE COBRO</th>
+            <tr>
+<th style="background:#c9e8e8;text-align:center">#</th>
+<th style="background:#c9e8e8;text-align:center">IMPRIMIR</th>
+<?php /*inicia copiar y pegar iniciaA3*/ ?>
+
+<!--<hr/><H1>HTML FILTRO .PHP A3</H1><BR/>--><?php 
+if($database->plantilla_filtro($nombreTabla,"NUMERO_EVENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">No. EVENTO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SOLICITUD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA DE SOLICITUD</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_REALIZARCE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA A REALIZARSE 1:</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBSERVACIONES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA A REALIZARSE 2:</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORARIOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">RANGO DE HORARIOS PARA ENTREGA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SOLICITANTE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NOMBRE DEL SOLICITANTE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CEL_SOLICITANTE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NÚMERO DE CEL DEL SOLICITANTE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBJETOSARECOJER",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">CANTIDAD DE OBJETOS A RECOGER</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_MEDIDASAPROX",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">MEDIDAS APROXIMADAS DE LOS OBJETOS</th>
+<?php } ?><?php    
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CONTENIDO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">CONTENIDO DEL ENVIO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ENTREGARSOLICITUD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NOTA IMPORTANTE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FOTOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ADJUNTAR FOTOS</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EMPRESA_LUGAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">DIRECCIÓN DE EMPRESAS (ENVIA)</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SELECCIONAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">DIRECCIÓN DE PROVEEDORES (ENVIA)</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EMPRESADIRE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">DIRECCIÓN DE CLIENTES (ENVIA)</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EDIFICIO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">EDIFICIO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CALLE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> CALLE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NUMEROE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NUMERO EXTERIOR</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NINTERIOR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> NÚMERO INTERIOR</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOFICINA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NUMERO DE OFICINA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COLONIA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> COLONIA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ALCALDIA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ALCALDÍA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CP",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> C.P</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CIUDAD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> CIUDAD</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ESTADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> ESTADO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_PAIS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">PAÍS</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_UBICACION",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> UBICACIÓN</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO1",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> TELEFONO 1</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO2",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> TELEFONO 2</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREENTREGA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NOMBRE DE QUIEN ENTREGA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMARECIBE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FIRMA DE QUIÉN RECIBE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FECHAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA DE RECEPCIÓN</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">HORA DE RECEPCIÓN</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_LLEVARNOMBRE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">DIRECCIÓN DE EMPRESAS (RECIBE)</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SELECCIONARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">DIRECCIÓN DE PROVEEDORES (RECIBE)</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_DIRECCIONB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">DIRECCIÓN DE CLIENTES (RECIBE)</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EDIFICIOB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">EDIFICIO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CALLEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">CALLE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NUMEROEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NUMERO EXTERIOR</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NINTERIORB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> NÚMERO INTERIOR</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOFICINAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> NÚMERO DE OFICINA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COLONIAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">COLONIA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ALCALDIAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ALCALDÍA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CPB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">C.P</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CIUDADB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">CIUDAD</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ESTADOB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ESTADO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_PAISB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">PAÍS</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_UBICACIONB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">UBICACIÓN</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO1B",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">TELEFONO 1 </th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO2B",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">TELEFONO 2</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREPERSONAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NOMBRE DE LA PERSONA A QUIÉN<br> SE LE VA A ENTREGAR</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NEMEROCELENTREGA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NÚMERO DE CEL DE LA PERSONA<br> A QUIEN SE LE VA A ENTREGAR</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREENTREGAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">NOMBRE DE QUIEN RECIBE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMARECIBEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FIRMA DE QUIÉN RECIBE</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FECHARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">FECHA DE RECEPCIÓN</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">HORA DE RECEPCIÓN</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_INSTRUCCIONES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">INSTRUCCIONES O COMENTARIOS ADICIONALES</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ADJUNTAR MENSAJERIA CON NOMBRE, <br>FIRMA, FECHA Y HORA DE QUIEN RECIBIO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FOTOSNECES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ADJUNTAR FOTOS EN CASO<br> DE SER NECESARIO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ARCHIVORELACIONADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">ADJUNTAR OTRO ARCHIVO<br> RELACIONADO CON ESTA MENSAJERÍA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_VEHICULOM",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> VEHÍCULO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_REALIZADOPOR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">CONCEPTO POR MENSAJERÍA<br> DEL VEHÍCULO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOCAMIONETA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">COSTO POR DIA DEL VEHÍCULO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOGASOLINA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">MENSAJERIA COSTOGASOLINA</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOCASETAS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> COSTO CASETAS</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOESTACIONAMIENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">COSTO ESTACIONAMIENTO</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOGASTOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center"> COSTO GASTOS</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TOTAL",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">TOTAL</th>
+<?php } ?><?php 
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBSERVA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><th style="background:#c9e8e8;text-align:center">OBSERVACIONES</th>
 <?php } ?>
-<th width="20%" style="background:#c9e8e8">FECHA DE <br>ÚLTIMA CARGA</th>
-<th style="background:#c9e8e8">MODIFICAR</th>
-<th style="background:#c9e8e8">BORRAR</th>
+
 <?php /*termina copiar y terminaA3*/ ?>
             </tr>
-            <tr>
-<td style="background:#c9e8e8"></td>
-<?php /*inicia copiar y pegar fila de filtros iniciaA4 - solo columnas con búsqueda por texto*/ ?>
-<td style="background:#c9e8e8"></td>
-<?php if($puedeVerVYO2){ ?><td style="background:#c9e8e8"></td><?php } ?>
-<?php if($puedeVerDIRECCION2){ ?><td style="background:#c9e8e8"></td><?php } ?>
-<?php if($puedeVerAdmin2){ ?><td style="background:#c9e8e8"></td><?php } ?>
-<?php if($puedeVerRechazoBono2){ ?><td style="background:#c9e8e8"></td><?php } ?>
-<td style="background:#c9e8e8"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="NUMERO_EVENTO_PERSONAL2_1" value="<?php echo htmlspecialchars($NUMERO_EVENTO_PERSONAL2, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="NOMBRE_EVENTO_PERSONAL2_1" value="<?php echo htmlspecialchars($NOMBRE_EVENTO_PERSONAL2, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="NOMBRE_DELINGRESO2_1" value="<?php echo htmlspecialchars($NOMBRE_DELINGRESO2, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="NOMBRE_PERSONAL2_1" value="<?php echo htmlspecialchars($NOMBRE_PERSONAL2, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"></td>
-<td style="background:#c9e8e8"></td>
-<td style="background:#c9e8e8"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="FECHA_INICIO1_1" value="<?php echo htmlspecialchars($FECHA_INICIO1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="FECHA_FINAL1_1" value="<?php echo htmlspecialchars($FECHA_FINAL1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<?php if($verBono){ ?>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="NUMERO_DIAS1_1" value="<?php echo htmlspecialchars($NUMERO_DIAS1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="MONTO_BONO1_1" value="<?php echo htmlspecialchars($MONTO_BONO1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="MONTO_BONO_TOTAL1_1" value="<?php echo htmlspecialchars($MONTO_BONO_TOTAL1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="OBSERVACIONES_PERSONAL2_1" value="<?php echo htmlspecialchars($OBSERVACIONES_PERSONAL2, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="FECHA_PPAGO1_1" value="<?php echo htmlspecialchars($FECHA_PPAGO1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="FORMA_PAGO1_1" value="<?php echo htmlspecialchars($FORMA_PAGO1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="FECHA_EFECTIVA1_1" value="<?php echo htmlspecialchars($FECHA_EFECTIVA1, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<td style="background:#c9e8e8"></td>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="NOMBRE_RECIBIO1_1" value="<?php echo htmlspecialchars($NOMBRE_RECIBIO1, ENT_QUOTES, 'UTF-8'); ?>"></td>
+			
+			
+			
+			
+            <tr>                                         
+<td style="background:#c9e8e8;text-align:center"></td>
+<td style="background:#c9e8e8;text-align:center"></td>   
+<?php /*inicia copiar y pegar iniciaA4*/ ?>
+
+<!--<hr/><H1>HTML FILTRO E INPUT .PHP A4</H1><BR/>--><?php  
+if($database->plantilla_filtro($nombreTabla,"NUMERO_EVENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="NUMERO_EVENTO_1" value="<?php 
+echo $NUMERO_EVENTO; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SOLICITUD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_SOLICITUD_1" value="<?php 
+echo $MENSAJERIA_SOLICITUD; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_REALIZARCE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_REALIZARCE_1" value="<?php 
+echo $MENSAJERIA_REALIZARCE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBSERVACIONES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_OBSERVACIONES_1" value="<?php 
+echo $MENSAJERIA_OBSERVACIONES; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORARIOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_HORARIOS_1" value="<?php 
+echo $MENSAJERIA_HORARIOS; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SOLICITANTE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_SOLICITANTE_1" value="<?php 
+echo $MENSAJERIA_SOLICITANTE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CEL_SOLICITANTE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CEL_SOLICITANTE_1" value="<?php 
+echo $MENSAJERIA_CEL_SOLICITANTE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBJETOSARECOJER",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_OBJETOSARECOJER_1" value="<?php 
+echo $MENSAJERIA_OBJETOSARECOJER; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_MEDIDASAPROX",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_MEDIDASAPROX_1" value="<?php 
+echo $MENSAJERIA_MEDIDASAPROX; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CONTENIDO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CONTENIDO_1" value="<?php 
+echo $MENSAJERIA_CONTENIDO; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ENTREGARSOLICITUD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_ENTREGARSOLICITUD_1" value="<?php 
+echo $MENSAJERIA_ENTREGARSOLICITUD; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FOTOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FOTOS_1" value="<?php 
+echo $MENSAJERIA_FOTOS; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EMPRESA_LUGAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_EMPRESA_LUGAR_1" value="<?php 
+echo $MENSAJERIA_EMPRESA_LUGAR; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SELECCIONAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_SELECCIONAR_1" value="<?php 
+echo $MENSAJERIA_SELECCIONAR; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EMPRESADIRE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_EMPRESADIRE_1" value="<?php 
+echo $MENSAJERIA_EMPRESADIRE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EDIFICIO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_EDIFICIO_1" value="<?php 
+echo $MENSAJERIA_EDIFICIO; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CALLE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CALLE_1" value="<?php 
+echo $MENSAJERIA_CALLE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NUMEROE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NUMEROE_1" value="<?php 
+echo $MENSAJERIA_NUMEROE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NINTERIOR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NINTERIOR_1" value="<?php 
+echo $MENSAJERIA_NINTERIOR; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOFICINA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NOFICINA_1" value="<?php 
+echo $MENSAJERIA_NOFICINA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COLONIA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COLONIA_1" value="<?php 
+echo $MENSAJERIA_COLONIA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ALCALDIA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_ALCALDIA_1" value="<?php 
+echo $MENSAJERIA_ALCALDIA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CP",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CP_1" value="<?php 
+echo $MENSAJERIA_CP; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CIUDAD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CIUDAD_1" value="<?php 
+echo $MENSAJERIA_CIUDAD; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ESTADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_ESTADO_1" value="<?php 
+echo $MENSAJERIA_ESTADO; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_PAIS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_PAIS_1" value="<?php 
+echo $MENSAJERIA_PAIS; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_UBICACION",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_UBICACION_1" value="<?php 
+echo $MENSAJERIA_UBICACION; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO1",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_TELEFONO1_1" value="<?php 
+echo $MENSAJERIA_TELEFONO1; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO2",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_TELEFONO2_1" value="<?php 
+echo $MENSAJERIA_TELEFONO2; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREENTREGA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NOMBREENTREGA_1" value="<?php 
+echo $MENSAJERIA_NOMBREENTREGA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMARECIBE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FIRMARECIBE_1" value="<?php 
+echo $MENSAJERIA_FIRMARECIBE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FECHAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FECHAR_1" value="<?php 
+echo $MENSAJERIA_FECHAR; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_HORAR_1" value="<?php 
+echo $MENSAJERIA_HORAR; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_LLEVARNOMBRE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_LLEVARNOMBRE_1" value="<?php 
+echo $MENSAJERIA_LLEVARNOMBRE; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SELECCIONARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_SELECCIONARB_1" value="<?php 
+echo $MENSAJERIA_SELECCIONARB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_DIRECCIONB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_DIRECCIONB_1" value="<?php 
+echo $MENSAJERIA_DIRECCIONB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EDIFICIOB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_EDIFICIOB_1" value="<?php 
+echo $MENSAJERIA_EDIFICIOB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CALLEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CALLEB_1" value="<?php 
+echo $MENSAJERIA_CALLEB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NUMEROEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NUMEROEB_1" value="<?php 
+echo $MENSAJERIA_NUMEROEB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NINTERIORB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NINTERIORB_1" value="<?php 
+echo $MENSAJERIA_NINTERIORB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOFICINAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NOFICINAB_1" value="<?php 
+echo $MENSAJERIA_NOFICINAB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COLONIAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COLONIAB_1" value="<?php 
+echo $MENSAJERIA_COLONIAB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ALCALDIAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_ALCALDIAB_1" value="<?php 
+echo $MENSAJERIA_ALCALDIAB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CPB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CPB_1" value="<?php 
+echo $MENSAJERIA_CPB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CIUDADB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_CIUDADB_1" value="<?php 
+echo $MENSAJERIA_CIUDADB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ESTADOB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_ESTADOB_1" value="<?php 
+echo $MENSAJERIA_ESTADOB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_PAISB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_PAISB_1" value="<?php 
+echo $MENSAJERIA_PAISB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_UBICACIONB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_UBICACIONB_1" value="<?php 
+echo $MENSAJERIA_UBICACIONB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO1B",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_TELEFONO1B_1" value="<?php 
+echo $MENSAJERIA_TELEFONO1B; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO2B",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_TELEFONO2B_1" value="<?php 
+echo $MENSAJERIA_TELEFONO2B; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREPERSONAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NOMBREPERSONAB_1" value="<?php 
+echo $MENSAJERIA_NOMBREPERSONAB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NEMEROCELENTREGA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NEMEROCELENTREGA_1" value="<?php 
+echo $MENSAJERIA_NEMEROCELENTREGA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREENTREGAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_NOMBREENTREGAB_1" value="<?php 
+echo $MENSAJERIA_NOMBREENTREGAB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMARECIBEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FIRMARECIBEB_1" value="<?php 
+echo $MENSAJERIA_FIRMARECIBEB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FECHARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FECHARB_1" value="<?php 
+echo $MENSAJERIA_FECHARB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_HORARB_1" value="<?php 
+echo $MENSAJERIA_HORARB; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_INSTRUCCIONES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_INSTRUCCIONES_1" value="<?php 
+echo $MENSAJERIA_INSTRUCCIONES; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FIRMA_1" value="<?php 
+echo $MENSAJERIA_FIRMA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FOTOSNECES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_FOTOSNECES_1" value="<?php 
+echo $MENSAJERIA_FOTOSNECES; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ARCHIVORELACIONADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_ARCHIVORELACIONADO_1" value="<?php 
+echo $MENSAJERIA_ARCHIVORELACIONADO; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_VEHICULOM",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_VEHICULOM_1" value="<?php 
+echo $MENSAJERIA_VEHICULOM; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_REALIZADOPOR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_REALIZADOPOR_1" value="<?php 
+echo $MENSAJERIA_REALIZADOPOR; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOCAMIONETA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COSTOCAMIONETA_1" value="<?php 
+echo $MENSAJERIA_COSTOCAMIONETA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOGASOLINA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COSTOGASOLINA_1" value="<?php 
+echo $MENSAJERIA_COSTOGASOLINA; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOCASETAS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COSTOCASETAS_1" value="<?php 
+echo $MENSAJERIA_COSTOCASETAS; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOESTACIONAMIENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COSTOESTACIONAMIENTO_1" value="<?php 
+echo $MENSAJERIA_COSTOESTACIONAMIENTO; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOGASTOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_COSTOGASTOS_1" value="<?php 
+echo $MENSAJERIA_COSTOGASTOS; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TOTAL",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_TOTAL_1" value="<?php 
+echo $MENSAJERIA_TOTAL; ?>"></td>
+<?php } ?><?php  
+if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBSERVA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="background:#c9e8e8;text-align:center"><input type="text" class="form-control" id="MENSAJERIA_OBSERVA_1" value="<?php 
+echo $MENSAJERIA_OBSERVA; ?>"></td>
 <?php } ?>
-<td style="background:#c9e8e8"><input type="text" class="form-control filtro-input" id="PERSONAL2_FECHA_ULTIMA_CARGA_1" value="<?php echo htmlspecialchars($PERSONAL2_FECHA_ULTIMA_CARGA, ENT_QUOTES, 'UTF-8'); ?>"></td>
-<input type="hidden" id="hDatosPERSONAL2_1" value="<?php echo htmlspecialchars($hDatosPERSONAL2, ENT_QUOTES, 'UTF-8'); ?>">
-<td style="background:#c9e8e8"></td>
-<td style="background:#c9e8e8"></td>
+
+
 <?php /*termina copiar y terminaA4*/ ?>
+	
+<?php /*termina copiar y terminaA4*/ ?>
+	
+		<td style="background:#c9e8e8"></td>
+		<td style="background:#c9e8e8"></td>
             </tr>			
         </thead>
 		<?php 	if ($numrows<0){ ?>
@@ -234,126 +592,251 @@ $per_page=intval($_POST["per_page"]);
 		<?php }else{ ?>		
         <tbody>
 		<?php
-		$finales=0;
-		$MONTO_BONO12=0; $NUMERO_DIAS12=0; $PER2SUNTOTAL=0;
-
+		$finales=0;    
 		foreach ($datos as $key=>$row){
+			
+	$urlMENSAJERIA_ENTREGARSOLICITUD = $database->descargararchivo($row["MENSAJERIA_ENTREGARSOLICITUD"]);
+	$urlMENSAJERIA_FOTOS = $database->descargararchivo($row["MENSAJERIA_FOTOS"]);
+	$urlMENSAJERIA_FIRMA = $database->descargararchivo($row["MENSAJERIA_FIRMA"]);
+	$urlMENSAJERIA_FOTOSNECES = $database->descargararchivo($row["MENSAJERIA_FOTOSNECES"]);
+	$urlMENSAJERIA_ARCHIVORELACIONADO = $database->descargararchivo($row["MENSAJERIA_ARCHIVORELACIONADO"]);
 
-			$filaRechazoBono2 = ((isset($row["STATUS_BONORECHAZO"]) && $row["STATUS_BONORECHAZO"]=='si') || (isset($row["STATUS_RECHAZOBONO"]) && $row["STATUS_RECHAZOBONO"]=='si'));
-			$montoBonoTotalAjustado2 = $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO_TOTAL1"];
 
-			$motivoRechazoPersonal2 = $database->obtener_motivo_rechazo_personal($row["id"], 'personal2');
-			$mostrarAgregarRechazoPersonal2 = ($filaRechazoBono2 && $motivoRechazoPersonal2 == '');
-			$mostrarVerRechazoPersonal2 = ($filaRechazoBono2 && $motivoRechazoPersonal2 != '');
-
-			$adjuntosComprobante = array_filter(array_map('trim', explode(',', (string)$row["ADJUNTO_COMPROBANTE"])));
-			if($row["ADJUNTO_COMPROBANTE"]=="" or $row["ADJUNTO_COMPROBANTE"]=='2' or empty($adjuntosComprobante)){
-				$urlADJUNTO_COMPROBANTE = '';
-			}else{
-				$urlADJUNTO_COMPROBANTE = "<ul class='list-unstyled mb-0'>";
-				foreach ($adjuntosComprobante as $adjuntoComprobante) {
-					if ($adjuntoComprobante == '' || $adjuntoComprobante == '2') {
-						continue;
-					}
-					$botonBorrarAdjunto = '';
-					if ($puedeBorrarAdjuntoPersonal) {
-						$botonBorrarAdjunto = " <button type='button' class='btn btn-link p-0 text-danger view_dataPERSONAL2adjuntoBorrar' data-personal='".$row["id"]."' data-archivo='".$adjuntoComprobante."'>Borrar</button>";
-					}
-					$urlADJUNTO_COMPROBANTE .= "<li class='d-flex align-items-center gap-2'><a target='_blank' href='includes/archivos/".$adjuntoComprobante."'>Visualizar!</a>".$botonBorrarAdjunto."</li>";
-				}
-				$urlADJUNTO_COMPROBANTE .= "</ul>";
-			}
-		?>
-		<tr style="background:<?php echo $filaRechazoBono2 ? '#ff3c22' : '#f5f9fc'; ?>;text-align:center">
-<td><?php echo $row["id"];?></td>
-<?php /*inicia copiar y pegar checkboxes de fila igual al archivo 4 iniciaA5*/ ?>
-<td style="text-align:center">
-<input type="checkbox" style="width:40PX;" class="form-check-input" id="pasarapersonal2<?php echo $row["id"]; ?>" name="pasarapersonal2<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2(<?php echo $row["id"]; ?>)" <?php if($row["autoriza"]=='si'){ echo "checked"; } ?>/>
-</td>
-<?php if($puedeVerVYO2){ ?>
-<td style="text-align:center">
-<input type="checkbox" style="width:40PX;" class="form-check-input" name="VYO[]" id="VYO<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2VYO(<?php echo $row["id"]; ?>)" <?php if(isset($row["VYO"]) && $row["VYO"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarVYO2 || ((isset($row["VYO"]) && $row["VYO"]=='si') && !$puedeModificarVYO2)) { echo "disabled"; } ?>/>
-</td>
-<?php } ?>
-<?php if($puedeVerDIRECCION2){ ?>
-<td style="text-align:center">
-<input type="checkbox" style="width:40PX;" class="form-check-input" name="DIRECCION[]" id="DIRECCION<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2DIRECCION(<?php echo $row["id"]; ?>)" <?php if(isset($row["DIRECCION"]) && $row["DIRECCION"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarDIRECCION2 || ((isset($row["DIRECCION"]) && $row["DIRECCION"]=='si') && !$puedeModificarDIRECCION2)) { echo "disabled"; } ?>/>
-</td>
-<?php } ?>
-<?php if($puedeVerAdmin2){ ?>
-<td style="text-align:center">
-<input type="checkbox" style="width:40PX;" class="form-check-input" name="admin[]" id="admin<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="pasara1_personal2ADMIN(<?php echo $row["id"]; ?>)" <?php if(isset($row["admin"]) && $row["admin"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarAdmin2 || ((isset($row["admin"]) && $row["admin"]=='si') && !$puedeModificarAdmin2)) { echo "disabled"; } ?>/>
-</td>
-<?php } ?>
-<?php if($puedeVerRechazoBono2){ ?>
-<td style="text-align:center">
-<input type="checkbox" style="width:40PX;" class="form-check-input" id="STATUS_BONORECHAZO<?php echo $row["id"]; ?>" name="STATUS_BONORECHAZO<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" onclick="STATUS_BONORECHAZO(<?php echo $row["id"]; ?>)" <?php if(isset($row["STATUS_BONORECHAZO"]) && $row["STATUS_BONORECHAZO"]=='si'){ echo "checked"; } ?> <?php if(!$puedeGuardarRechazoBono2 || ((isset($row["STATUS_BONORECHAZO"]) && $row["STATUS_BONORECHAZO"]=='si') && !$puedeModificarRechazoBono2)) { echo "disabled"; } ?>/>
-<input type="hidden" id="motivo_rechazo_personal2_<?php echo $row["id"]; ?>" value="<?php echo htmlspecialchars($motivoRechazoPersonal2, ENT_QUOTES, 'UTF-8'); ?>" />
-<button type="button" title="Agregar motivo" id="agregar_rechazo_personal2_<?php echo $row['id']; ?>" style="border:none;background:transparent;cursor:pointer;color:#007bff;font-size:13px;<?php echo $mostrarAgregarRechazoPersonal2 ? '' : 'display:none;'; ?>" onclick="abrirFormularioRechazoPersonal(<?php echo $row['id']; ?>, 'personal2')">agregar<br>motivo</button>
-<button type="button" title="Ver motivo" id="ver_rechazo_personal2_<?php echo $row['id']; ?>" style="border:none;background:transparent;cursor:pointer;color:#28a745;font-size:13px;<?php echo $mostrarVerRechazoPersonal2 ? '' : 'display:none;'; ?>" onclick="verMotivoRechazoPersonal(<?php echo $row['id']; ?>, 'personal2')">ver</button>
-</td>
-<?php } ?>
-<td style="text-align:center">
-<input type="checkbox" style="width:40PX;" class="form-check-input" name="personal2[]" id="personal2<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>"/>
-</td>
-<td style="color:#17215E;font-weight:bold;"><?php echo htmlspecialchars((string) $row["NUMERO_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars((string) $row["NOMBRE_EVENTO"], ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars((string) $row["NOMBRE_DELINGRESO2"], ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo $database->un_solo_colaborador_nombre($row["NOMBRE_PERSONAL2"],'01informacionpersonal','NOMBRE_1'); ?></td>
-<td><?php echo str_replace('_',' ', $database->un_solo_colaborador($row["NOMBRE_PERSONAL2"],'01empresa','PUESTO')); ?></td>
-<td><?php echo $database->un_solo_colaborador($row["NOMBRE_PERSONAL2"],'01empresa','CORREO_3'); ?></td>
-<td><?php echo $database->un_solo_colaborador($row["NOMBRE_PERSONAL2"],'01empresa','CORREO_1'); ?></td>
-<td><?php echo $row["FECHA_INICIO1"]; ?></td>
-<td><?php echo $row["FECHA_FINAL1"]; ?></td>
-<?php if($verBono){ ?>
-<td><?php echo $row["NUMERO_DIAS1"]; ?></td>
-<td><?php echo $row["MONTO_BONO1"]; ?></td>
-<td><?php echo number_format($montoBonoTotalAjustado2,2,'.',','); ?></td>
-<td><?php echo $row["OBSERVACIONES_PERSONAL2"]; ?></td>
-<td><?php echo $row["FECHA_PPAGO1"]; ?></td>
-<td><?php echo $row["FORMA_PAGO1"]; ?></td>
-<td><?php echo $row["FECHA_EFECTIVA1"]; ?></td>
-<td><?php echo $urlADJUNTO_COMPROBANTE; ?></td>
-<td><?php echo $row["NOMBRE_RECIBIO1"]; ?></td>
-<?php } ?>
-<td><?php echo $row["PERSONAL2_FECHA_ULTIMA_CARGA"]; ?></td>
-<?php /*termina copiar y terminaA5*/ ?>
-			<td>
-<input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2modifica" />
+			
+			?>
+		<tr>
 		
+<td style="background:#c9e8e8;text-align:center">
+<?php echo $row["id"];?>
+</td>
+
+
+<td><a class="btn btn-sm btn-outline-success px-5" href="calendariodeeventos2/VistaPreviaMensajeriaPdf.php?idRelacion=<?php echo $row['id']; ?>" target="_blank">IMPRIMIR</a></td>
+
+
+<?php /*inicia copiar y pegar iniciaA5*/ ?>
+<!--<hr/><H1>FOREACH FILTRO .PHP A5</H1><BR/>--><?php  if($database->plantilla_filtro($nombreTabla,"NUMERO_EVENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"> <?php echo $row['NUMERO_EVENTO'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SOLICITUD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_SOLICITUD'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_REALIZARCE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_REALIZARCE'];?></td>
+<?php } ?>
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBSERVACIONES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_OBSERVACIONES'];?></td>
+<?php } ?>
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORARIOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_HORARIOS'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SOLICITANTE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_SOLICITANTE'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CEL_SOLICITANTE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CEL_SOLICITANTE'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBJETOSARECOJER",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_OBJETOSARECOJER'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_MEDIDASAPROX",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_MEDIDASAPROX'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CONTENIDO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CONTENIDO'];?></td>
+<?php } ?>
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ENTREGARSOLICITUD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"> <?php echo $urlMENSAJERIA_ENTREGARSOLICITUD;?></td>
+<?php } ?>
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FOTOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"> <?php echo $urlMENSAJERIA_FOTOS;?></td>
+<?php } ?>
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EMPRESA_LUGAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row["MENSAJERIA_EMPRESA_LUGAR"];?></td> 
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SELECCIONAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row["MENSAJERIA_SELECCIONAR"];?></td>
+<?php } ?>
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EMPRESADIRE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row["MENSAJERIA_EMPRESADIRE"];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EDIFICIO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_EDIFICIO'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CALLE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CALLE'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NUMEROE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NUMEROE'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NINTERIOR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NINTERIOR'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOFICINA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NOFICINA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COLONIA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COLONIA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ALCALDIA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_ALCALDIA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CP",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CP'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CIUDAD",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CIUDAD'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ESTADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_ESTADO'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_PAIS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_PAIS'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_UBICACION",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_UBICACION'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO1",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_TELEFONO1'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO2",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_TELEFONO2'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREENTREGA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NOMBREENTREGA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMARECIBE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_FIRMARECIBE'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FECHAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_FECHAR'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORAR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_HORAR'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_LLEVARNOMBRE",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row["MENSAJERIA_LLEVARNOMBRE"];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_SELECCIONARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row["MENSAJERIA_SELECCIONARB"];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_DIRECCIONB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row["MENSAJERIA_DIRECCIONB"];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_EDIFICIOB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_EDIFICIOB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CALLEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CALLEB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NUMEROEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NUMEROEB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NINTERIORB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NINTERIORB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOFICINAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NOFICINAB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COLONIAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COLONIAB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ALCALDIAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_ALCALDIAB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CPB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CPB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_CIUDADB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_CIUDADB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ESTADOB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_ESTADOB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_PAISB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_PAISB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_UBICACIONB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_UBICACIONB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO1B",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_TELEFONO1B'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TELEFONO2B",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_TELEFONO2B'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREPERSONAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NOMBREPERSONAB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NEMEROCELENTREGA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NEMEROCELENTREGA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_NOMBREENTREGAB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_NOMBREENTREGAB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMARECIBEB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_FIRMARECIBEB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FECHARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_FECHARB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_HORARB",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_HORARB'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_INSTRUCCIONES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_INSTRUCCIONES'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FIRMA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"> <?php echo $urlMENSAJERIA_FIRMA;?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_FOTOSNECES",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $urlMENSAJERIA_FOTOSNECES;?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_ARCHIVORELACIONADO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $urlMENSAJERIA_ARCHIVORELACIONADO;?></td>  
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_VEHICULOM",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_VEHICULOM'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_REALIZADOPOR",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_REALIZADOPOR'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOCAMIONETA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COSTOCAMIONETA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOGASOLINA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COSTOGASOLINA'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOCASETAS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COSTOCASETAS'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOESTACIONAMIENTO",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COSTOESTACIONAMIENTO'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_COSTOGASTOS",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_COSTOGASTOS'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_TOTAL",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_TOTAL'];?></td>
+<?php } ?>
+
+<?php  if($database->plantilla_filtro($nombreTabla,"MENSAJERIA_OBSERVA",$altaeventos,$DEPARTAMENTO)=="si"){ ?><td style="text-align:center"><?php echo $row['MENSAJERIA_OBSERVA'];?></td>
+<?php } ?>
+
+
+<?php /*termina copiar y terminaA5*/ ?>
+
+<?php if($database->variablespermisos('','MENSAJERIA','modificar' and $var_bloquea_fecha=='no')=='si'){ ?>
+			<td style="background:#c9e8e8;text-align:center">
+
+<input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_MENSAJERIAmodifica" />			
 
 			</td>
-			<td>
+			 <?php } ?>
+			 <?php if($database->variablespermisos('','MENSAJERIA','borrar' and $var_bloquea_fecha=='no')=='si'){ ?>
+			<td style="background:#c9e8e8;text-align:center">
 
-<input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataDATOSpersonal2borrar" />
+<input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_dataMENSAJERIAborrar" />
 
-			</td>			
+			</td>	<?php } ?>		
 		</tr>
 			<?php
 			$finales++;
-			$MONTO_BONO12  += $filaRechazoBono2 ? 0 : (float)$row["MONTO_BONO1"];
-			$NUMERO_DIAS12 += $filaRechazoBono2 ? 0 : (int)$row["NUMERO_DIAS1"];
-			$PER2SUNTOTAL  += $montoBonoTotalAjustado2;
 		}	
 	?>
-<?php if($database->variablespermisos('','TOTALES_PERSOASISTE','ver')=='si') { ?>
-	<tr>
-		<?php if($verBono): ?>
-			<td colspan='<?php echo $columnasPreviasTotalesPersonal2; ?>' style="text-align:right;">
-				<strong style="font-size:16px">TOTALES</strong>
-			</td>
-			<td style="text-align:center;"><?php echo number_format($NUMERO_DIAS12); ?></td>
-			<td style="text-align:center;">$ <?php echo number_format($MONTO_BONO12,2,'.',','); ?></td>
-			<td style="text-align:center;">$ <?php echo number_format($PER2SUNTOTAL,2,'.',','); ?></td>
-			<td colspan='9'></td>
-		<?php else: ?>
-			<td colspan='<?php echo $columnasPreviasTotalesPersonal2; ?>' style="text-align:right;">
-				<strong style="font-size:16px">TOTALES</strong>
-			</td>
-			<td colspan='3'></td>
-		<?php endif; ?>
-	</tr>
-<?php } ?>
 		</tbody>
 		</table>
 		</div>
