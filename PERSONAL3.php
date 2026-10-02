@@ -14,8 +14,7 @@ $puedeGuardarRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 'g
 
 $puedeModificarRechazoBono2 = ($conexion->variablespermisos('', 'rechazobono2', 'modificar') === 'si');
 
-// Esta variante permite seleccionar el evento antes de capturar al solicitante.
-// El id viaja oculto para asociar el registro al evento elegido en el controlador.
+
 $eventosPersonal2 = array();
 $conexionEventosPersonal2 = $altaeventos->db();
 $consultaEventosPersonal2 = mysqli_query(
@@ -85,12 +84,9 @@ if ($consultaEventosPersonal2) {
                 value="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'].' - '.$eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
                 data-evento-numero="<?php echo htmlspecialchars($eventoPersonal2['NUMERO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
                 data-evento-id="<?php echo (int) $eventoPersonal2['id']; ?>"
-                               data-evento-nombre="<?php echo htmlspecialchars($eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
-
+                data-evento-nombre="<?php echo htmlspecialchars($eventoPersonal2['NOMBRE_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
                 data-evento-fecha-inicio="<?php echo htmlspecialchars((string) $eventoPersonal2['FECHA_INICIO_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>"
-
                 data-evento-fecha-final="<?php echo htmlspecialchars((string) $eventoPersonal2['FECHA_FINAL_EVENTO'], ENT_QUOTES, 'UTF-8'); ?>">
-
             </option>
         <?php } ?>
     </datalist>
@@ -123,7 +119,7 @@ if ($consultaEventosPersonal2) {
         $queryper = $altaeventos->lista_colaboradoreventos2();
         $fondos = array("fff0df","f4ffdf","dfffed","dffeff","dfe8ff","efdfff","ffdffd","efdfff","ffdfe9");
         $num = 0;
-        $option29 = '';
+        $option28 = '';
         
     while($row = mysqli_fetch_array($queryper)) {
             $num = ($num == 8) ? 0 : $num + 1;
@@ -328,44 +324,20 @@ if ($consultaEventosPersonal2) {
          
 
 <script type="text/javascript">
-function mostrarOcupacionesPersonal2() {
-    var opcion = $('#NOMBRE_PERSONAL2 option:selected');
-    var ocupaciones = opcion.attr('data-ocupaciones') || '';
-    var contenedor = $('#ocupaciones_personal2');
-
-    if (ocupaciones === '') {
-        contenedor.hide().empty();
-        return;
-    }
-
-    var lineas = ocupaciones.split('||');
-    var contenido = $('<div>').append($('<strong>').text('COLABORADOR OCUPADO:'));
-
-    $.each(lineas, function (_, ocupacion) {
-        contenido.append($('<div>').text(ocupacion));
-    });
-
-    contenedor.empty().append(contenido.contents()).show();
-}
-
-$(document).on('change', '#NOMBRE_PERSONAL2', mostrarOcupacionesPersonal2);
-$(document).ready(mostrarOcupacionesPersonal2);
-
+// 1) Buscador de evento: JavaScript puro, se ejecuta primero para que
+//    ningún otro bloque pueda impedir el llenado de nombre y fechas.
 (function () {
     var buscador = document.getElementById('BUSCADOR_EVENTO_PERSONAL2');
     var lista = document.getElementById('LISTA_EVENTOS_PERSONAL2');
     var numero = document.getElementById('NUMERO_EVENTO_PERSONAL2');
     var nombre = document.getElementById('NOMBRE_EVENTO_PERSONAL2');
     var eventoId = document.getElementById('ID_EVENTO_PERSONAL2');
-	    var fechaInicio = document.getElementById('FECHA_INICIO_PERSONAL2');
-
+    var fechaInicio = document.getElementById('FECHA_INICIO_PERSONAL2');
     var fechaFinal = document.getElementById('FECHA_FINAL_PERSONAL2');
-
     var fechaPagoBono = document.getElementById('fecha_ppago');
-
     var formulario = document.getElementById('PERSONAL2form');
 
-   if (!buscador || !lista || !numero || !nombre || !eventoId) {
+    if (!buscador || !lista || !numero || !nombre || !eventoId) {
         return;
     }
 
@@ -417,24 +389,26 @@ $(document).ready(mostrarOcupacionesPersonal2);
         numero.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-numero') || '') : '';
         nombre.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-nombre') || '') : '';
         eventoId.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-id') || '') : '';
-		     fechaInicio.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-inicio') || '') : '';
 
-              var fechaFinalEvento = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-final') || '') : '';
+        if (fechaInicio) {
+            fechaInicio.value = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-inicio') || '') : '';
+        }
 
-        fechaFinal.value = fechaFinalEvento;
+        var fechaFinalEvento = opcionEncontrada ? (opcionEncontrada.getAttribute('data-evento-fecha-final') || '') : '';
+
+        if (fechaFinal) {
+            fechaFinal.value = fechaFinalEvento;
+        }
 
         if (fechaPagoBono) {
             fechaPagoBono.value = calcularFechaPagoBono(fechaFinalEvento);
         }
 
         buscador.setCustomValidity(opcionEncontrada ? '' : 'Selecciona un evento de los resultados de búsqueda.');
-  if (opcionEncontrada && typeof totalfechas8 === 'function') {
 
+        if (opcionEncontrada && typeof totalfechas8 === 'function') {
             totalfechas8();
-
         }
-
-
 
         return opcionEncontrada !== null;
     }
@@ -451,6 +425,40 @@ $(document).ready(mostrarOcupacionesPersonal2);
         });
     }
 }());
+
+
+function mostrarOcupacionesPersonal2() {
+    var select = document.getElementById('NOMBRE_PERSONAL2');
+    var contenedor = document.getElementById('ocupaciones_personal2');
+
+    if (!select || !contenedor) {
+        return;
+    }
+
+    var opcion = select.options[select.selectedIndex];
+    var ocupaciones = opcion ? (opcion.getAttribute('data-ocupaciones') || '') : '';
+
+    contenedor.innerHTML = '';
+
+    if (ocupaciones === '') {
+        contenedor.style.display = 'none';
+        return;
+    }
+
+    var titulo = document.createElement('strong');
+    titulo.textContent = 'COLABORADOR OCUPADO:';
+    contenedor.appendChild(titulo);
+
+    ocupaciones.split('||').forEach(function (ocupacion) {
+        var linea = document.createElement('div');
+        linea.textContent = ocupacion;
+        contenedor.appendChild(linea);
+    });
+
+    contenedor.style.display = 'block';
+}
+
+mostrarOcupacionesPersonal2();
 </script>
 
 </div>
