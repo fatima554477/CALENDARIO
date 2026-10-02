@@ -114,9 +114,9 @@ if ($consultaEventosPersonal2) {
     <th style="text-align:left" scope="col">PERSONAL QUE ASISTE AL EVENTO</th>
     <td>
         <?php
-        $encabezadoA = '<select class="form-select mb-3" aria-label="Default select example" 
-                        id="NOMBRE_PERSONAL2" required name="NOMBRE_PERSONAL2" 
-                        onchange="getemployee2();">
+       $encabezadoA = '<select class="form-select mb-3" aria-label="Default select example"
+                        id="NOMBRE_PERSONAL2" required name="NOMBRE_PERSONAL2"
+                        onchange="getemployee2(); mostrarOcupacionesPersonal2();">
                        <option value="
 					  " selected>SELECIONA UNA OPCIÓN</option>';
 
@@ -127,8 +127,16 @@ if ($consultaEventosPersonal2) {
         
     while($row = mysqli_fetch_array($queryper)) {
             $num = ($num == 8) ? 0 : $num + 1;
-			$ocupacionesPersonal = $altaeventos->fechas_ocupadas_personal($row['idR']);
+		$ocupacionesPersonal = $altaeventos->fechas_ocupadas_personal($row['idR']);
 			$textoOcupaciones = implode('||', $ocupacionesPersonal);
+			$ocupacionesBreves = array_map(function ($ocupacion) {
+				return preg_replace(
+					'/^(EVENTO:\s*[^|]*?)\s+-\s+.*?(\s+\|\s+FECHAS:.*)$/u',
+					'$1$2',
+					$ocupacion
+				);
+			}, $ocupacionesPersonal);
+			$resumenOcupaciones = implode(' / ', $ocupacionesBreves);
 			$nombrePersonal = trim($row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO']);
 			$estiloPersonal = $textoOcupaciones !== ''
 				? 'background:#fde8e8;color:#8b0000;'
@@ -138,7 +146,11 @@ if ($consultaEventosPersonal2) {
 			$option28 .= '<option style="'.$estiloPersonal.'"'
 				.' value="'.htmlspecialchars($row['idR'].'^^'.$row['NOMBRE_1'].'^^'.$row['NOMBRE_2'].'^^'.$row['APELLIDO_PATERNO'].'^^'.$row['APELLIDO_MATERNO'], ENT_QUOTES, 'UTF-8').'"'
 				.' data-ocupaciones="'.htmlspecialchars($textoOcupaciones, ENT_QUOTES, 'UTF-8').'">'
-				.$estadoPersonal.htmlspecialchars($nombrePersonal, ENT_QUOTES, 'UTF-8').'</option>';
+					.$estadoPersonal.htmlspecialchars($nombrePersonal, ENT_QUOTES, 'UTF-8')
+				.($resumenOcupaciones !== ''
+					? ' — '.htmlspecialchars($resumenOcupaciones, ENT_QUOTES, 'UTF-8')
+					: '')
+				.'</option>';
         }
         
         echo $encabezadoA.$option28.'</select>';
