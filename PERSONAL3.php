@@ -125,22 +125,27 @@ if ($consultaEventosPersonal2) {
         $num = 0;
         $option29 = '';
         
-        while($row = mysqli_fetch_array($queryper)) {
+    while($row = mysqli_fetch_array($queryper)) {
             $num = ($num == 8) ? 0 : $num + 1;
-				$select='';
-	        if($select = "selected");
-			
-			
-            $option28 .= '<option style="background: #'.$fondos[$num].'" 
-                          value="'.$row['idR'].'^^'.$row['NOMBRE_1'].'^^'.$row['NOMBRE_2'].'^^'.$row['APELLIDO_PATERNO'].'^^'.$row['APELLIDO_MATERNO'].'">
-                          '.htmlspecialchars($row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO']).'</option>';
+			$ocupacionesPersonal = $altaeventos->fechas_ocupadas_personal($row['idR']);
+			$textoOcupaciones = implode('||', $ocupacionesPersonal);
+			$nombrePersonal = trim($row['NOMBRE_1'].' '.$row['NOMBRE_2'].' '.$row['APELLIDO_PATERNO'].' '.$row['APELLIDO_MATERNO']);
+			$estiloPersonal = $textoOcupaciones !== ''
+				? 'background:#fde8e8;color:#8b0000;'
+				: 'background:#e8f5e9;color:#155724;';
+			$estadoPersonal = $textoOcupaciones !== '' ? '🔴 ' : '🟢 ';
+
+			$option28 .= '<option style="'.$estiloPersonal.'"'
+				.' value="'.htmlspecialchars($row['idR'].'^^'.$row['NOMBRE_1'].'^^'.$row['NOMBRE_2'].'^^'.$row['APELLIDO_PATERNO'].'^^'.$row['APELLIDO_MATERNO'], ENT_QUOTES, 'UTF-8').'"'
+				.' data-ocupaciones="'.htmlspecialchars($textoOcupaciones, ENT_QUOTES, 'UTF-8').'">'
+				.$estadoPersonal.htmlspecialchars($nombrePersonal, ENT_QUOTES, 'UTF-8').'</option>';
         }
         
         echo $encabezadoA.$option28.'</select>';
         ?>
+        <div id="ocupaciones_personal2" style="display:none;margin-top:6px;line-height:1.6;color:#8b0000;"></div>
     </td>
 </tr>
-	
 	
 	
 	
@@ -311,6 +316,29 @@ if ($consultaEventosPersonal2) {
          
 
 <script type="text/javascript">
+function mostrarOcupacionesPersonal2() {
+    var opcion = $('#NOMBRE_PERSONAL2 option:selected');
+    var ocupaciones = opcion.attr('data-ocupaciones') || '';
+    var contenedor = $('#ocupaciones_personal2');
+
+    if (ocupaciones === '') {
+        contenedor.hide().empty();
+        return;
+    }
+
+    var lineas = ocupaciones.split('||');
+    var contenido = $('<div>').append($('<strong>').text('COLABORADOR OCUPADO:'));
+
+    $.each(lineas, function (_, ocupacion) {
+        contenido.append($('<div>').text(ocupacion));
+    });
+
+    contenedor.empty().append(contenido.contents()).show();
+}
+
+$(document).on('change', '#NOMBRE_PERSONAL2', mostrarOcupacionesPersonal2);
+$(document).ready(mostrarOcupacionesPersonal2);
+
 (function () {
     var buscador = document.getElementById('BUSCADOR_EVENTO_PERSONAL2');
     var lista = document.getElementById('LISTA_EVENTOS_PERSONAL2');

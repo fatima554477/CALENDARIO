@@ -2881,6 +2881,56 @@ public function vehiculo_ocupado_en_rango($vehiculoId, $fechaInicio, $fechaFin, 
 }
 
 
+public function fechas_ocupadas_personal($personalId, $idExcluir = 0){
+	$conn = $this->db();
+	$personalId = (int)$personalId;
+	$idExcluir = (int)$idExcluir;
+	$ocupaciones = array();
+
+	if($personalId <= 0){
+		return $ocupaciones;
+	}
+
+	$sql = "SELECT personal.FECHA_INICIO1, personal.FECHA_FINAL1,
+				 COALESCE(evento.NUMERO_EVENTO, ''), COALESCE(evento.NOMBRE_EVENTO, '')
+			FROM 04personal2 AS personal
+			LEFT JOIN 04altaeventos AS evento ON evento.id = personal.idRelacion
+			WHERE personal.idPersonal = ?
+			AND personal.FECHA_INICIO1 <> ''
+			AND personal.FECHA_FINAL1 <> ''
+			AND personal.FECHA_FINAL1 >= CURDATE()";
+
+	if($idExcluir > 0){
+		$sql .= " AND personal.id <> ?";
+	}
+
+	$sql .= " ORDER BY personal.FECHA_INICIO1 ASC";
+	$stmt = $conn->prepare($sql);
+
+	if($idExcluir > 0){
+		$stmt->bind_param('ii', $personalId, $idExcluir);
+	}else{
+		$stmt->bind_param('i', $personalId);
+	}
+
+	$stmt->execute();
+	$stmt->bind_result($fechaInicioDb, $fechaFinalDb, $numeroEvento, $nombreEvento);
+
+	while($stmt->fetch()){
+		$fechaInicio = date('d/m/Y', strtotime($fechaInicioDb));
+		$fechaFinal = date('d/m/Y', strtotime($fechaFinalDb));
+		$rango = ($fechaInicio === $fechaFinal) ? $fechaInicio : $fechaInicio.' al '.$fechaFinal;
+		$evento = trim($numeroEvento.' - '.$nombreEvento, " -\t\n\r\0\x0B");
+		$ocupaciones[] = ($evento !== '' ? 'EVENTO: '.$evento.' | ' : '').'FECHAS: '.$rango;
+	}
+
+	$stmt->close();
+	return $ocupaciones;
+}
+
+
+
+
 public function borra_VEHICULOSEVE($id){
 	$conn = $this->db();
 	$variablequery = "delete from 04vehiculoevento where id = '".$id."' ";
