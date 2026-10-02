@@ -225,9 +225,8 @@ while($row = mysqli_fetch_array($querycontras))
 <td ><?php echo $row["OBSERVACIONES_cierre"]; ?></td>
 <td ><?php echo $row["nombreI_cierre"]; ?></td>
 <td ><?php echo $row["fecha_cierre"]; ?></td>
-<?php if($conexion->variablespermisos('','paraFACTURAR','modificar')=='si'){ ?>
 <td><input type="button" name="view_bitacora" value="BITÁCORA" id="<?php echo $row["id"]; ?>" class="btn btn-outline-primary btn-xs view_datacierrebitacora" /></td>
-<?php } ?>
+
 <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','modificar')=='si'){ ?><td><input type="button" name="view" value="MODIFICAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierremodifica" /></td><?php } ?>
 <?php if($conexion->variablespermisos('','DOCUMENTO_CIERRE','borrar')=='si'){ ?><td><input type="button" name="view2" value="BORRAR" id="<?php echo $row["id"]; ?>" class="btn btn-info btn-xs view_datacierreborrar" /></td>
 <?php } ?>

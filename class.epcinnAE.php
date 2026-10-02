@@ -2535,14 +2535,34 @@ public function actualizapersonalDIRECCION($pasara1_personalDIRECCION_id, $pasap
 
 		$valor = ($paraFACTURAR_text === 'si') ? 'si' : 'no';
 
+		$idEvento = (int)$session;
+		$consultaAnterior = mysqli_query($conn, "
+			SELECT paraFACTURAR
+			FROM 04cierre
+			WHERE id = ".$idCierre." AND idRelacion = ".$idEvento."
+			LIMIT 1
+		") or die('P156'.mysqli_error($conn));
+		$registroAnterior = mysqli_fetch_array($consultaAnterior, MYSQLI_ASSOC);
+
+		if(!$registroAnterior){
+			return "No fue posible actualizar el documento de cierre.";
+		}
+		$valorAnterior = isset($registroAnterior['paraFACTURAR']) ? $registroAnterior['paraFACTURAR'] : 'no';
+
 		$var1 = "
 			UPDATE 04cierre
 			SET paraFACTURAR = '".$conn->real_escape_string($valor)."'
-			WHERE id = ".$idCierre."
+			WHERE id = ".$idCierre." AND idRelacion = ".$idEvento."
 
 			LIMIT 1
 		";
 		mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));
+
+		$etiquetaAnterior = ($valorAnterior === 'si') ? 'Sí' : 'No';
+		$etiquetaNueva = ($valor === 'si') ? 'Sí' : 'No';
+		$detalle = 'Envío para facturar: "'.$etiquetaAnterior.'" → "'.$etiquetaNueva.'"';
+		$this->registrar_bitacora_cierre($conn, $idCierre, 'ACTUALIZACIÓN', $detalle);
+
 		return "Actualizado";
 
 	}
