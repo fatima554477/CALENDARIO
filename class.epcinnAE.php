@@ -1933,8 +1933,26 @@ public function borra_CONTRATO($id){
 	
 ///////////////////////////// PERSONAL2 2  /////////////////////////
 
-    public function PERSONAL2($NOMBRE_PERSONAL2 ,$PUESTO_PERSONAL2 ,$WHAT_PERSONAL2 , $EMAIL_PERSONAL2 ,$FECHA_INICIO1,$FECHA_FINAL1,$NUMERO_DIAS1, $MONTO_BONO1,$MONTO_BONO_TOTAL1,$TOTAL1,$ULTIMO_DIA1,      $FECHA_PPAGO1,$FORMA_PAGO1,$FECHA_EFECTIVA1,$NOMBRE_RECIBIO1,$NOMBRE_DELINGRESO2,$ADJUNTO_COMPROBANTE1, $VIATICOS_PERSONAL2 , $OBSERVACIONES_PERSONAL2 , $PERSONAL2_FECHA_ULTIMA_CARGA , $hDatosPERSONAL2,$ENVIARpersonal2,$IPpersonal2){
+    public function PERSONAL2($NOMBRE_PERSONAL2 ,$PUESTO_PERSONAL2 ,$WHAT_PERSONAL2 , $EMAIL_PERSONAL2 ,$FECHA_INICIO1,$FECHA_FINAL1,$NUMERO_DIAS1, $MONTO_BONO1,$MONTO_BONO_TOTAL1,$TOTAL1,$ULTIMO_DIA1,      $FECHA_PPAGO1,$FORMA_PAGO1,$FECHA_EFECTIVA1,$NOMBRE_RECIBIO1,$NOMBRE_DELINGRESO2,$ADJUNTO_COMPROBANTE1, $VIATICOS_PERSONAL2 , $OBSERVACIONES_PERSONAL2 , $PERSONAL2_FECHA_ULTIMA_CARGA , $hDatosPERSONAL2,$ENVIARpersonal2,$IPpersonal2,$hora_iniciocoordina = null,$hora_finalcoordina = null){
 		
+    $horariosPersonal2 = array();
+    foreach(array('hora_iniciocoordina' => $hora_iniciocoordina, 'hora_finalcoordina' => $hora_finalcoordina) as $columnaHorarioPersonal2 => $horarioPersonal2){
+        if($horarioPersonal2 === null){
+            continue;
+        }
+        if(!is_string($horarioPersonal2)){
+            return "HORARIO INVALIDO: USA HH:MM O HH:MM:SS.";
+        }
+        $horarioPersonal2 = trim($horarioPersonal2);
+        if($horarioPersonal2 === ""){
+            continue;
+        }
+        if(!preg_match('/^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$/', $horarioPersonal2)){
+            return "HORARIO INVALIDO: USA HH:MM O HH:MM:SS.";
+        }
+        $horariosPersonal2[$columnaHorarioPersonal2] = $horarioPersonal2;
+    }
+
     $conn = $this->db();
 	$session = isset($_SESSION['idevento'])?$_SESSION['idevento']:''; 
 
@@ -1954,7 +1972,18 @@ public function borra_CONTRATO($id){
 
 	$idPersonal = explode('^^',$NOMBRE_PERSONAL2);
 
-    $var1 = "update 04personal2  set
+    // Los formularios anteriores no envian horarios; conservamos los existentes.
+    $actualizaHorarioPersonal2 = "";
+    $columnasHorarioPersonal2 = "";
+    $valoresHorarioPersonal2 = "";
+    foreach($horariosPersonal2 as $columnaHorarioPersonal2 => $horarioPersonal2){
+        $horarioPersonal2 = mysqli_real_escape_string($conn, $horarioPersonal2);
+        $actualizaHorarioPersonal2 .= $columnaHorarioPersonal2." = '".$horarioPersonal2."', ";
+        $columnasHorarioPersonal2 .= ", ".$columnaHorarioPersonal2;
+        $valoresHorarioPersonal2 .= ", '".$horarioPersonal2."'";
+    }
+
+    $var1 = "update 04personal2  set ".$actualizaHorarioPersonal2."
 
 
  
@@ -1980,7 +2009,7 @@ public function borra_CONTRATO($id){
     where id = '".$IPpersonal2."' ;  ";
 
     $var2 = "insert into 04personal2 (NOMBRE_PERSONAL2, PUESTO_PERSONAL2, WHAT_PERSONAL2, EMAIL_PERSONAL2,FECHA_INICIO1,FECHA_FINAL1,NUMERO_DIAS1,MONTO_BONO1, MONTO_BONO_TOTAL1, TOTAL1, ULTIMO_DIA1,FECHA_PPAGO1,FORMA_PAGO1,FECHA_EFECTIVA1,NOMBRE_RECIBIO1,NOMBRE_DELINGRESO2,ADJUNTO_COMPROBANTE,
-    VIATICOS_PERSONAL2, OBSERVACIONES_PERSONAL2, PERSONAL2_FECHA_ULTIMA_CARGA, hDatosPERSONAL2, idRelacion, idPersonal) values ( '".$NOMBRE_PERSONAL2."' , '".$PUESTO_PERSONAL2."' , '".$WHAT_PERSONAL2."' , '".$EMAIL_PERSONAL2."' , '".$FECHA_INICIO1."' , '".$FECHA_FINAL1."' , '".$NUMERO_DIAS1."' , '".$MONTO_BONO1."' , '".$MONTO_BONO_TOTAL1."' , '".$TOTAL1."' , '".$ULTIMO_DIA1."' , '".$FECHA_PPAGO1."' , '".$FORMA_PAGO1."' , '".$FECHA_EFECTIVA1."' , '".$NOMBRE_RECIBIO1."' , '".$NOMBRE_DELINGRESO2."' , '".$ADJUNTO_COMPROBANTE1."' , '".$VIATICOS_PERSONAL2."' , '".$OBSERVACIONES_PERSONAL2."' , '".$PERSONAL2_FECHA_ULTIMA_CARGA."' , '".$hDatosPERSONAL2."' , '".$session."'  , '".$idPersonal[0]."' ); ";		
+    VIATICOS_PERSONAL2, OBSERVACIONES_PERSONAL2, PERSONAL2_FECHA_ULTIMA_CARGA, hDatosPERSONAL2, idRelacion, idPersonal".$columnasHorarioPersonal2.") values ( '".$NOMBRE_PERSONAL2."' , '".$PUESTO_PERSONAL2."' , '".$WHAT_PERSONAL2."' , '".$EMAIL_PERSONAL2."' , '".$FECHA_INICIO1."' , '".$FECHA_FINAL1."' , '".$NUMERO_DIAS1."' , '".$MONTO_BONO1."' , '".$MONTO_BONO_TOTAL1."' , '".$TOTAL1."' , '".$ULTIMO_DIA1."' , '".$FECHA_PPAGO1."' , '".$FORMA_PAGO1."' , '".$FECHA_EFECTIVA1."' , '".$NOMBRE_RECIBIO1."' , '".$NOMBRE_DELINGRESO2."' , '".$ADJUNTO_COMPROBANTE1."' , '".$VIATICOS_PERSONAL2."' , '".$OBSERVACIONES_PERSONAL2."' , '".$PERSONAL2_FECHA_ULTIMA_CARGA."' , '".$hDatosPERSONAL2."' , '".$session."'  , '".$idPersonal[0]."'".$valoresHorarioPersonal2." ); ";
     
      if($ENVIARpersonal2=='ENVIARpersonal2'){
      mysqli_query($conn,$var1) or die('P156'.mysqli_error($conn));

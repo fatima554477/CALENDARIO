@@ -205,10 +205,18 @@ if ($consultaEventosPersonal2) {
 
     </tr>
     <tr>
+    <th style="background:#f7edf8; text-align:left" scope="col"><label for="HORA_INICIO_PERSONAL2" class="form-label">HORA DE INICIO DE COORDINACIÓN:</label></th>
+    <td style="background:#f7edf8"><input type="time" class="form-control" id="HORA_INICIO_PERSONAL2" value="<?php echo htmlspecialchars((string) (isset($hora_iniciocoordina) ? $hora_iniciocoordina : ''), ENT_QUOTES, 'UTF-8'); ?>" name="hora_iniciocoordina" aria-describedby="HORA_INICIO_PERSONAL2_AYUDA"></td>
+    </tr>
+    <tr>
     <th style="background:#f7edf8; text-align:left" scope="col">FECHA FINAL DE COORDINACIÓN:<br><a style="color:red;font:7px">obligatorio</a></th>
    <td  style="background:#f7edf8"><input type="date" class="form-control" id="FECHA_FINAL_PERSONAL2" required="" value="<?php echo htmlspecialchars((string) $FECHA_FINAL1, ENT_QUOTES, 'UTF-8'); ?>" name="FECHA_FINAL1"></td>
 
 
+    </tr>
+    <tr>
+    <th style="background:#f7edf8; text-align:left" scope="col"><label for="HORA_FINAL_PERSONAL2" class="form-label">HORA FINAL DE COORDINACIÓN:</label></th>
+    <td style="background:#f7edf8"><input type="time" class="form-control" id="HORA_FINAL_PERSONAL2" value="<?php echo htmlspecialchars((string) (isset($hora_finalcoordina) ? $hora_finalcoordina : ''), ENT_QUOTES, 'UTF-8'); ?>" name="hora_finalcoordina" aria-describedby="HORA_FINAL_PERSONAL2_AYUDA"></td>
     </tr>
 	<?php if($conexion->variablespermisos('','PERSOVERBONO','ver')=='si' ){ ?>
     <tr>
