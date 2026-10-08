@@ -43,9 +43,19 @@ $queryVISTAPREV = $conexion->Listado_cierre2($identioficador);
 </tr> 
 <td width="30%"><label>OBSERVACIONES</label></td>
 <td width="70%"><input type="text" name="OBSERVACIONES_cierre" value="'.$row["OBSERVACIONES_cierre"].'"></td>
-</tr> <tr>
+</tr>
+
+
+</td>
+</tr> 
+<td width="30%"><label>EJECUTIVO QUE INGRESÓ</label></td>
+<td width="70%"><input type=»text» readonly=»readonly» style="background:#decaf1" name="nombreI_cierre" value="'.$row["nombreI_cierre"].'"></td>
+</tr> 
+
+
+<tr>
 <td width="30%"><label>FECHA DE ÚLTIMA CARGA</label></td>
-<td width="70%"><input type="text" name="fecha_cierre" value="'.$row["fecha_cierre"].'"></td>
+<td width="70%"><input type=»text» readonly=»readonly» style="background:#decaf1" name="fecha_cierre" value="'.$row["fecha_cierre"].'"></td>
 </tr> 
 
 
@@ -99,7 +109,7 @@ var fileobj;
 	        form_data.append("IPCIERRE2",  $("#IPCIERRE2").val());
 	        $.ajax({
 	            type: 'POST',
-	            url: 'altaeventos/controladorAE.php',
+	            url: 'calendariodeeventos2/controladorAE.php',
 				  dataType: "html",
 	            contentType: false,
 	            processData: false,
@@ -130,7 +140,7 @@ $('#2'+nombre).html('<a target="_blank" href="includes/archivos/'+$.trim(respons
 $("#clickCIERRE").click(function(){
 	
    $.ajax({  
-    url:"altaeventos/controladorAE.php",
+    url:"calendariodeeventos2/controladorAE.php",
     method:"POST",  
     data:$('#listadoCIERREform').serialize(),
 

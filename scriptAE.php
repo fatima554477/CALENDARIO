@@ -4411,6 +4411,7 @@ $("#guardaPERSONAL2").click(function () {
             $("input[name='NUMERO_DIAS1']").val('');
             $('#MONTO_BONO1').val('');
             $('#MONTO_BONO_TOTAL1').val('');
+            $('#ocupaciones_personal2').empty().hide();
 
             // 🔹 Recargas existentes
             $("#reset_personal2").load(location.href + " #reset_personal2");
