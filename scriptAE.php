@@ -4389,6 +4389,17 @@ $('#mensajePERSONAL').html("<span id='ACTUALIZADO' >"+data+"</span>").fadeIn().d
 
 ////////////////////////////PERSONAL2/////////////////////////////////////////////////////////
 $("#guardaPERSONAL2").click(function () {
+    const formulario = document.getElementById('PERSONAL2form');
+    if (!formulario.reportValidity()) { return; }
+    const fechaInicio = formulario.elements.FECHA_INICIO1.value;
+    const fechaFinal = formulario.elements.FECHA_FINAL1.value;
+    const horaInicio = formulario.elements.hora_iniciocoordina;
+    const horaFinal = formulario.elements.hora_finalcoordina;
+    if (horaInicio && horaFinal && horaInicio.value && horaFinal.value &&
+        fechaInicio + 'T' + horaInicio.value >= fechaFinal + 'T' + horaFinal.value) {
+        $('#mensajePERSONAL2').text('La fecha y hora final deben ser posteriores al inicio.').show();
+        return;
+    }
     const formData = new FormData($('#PERSONAL2form')[0]);
 
     $.ajax({
@@ -4405,6 +4416,16 @@ $("#guardaPERSONAL2").click(function () {
         },
 
   success: function (data) {
+            if ($.trim(data) !== 'Ingresado' && $.trim(data) !== 'Actualizado') {
+                $('#mensajePERSONAL2').empty().append(
+                    $('<span>').text($.trim(data)).css(
+                        $.trim(data).indexOf('COLABORADOR OCUPADO:') === 0
+                            ? { color: 'red', fontSize: '25px' }
+                            : {}
+                    )
+                ).show();
+                return;
+            }
 
             // 🔹 BORRAR FORMULARIO PERSONAL2
             document.getElementById('PERSONAL2form').reset();
@@ -4412,6 +4433,7 @@ $("#guardaPERSONAL2").click(function () {
             $('#MONTO_BONO1').val('');
             $('#MONTO_BONO_TOTAL1').val('');
             $('#ocupaciones_personal2').empty().hide();
+            $('#NOMBRE_PERSONAL2').load(location.href + ' #NOMBRE_PERSONAL2 > *');
 
             // 🔹 Recargas existentes
             $("#reset_personal2").load(location.href + " #reset_personal2");

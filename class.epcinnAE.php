@@ -1942,13 +1942,14 @@ public function borra_CONTRATO($id){
         }
         if(!is_string($horarioPersonal2)){
             return "HORARIO INVALIDO: USA HH:MM O HH:MM:SS.";
-        }
+ }
         $horarioPersonal2 = trim($horarioPersonal2);
         if($horarioPersonal2 === ""){
-            continue;
+            return "INDICA LA HORA DE INICIO Y LA HORA FINAL DE COORDINACION.";
         }
         if(!preg_match('/^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$/', $horarioPersonal2)){
             return "HORARIO INVALIDO: USA HH:MM O HH:MM:SS.";
+
         }
         $horariosPersonal2[$columnaHorarioPersonal2] = $horarioPersonal2;
     }
@@ -1970,7 +1971,35 @@ public function borra_CONTRATO($id){
     $TOTAL1 = str_replace(',','',$TOTAL1);
     $TOTAL1 = str_replace('$','',$TOTAL1);		                           
 
-	$idPersonal = explode('^^',$NOMBRE_PERSONAL2);
+		$idPersonal = explode('^^',$NOMBRE_PERSONAL2);
+
+    $idExcluirPersonal2 = $ENVIARpersonal2 === 'ENVIARpersonal2' ? (int)$IPpersonal2 : 0;
+    if($ENVIARpersonal2 === 'ENVIARpersonal2'){
+        // La edición conserva el colaborador del registro, aunque no venga en el formulario.
+        $stmtPersonal2 = $conn->prepare("SELECT idPersonal, hora_iniciocoordina, hora_finalcoordina FROM 04personal2 WHERE id = ?");
+        $stmtPersonal2->bind_param('i', $idExcluirPersonal2);
+        $stmtPersonal2->execute();
+        $stmtPersonal2->bind_result($idPersonalGuardado, $horaInicioGuardada, $horaFinalGuardada);
+        $existePersonal2 = $stmtPersonal2->fetch();
+        $stmtPersonal2->close();
+        if(!$existePersonal2){
+            return "NO SE ENCONTRO EL REGISTRO DE PERSONAL.";
+        }
+        $idPersonal[0] = $idPersonalGuardado;
+        if($hora_iniciocoordina === null){ $hora_iniciocoordina = $horaInicioGuardada; }
+        if($hora_finalcoordina === null){ $hora_finalcoordina = $horaFinalGuardada; }
+    }
+
+    $rangoPersonal2 = $this->rango_coordinacion_personal($FECHA_INICIO1, $FECHA_FINAL1, $hora_iniciocoordina, $hora_finalcoordina);
+    if((int)$idPersonal[0] <= 0){
+        return "SELECCIONA UN COLABORADOR.";
+    }
+    if($rangoPersonal2 === false){
+        return "RANGO INVALIDO: LA FECHA Y HORA FINAL DEBEN SER POSTERIORES AL INICIO.";
+    }
+    if($this->personal_ocupado_en_rango($idPersonal[0], $rangoPersonal2[0], $rangoPersonal2[1], $idExcluirPersonal2, $conn)){
+        return "COLABORADOR OCUPADO: YA TIENE UNA ASIGNACION EN ESAS FECHAS Y HORARIOS.";
+    }
 
     // Los formularios anteriores no envian horarios; conservamos los existentes.
     $actualizaHorarioPersonal2 = "";
@@ -2907,6 +2936,55 @@ public function vehiculo_ocupado_en_rango($vehiculoId, $fechaInicio, $fechaFin, 
 	$ocupado = $stmt->num_rows > 0;
 	$stmt->close();
 	return $ocupado;
+}
+
+
+// Intervalos [inicio, fin): dos coordinaciones consecutivas no se traslapan.
+public function rango_coordinacion_personal($fechaInicio, $fechaFinal, $horaInicio = null, $horaFinal = null){
+    $fechas = array();
+    foreach(array($fechaInicio, $fechaFinal) as $fecha){
+        if(!is_string($fecha)){ return false; }
+        $dia = DateTimeImmutable::createFromFormat('!Y-m-d', $fecha);
+        if(!$dia || $dia->format('Y-m-d') !== $fecha){ return false; }
+        $fechas[] = $dia;
+    }
+    $horas = array();
+    foreach(array($horaInicio, $horaFinal) as $hora){
+        if($hora === null || $hora === ''){ $horas[] = null; continue; }
+        if(!is_string($hora) || !preg_match('/^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$/', trim($hora))){ return false; }
+        $horas[] = strlen(trim($hora)) === 5 ? trim($hora).':00' : trim($hora);
+    }
+    $inicio = $fechas[0]->format('Y-m-d').' '.($horas[0] === null ? '00:00:00' : $horas[0]);
+    $fin = $horas[1] === null
+        ? $fechas[1]->modify('+1 day')->format('Y-m-d').' 00:00:00'
+        : $fechas[1]->format('Y-m-d').' '.$horas[1];
+    return $inicio < $fin ? array($inicio, $fin) : false;
+}
+
+public function personal_ocupado_en_rango($personalId, $inicio, $fin, $idExcluir = 0, $conn = null){
+    if($conn === null){ $conn = $this->db(); }
+    $personalId = (int)$personalId;
+    $idExcluir = (int)$idExcluir;
+    $sql = "SELECT id FROM 04personal2
+            WHERE idPersonal = ?
+            AND FECHA_INICIO1 <> '' AND FECHA_FINAL1 <> ''
+            AND TIMESTAMP(FECHA_INICIO1, COALESCE(NULLIF(CAST(hora_iniciocoordina AS CHAR), ''), '00:00:00')) < CAST(? AS DATETIME)
+            AND (CASE WHEN hora_finalcoordina IS NULL OR CAST(hora_finalcoordina AS CHAR) = ''
+                      THEN DATE_ADD(FECHA_FINAL1, INTERVAL 1 DAY)
+                      ELSE TIMESTAMP(FECHA_FINAL1, hora_finalcoordina) END) > CAST(? AS DATETIME)";
+    if($idExcluir > 0){ $sql .= " AND id <> ?"; }
+    $sql .= " LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    if($idExcluir > 0){
+        $stmt->bind_param('issi', $personalId, $fin, $inicio, $idExcluir);
+    }else{
+        $stmt->bind_param('iss', $personalId, $fin, $inicio);
+    }
+    $stmt->execute();
+    $stmt->store_result();
+    $ocupado = $stmt->num_rows > 0;
+    $stmt->close();
+    return $ocupado;
 }
 
 
